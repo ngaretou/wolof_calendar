@@ -1,0 +1,49 @@
+Publishing: 
+Android: 
+https://flutter.dev/docs/deployment/android
+To precache animation: (https://flutter.dev/docs/perf/rendering/shader)
+>>flutter run --profile --cache-sksl
+
+
+Building: 
+>>flutter build appbundle
+>>flutter build apk --split-per-abi
+
+add in then this to include the sksl data: --bundle-sksl-path flutter_01.sksl.json
+
+So normally: 
+>>flutter build appbundle --bundle-sksl-path flutter_01.sksl.json
+>>flutter build apk --split-per-abi --bundle-sksl-path flutter_01.sksl.json
+
+iOS: 
+>>flutter build ios                                                        
+
+
+
+
+
+
+
+
+return Transform.scale(
+                      scale: !_isFlipped ? 0.9 : 1.0,
+                      // .9,
+
+                      //!_isFlipped ? animation.value : animation.value,
+
+                      child: GestureDetector(
+                          onTap: () => setState(() => _isFlipped = !_isFlipped),
+                          // Flippable box:
+                          // https://dev.to/mightytechno/flutter-flip-card-animation-with-3d-effect-4i3
+                          child: FlippableBox(
+                            front: imageCard(
+                              "millet",
+                              divineNames.names[i],
+                              context,
+                            ),
+                            back: textCard(
+                              divineNames.names[i],
+                              context,
+                            ),
+                            isFlipped: _isFlipped,
+                          )));
