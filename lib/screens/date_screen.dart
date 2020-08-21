@@ -70,7 +70,7 @@ class DateScreen extends StatelessWidget {
               child: Text('Fii la arminaat bi yem TT',
                   style: Theme.of(context).textTheme.headline6))
           : Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
               child: ListView.builder(
                 itemBuilder: (ctx, i) =>
                     DateTile(_datesToDisplay[i], args.year),

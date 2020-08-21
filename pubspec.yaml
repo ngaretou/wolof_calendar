@@ -24,6 +24,7 @@ dependencies:
   flutter:
     sdk: flutter
   provider: ^4.3.1
+
   intl: ^0.16.1
   shared_preferences: ^0.5.8
   url_launcher: ^5.5.0
