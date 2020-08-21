@@ -4,9 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../locale/app_localization.dart';
-import '../providers/names.dart';
+// import '../providers/months.dart';
 import '../providers/theme.dart';
-import '../providers/card_prefs.dart';
+import '../providers/user_prefs.dart';
 
 import './about_screen.dart';
 
@@ -27,9 +27,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
         Provider.of<ThemeModel>(context, listen: false).userThemeName;
     final themeProvider = Provider.of<ThemeModel>(context, listen: false);
     final userLang = Provider.of<ThemeModel>(context, listen: false).userLang;
-    final cardPrefs = Provider.of<CardPrefs>(context, listen: false);
-    final _wolof = cardPrefs.cardPrefs.wolofVerseEnabled;
-    final _wolofal = cardPrefs.cardPrefs.wolofalVerseEnabled;
+    final userPrefs = Provider.of<UserPrefs>(context, listen: false);
+    final _wolof = userPrefs.userPrefs.wolofVerseEnabled;
+    final _wolofal = userPrefs.userPrefs.wolofalVerseEnabled;
     // final screenWidth = MediaQuery.of(context).size.width;
     print('in settings');
 
@@ -105,11 +105,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Icons.format_quote, null);
     }
 
-    Widget showFavsTitle() {
-      return settingTitle(
-          AppLocalization.of(context).settingsShowFavs, Icons.favorite, null);
-    }
-
     Widget languageTitle() {
       return settingTitle(
           AppLocalization.of(context).settingsLanguage, Icons.translate, null);
@@ -167,7 +162,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         // crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           RaisedButton(
-            child: cardPrefs.cardPrefs.imageEnabled
+            child: userPrefs.userPrefs.imageEnabled
                 ? null
                 : Icon(
                     Icons.check,
@@ -177,7 +172,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             color: Colors.white70,
             onPressed: () {
               setState(() {
-                cardPrefs.savePref('imageEnabled', false);
+                userPrefs.savePref('imageEnabled', false);
               });
             },
           ),
@@ -188,11 +183,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
               splashColor: Colors.black,
               onTap: () {
                 setState(() {
-                  cardPrefs.savePref('imageEnabled', true);
+                  userPrefs.savePref('imageEnabled', true);
                 });
               },
               child: Container(
-                child: cardPrefs.cardPrefs.imageEnabled
+                child: userPrefs.userPrefs.imageEnabled
                     ? Icon(Icons.check, color: Colors.white)
                     : null,
                 height: 40.0,
@@ -221,7 +216,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             children: [
               ChoiceChip(
                 padding: EdgeInsets.symmetric(horizontal: 10),
-                selected: cardPrefs.cardPrefs.textDirection ? false : true,
+                selected: userPrefs.userPrefs.textDirection ? false : true,
                 avatar: Icon(Icons.arrow_forward),
                 label: Text(
                   "LTR",
@@ -231,13 +226,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 selectedColor: Theme.of(context).accentColor,
                 onSelected: (bool selected) {
                   setState(() {
-                    cardPrefs.savePref('textDirection', false);
+                    userPrefs.savePref('textDirection', false);
                   });
                 },
               ),
               ChoiceChip(
                 padding: EdgeInsets.symmetric(horizontal: 10),
-                selected: cardPrefs.cardPrefs.textDirection ? true : false,
+                selected: userPrefs.userPrefs.textDirection ? true : false,
                 avatar: Icon(Icons.arrow_back),
                 label: Text(
                   "RTL",
@@ -247,7 +242,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 selectedColor: Theme.of(context).accentColor,
                 onSelected: (bool selected) {
                   setState(() {
-                    cardPrefs.savePref('textDirection', true);
+                    userPrefs.savePref('textDirection', true);
                   });
                 },
               ),
@@ -280,7 +275,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   value: _wolofal,
                   onChanged: (_) {
                     setState(() {
-                      cardPrefs.savePref('wolofalVerseEnabled', !_wolofal);
+                      userPrefs.savePref('wolofalVerseEnabled', !_wolofal);
                     });
                   },
                 ),
@@ -314,87 +309,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   value: _wolof,
                   onChanged: (_) {
                     setState(() {
-                      cardPrefs.savePref('wolofVerseEnabled', !_wolof);
+                      userPrefs.savePref('wolofVerseEnabled', !_wolof);
                     });
                   },
                 ),
               ],
             ),
-          ),
-        ],
-      );
-    }
-
-    Widget showFavsSetting() {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Wrap(
-            direction: Axis.horizontal,
-            spacing: 15,
-            children: [
-              ChoiceChip(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                selected: cardPrefs.cardPrefs.showFavs ? true : false,
-                avatar: Icon(Icons.favorite),
-                label: Text(
-                  AppLocalization.of(context).settingsFavorites,
-                  style: Theme.of(context).textTheme.subtitle1,
-                ),
-                backgroundColor: Theme.of(context).primaryColor,
-                selectedColor: Theme.of(context).accentColor,
-                onSelected: (bool selected) async {
-                  print('in fav selector');
-                  if (Provider.of<DivineNames>(context, listen: false)
-                          .favoriteNames
-                          .length ==
-                      0) {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Text(
-                            AppLocalization.of(context).favsNoneYet,
-                          ),
-                          content: Text(
-                            AppLocalization.of(context).favsNoneYetInstructions,
-                          ),
-                          actions: [
-                            FlatButton(
-                                child: Text(
-                                  AppLocalization.of(context).ok,
-                                ),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                }),
-                          ],
-                        );
-                      },
-                    );
-                  } else {
-                    setState(() {
-                      cardPrefs.savePref('showFavs', true);
-                    });
-                  }
-                },
-              ),
-              ChoiceChip(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                selected: cardPrefs.cardPrefs.showFavs ? false : true,
-                avatar: Icon(Icons.all_inclusive),
-                label: Text(
-                  AppLocalization.of(context).settingsTextAll,
-                  style: Theme.of(context).textTheme.subtitle1,
-                ),
-                backgroundColor: Theme.of(context).primaryColor,
-                selectedColor: Theme.of(context).accentColor,
-                onSelected: (bool selected) {
-                  setState(() {
-                    cardPrefs.savePref('showFavs', false);
-                  });
-                },
-              ),
-            ],
           ),
         ],
       );
@@ -487,8 +407,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   asScriptPicker(),
                   rsScriptPicker(),
                   Divider(),
-                  settingRow(showFavsTitle(), showFavsSetting()),
-                  Divider(),
                   settingRow(languageTitle(), languageSetting()),
                   Divider(),
                   settingTitle(
@@ -528,7 +446,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 asScriptPicker(),
                 rsScriptPicker(),
                 Divider(),
-                settingColumn(showFavsTitle(), showFavsSetting()),
                 settingColumn(languageTitle(), languageSetting()),
                 settingTitle(
                   AppLocalization.of(context).settingsAbout,

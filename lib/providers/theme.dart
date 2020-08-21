@@ -3,8 +3,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
-import '../providers/names.dart';
-import '../providers/card_prefs.dart';
+import 'months.dart';
+import 'user_prefs.dart';
 import '../locale/app_localization.dart';
 
 ThemeData darkTheme = ThemeData.dark().copyWith(
@@ -53,18 +53,18 @@ ThemeData lightTheme = ThemeData.light().copyWith(
     buttonTheme: ButtonThemeData(minWidth: 80));
 
 ThemeData blueTheme = ThemeData.light().copyWith(
-    primaryColor: Colors.blueGrey,
-    accentColor: Colors.blueAccent,
+    primaryColor: Colors.blueGrey[100],
+    accentColor: Colors.blueAccent[300],
     backgroundColor: Colors.blue,
     scaffoldBackgroundColor: Colors.blue,
     floatingActionButtonTheme: FloatingActionButtonThemeData(
         foregroundColor: Colors.white, backgroundColor: Colors.blue[700]),
-    iconTheme: IconThemeData(color: Colors.white),
+    iconTheme: IconThemeData(color: Colors.black54),
     textTheme: TextTheme(
-        headline6: TextStyle(color: Colors.white, fontFamily: 'Lato'),
-        subtitle2: TextStyle(color: Colors.white),
-        subtitle1: TextStyle(color: Colors.white),
-        bodyText2: TextStyle(color: Colors.white)),
+        headline6: TextStyle(color: Colors.black54, fontFamily: 'Lato'),
+        subtitle2: TextStyle(color: Colors.black54),
+        subtitle1: TextStyle(color: Colors.black54),
+        bodyText2: TextStyle(color: Colors.black87)),
     appBarTheme: AppBarTheme(
         color: Colors.blueAccent,
         actionsIconTheme: IconThemeData(color: Colors.white)),
@@ -114,8 +114,8 @@ class ThemeModel extends ChangeNotifier {
   // }
 
   Future<void> initialSetupAsync(context) async {
-    await Provider.of<DivineNames>(context, listen: false).getDivineNames();
-    await Provider.of<CardPrefs>(context, listen: false).setupCardPrefs();
+    await Provider.of<Months>(context, listen: false).getData();
+    await Provider.of<UserPrefs>(context, listen: false).setupUserPrefs();
     await setupTheme();
     await setupLang();
     return;

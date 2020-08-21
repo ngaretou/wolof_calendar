@@ -38,11 +38,11 @@ return Transform.scale(
                           child: FlippableBox(
                             front: imageCard(
                               "millet",
-                              divineNames.names[i],
+                              Months.names[i],
                               context,
                             ),
                             back: textCard(
-                              divineNames.names[i],
+                              Months.names[i],
                               context,
                             ),
                             isFlipped: _isFlipped,

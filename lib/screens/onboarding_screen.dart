@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import './cards_screen.dart';
+import 'months_screen.dart';
 import '../locale/app_localization.dart';
 import '../providers/theme.dart';
-import '../providers/card_prefs.dart';
+import '../providers/user_prefs.dart';
 
 class OnboardingScreen extends StatefulWidget {
   static const routeName = '/onboarding-screen';
@@ -98,7 +98,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           InkWell(
                             onTap: () {
                               Navigator.of(context)
-                                  .popAndPushNamed(CardsScreen.routeName);
+                                  .popAndPushNamed(MonthsScreen.routeName);
                             },
                             child: Container(
                               height: Platform.isIOS ? 70 : 60,
@@ -127,7 +127,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget languageChooser() {
     int _value;
     bool firstRun =
-        Provider.of<CardPrefs>(context, listen: false).showOnboarding;
+        Provider.of<UserPrefs>(context, listen: false).showOnboarding;
     String chosenLang =
         Provider.of<ThemeModel>(context, listen: false).userLang;
     if (firstRun == true) {

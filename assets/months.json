@@ -1,0 +1,110 @@
+﻿[
+  {
+    "monthID": "1",
+    "monthFR": "Janvier",
+    "monthRS": "Samwiye",
+    "monthAS": "سَمْوِيࣹ",
+    "arabicName": "النور",
+    "wolofName": "Leer gi",
+    "wolofalName": "لࣹيرْ گِ"
+  },
+  {
+    "monthID": "2",
+    "monthFR": "Février",
+    "monthRS": "Fewriye",
+    "monthAS": "فࣹوْرِيࣹ",
+    "arabicName": "النور",
+    "wolofName": "Leer gi",
+    "wolofalName": "لࣹيرْ گِ"
+  },
+  {
+    "monthID": "3",
+    "monthFR": "Mars",
+    "monthRS": "Màrs",
+    "monthAS": "مࣵرسّ",
+    "arabicName": "النور",
+    "wolofName": "Leer gi",
+    "wolofalName": "لࣹيرْ گِ"
+  },
+  {
+    "monthID": "4",
+    "monthFR": "Avril",
+    "monthRS": "Awril",
+    "monthAS": "اَوْرِلْ",
+    "arabicName": "النور",
+    "wolofName": "Leer gi",
+    "wolofalName": "لࣹيرْ گِ"
+  },
+  {
+    "monthID": "5",
+    "monthFR": "Mai",
+    "monthRS": "Me",
+    "monthAS": "مࣹ",
+    "arabicName": "التواب",
+    "wolofName": "Kiy nangu ki tuub",
+    "wolofalName": "ڪِيْ نَنگُ ڪِ تُوبْ"
+  },
+  {
+    "monthID": "6",
+    "monthFR": "Juin",
+    "monthRS": "Suwen",
+    "monthAS": "سُوࣹنْ",
+    "arabicName": "التواب",
+    "wolofName": "Kiy nangu ki tuub",
+    "wolofalName": "ڪِيْ نَنگُ ڪِ تُوبْ"
+  },
+  {
+    "monthID": "7",
+    "monthFR": "Juillet",
+    "monthRS": "Sulet",
+    "monthAS": "سُلࣹتْ",
+    "arabicName": "التواب",
+    "wolofName": "Kiy nangu ki tuub",
+    "wolofalName": "ڪِيْ نَنگُ ڪِ تُوبْ"
+  },
+  {
+    "monthID": "8",
+    "monthFR": "Août",
+    "monthRS": "Ut",
+    "monthAS": "اُتْ",
+    "arabicName": "التواب",
+    "wolofName": "Kiy nangu ki tuub",
+    "wolofalName": "ڪِيْ نَنگُ ڪِ تُوبْ"
+  },
+  {
+    "monthID": "9",
+    "monthFR": "Septembre",
+    "monthRS": "Sàttumbar",
+    "monthAS": "سࣵتُّمْبَرْ",
+    "arabicName": "الهادي",
+    "wolofName": "Kiy gindi",
+    "wolofalName": "ڪِيْ گِنْدِ"
+  },
+  {
+    "monthID": "10",
+    "monthFR": "Octobre",
+    "monthRS": "Oktoobar",
+    "monthAS": "اࣷڪْتࣷوبَرْ",
+    "arabicName": "الهادي",
+    "wolofName": "Kiy gindi",
+    "wolofalName": "ڪِيْ گِنْدِ"
+  },
+  {
+    "monthID": "11",
+    "monthFR": "Novembre",
+    "monthRS": "Nowàmbar",
+    "monthAS": "نࣷوࣵمْبَرْ",
+    "arabicName": "الهادي",
+    "wolofName": "Kiy gindi",
+    "wolofalName": "ڪِيْ گِنْدِ"
+  },
+  {
+    "monthID": "12",
+    "monthFR": "Décembre",
+    "monthRS": "Desàmbar",
+    "monthAS": "دࣹسࣵمْبَرْ",
+    "arabicName": "الهادي",
+    "wolofName": "Kiy gindi",
+    "wolofalName": "ڪِيْ گِنْدِ"
+  }
+]

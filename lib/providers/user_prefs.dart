@@ -5,7 +5,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class CardPrefs with ChangeNotifier {
+class UserPrefs with ChangeNotifier {
   bool textDirection;
   bool imageEnabled;
   bool wolofVerseEnabled;
@@ -13,7 +13,7 @@ class CardPrefs with ChangeNotifier {
   bool showFavs;
   bool showOnboarding;
 
-  CardPrefs({
+  UserPrefs({
     this.textDirection,
     this.imageEnabled,
     this.wolofVerseEnabled,
@@ -22,20 +22,20 @@ class CardPrefs with ChangeNotifier {
     this.showOnboarding,
   });
 
-  CardPrefs _cardPrefs;
+  UserPrefs _userPrefs;
 
-  CardPrefs get cardPrefs {
-    return _cardPrefs;
+  UserPrefs get userPrefs {
+    return _userPrefs;
   }
 
-  Future<void> setupCardPrefs() async {
+  Future<void> setupUserPrefs() async {
     //get the prefs
     final prefs = await SharedPreferences.getInstance();
     //if there's no userTheme, it's the first time they've run the app, so give them lightTheme
     //We're also grabbing other setup info here: language:
 
-    if (!prefs.containsKey('cardPrefs')) {
-      CardPrefs defaultCardPrefs = CardPrefs(
+    if (!prefs.containsKey('userPrefs')) {
+      UserPrefs defaultUserPrefs = UserPrefs(
         //Starting off LTR as in English - the relevant setting is PageView(reverse: false) = LTR
         textDirection: false,
         imageEnabled: true,
@@ -45,9 +45,9 @@ class CardPrefs with ChangeNotifier {
         showOnboarding: true,
       );
       //Set in-memory copy of prefs
-      _cardPrefs = defaultCardPrefs;
+      _userPrefs = defaultUserPrefs;
       //Save prefs to disk
-      final _defaultCardPrefs = json.encode({
+      final _defaultUserPrefs = json.encode({
         'textDirection': false,
         'imageEnabled': true,
         'wolofVerseEnabled': true,
@@ -55,11 +55,11 @@ class CardPrefs with ChangeNotifier {
         'showFavs': false,
         'showOnboarding': true,
       });
-      prefs.setString('cardPrefs', _defaultCardPrefs);
+      prefs.setString('userPrefs', _defaultUserPrefs);
     } else {
       final jsonResponse =
-          json.decode(prefs.getString('cardPrefs')) as Map<String, Object>;
-      _cardPrefs = CardPrefs(
+          json.decode(prefs.getString('userPrefs')) as Map<String, Object>;
+      _userPrefs = UserPrefs(
         textDirection: jsonResponse['textDirection'],
         imageEnabled: jsonResponse['imageEnabled'],
         wolofVerseEnabled: jsonResponse['wolofVerseEnabled'],
@@ -76,8 +76,8 @@ class CardPrefs with ChangeNotifier {
     //get the prefs
     final prefs = await SharedPreferences.getInstance();
     final jsonResponse =
-        json.decode(prefs.getString('cardPrefs')) as Map<String, Object>;
-    var _tempCardPrefs = CardPrefs(
+        json.decode(prefs.getString('userPrefs')) as Map<String, Object>;
+    var _tempUserPrefs = UserPrefs(
       textDirection: jsonResponse['textDirection'],
       imageEnabled: jsonResponse['imageEnabled'],
       wolofVerseEnabled: jsonResponse['wolofVerseEnabled'],
@@ -88,31 +88,31 @@ class CardPrefs with ChangeNotifier {
 
     //set the incoming setting
     if (setting == 'textDirection') {
-      _tempCardPrefs.textDirection = userPref;
+      _tempUserPrefs.textDirection = userPref;
     } else if (setting == 'imageEnabled') {
-      _tempCardPrefs.imageEnabled = userPref;
+      _tempUserPrefs.imageEnabled = userPref;
     } else if (setting == 'wolofVerseEnabled') {
-      _tempCardPrefs.wolofVerseEnabled = userPref;
+      _tempUserPrefs.wolofVerseEnabled = userPref;
     } else if (setting == 'wolofalVerseEnabled') {
-      _tempCardPrefs.wolofalVerseEnabled = userPref;
+      _tempUserPrefs.wolofalVerseEnabled = userPref;
     } else if (setting == 'showFavs') {
-      _tempCardPrefs.showFavs = userPref;
+      _tempUserPrefs.showFavs = userPref;
     } else if (setting == 'showOnboarding') {
-      _tempCardPrefs.showOnboarding = userPref;
+      _tempUserPrefs.showOnboarding = userPref;
     }
 
     //now set it in memory
-    _cardPrefs = _tempCardPrefs;
+    _userPrefs = _tempUserPrefs;
     // notifyListeners();
     //now save it to disk
-    final _userPrefs = json.encode({
-      'textDirection': _tempCardPrefs.textDirection,
-      'imageEnabled': _tempCardPrefs.imageEnabled,
-      'wolofVerseEnabled': _tempCardPrefs.wolofVerseEnabled,
-      'wolofalVerseEnabled': _tempCardPrefs.wolofalVerseEnabled,
-      'showFavs': _tempCardPrefs.showFavs,
-      'showOnboarding': _tempCardPrefs.showOnboarding,
+    final _userPrefsData = json.encode({
+      'textDirection': _tempUserPrefs.textDirection,
+      'imageEnabled': _tempUserPrefs.imageEnabled,
+      'wolofVerseEnabled': _tempUserPrefs.wolofVerseEnabled,
+      'wolofalVerseEnabled': _tempUserPrefs.wolofalVerseEnabled,
+      'showFavs': _tempUserPrefs.showFavs,
+      'showOnboarding': _tempUserPrefs.showOnboarding,
     });
-    prefs.setString('cardPrefs', _userPrefs);
+    prefs.setString('userPrefs', _userPrefsData);
   }
 }

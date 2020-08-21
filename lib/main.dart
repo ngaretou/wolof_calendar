@@ -4,27 +4,28 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'locale/app_localization.dart';
 
-import './providers/card_prefs.dart';
-import './providers/names.dart';
+import 'providers/user_prefs.dart';
+import 'providers/months.dart';
 import './providers/theme.dart';
 
 import './screens/settings_screen.dart';
 import './screens/about_screen.dart';
-import './screens/cards_screen.dart';
+import 'screens/months_screen.dart';
 import './screens/onboarding_screen.dart';
+import './screens/date_screen.dart';
 
 void main() {
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (ctx) => CardPrefs(),
+          create: (ctx) => UserPrefs(),
         ),
         ChangeNotifierProvider(
           create: (ctx) => ThemeModel(),
         ),
         ChangeNotifierProvider(
-          create: (ctx) => DivineNames(),
+          create: (ctx) => Months(),
         ),
       ],
       child: MyApp(),
@@ -52,27 +53,30 @@ class _MyAppState extends State<MyApp> {
     print('main.dart build');
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: '99',
+      title: 'Arminaat Wolof',
       home: FutureBuilder(
         future: Provider.of<ThemeModel>(context, listen: false)
             .initialSetupAsync(context),
         builder: (ctx, snapshot) =>
             snapshot.connectionState == ConnectionState.waiting
                 ? Center(child: CircularProgressIndicator())
-                : Provider.of<CardPrefs>(context, listen: false)
-                        .cardPrefs
-                        .showOnboarding
-                    ? OnboardingScreen()
-                    : CardsScreen(),
+                :
+                // Provider.of<UserPrefs>(context, listen: false)
+                //         .userPrefs
+                //         .showOnboarding
+                //     ? OnboardingScreen()
+                //     :
+                MonthsScreen(),
       ),
       theme: Provider.of<ThemeModel>(context).currentTheme != null
           ? Provider.of<ThemeModel>(context).currentTheme
           : ThemeData.dark(),
       routes: {
-        CardsScreen.routeName: (ctx) => CardsScreen(),
+        MonthsScreen.routeName: (ctx) => MonthsScreen(),
         SettingsScreen.routeName: (ctx) => SettingsScreen(),
         AboutScreen.routeName: (ctx) => AboutScreen(),
         OnboardingScreen.routeName: (ctx) => OnboardingScreen(),
+        DateScreen.routeName: (ctx) => DateScreen(),
       },
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
