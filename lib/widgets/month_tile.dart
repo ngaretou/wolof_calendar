@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'dart:ui' as ui;
 import 'package:wolof_calendar/screens/date_screen.dart';
 
 import '../providers/months.dart';
@@ -57,6 +57,7 @@ class MonthTile extends StatelessWidget {
                       Text(
                         currentMonth.monthAS,
                         style: asStyle,
+                        textDirection: ui.TextDirection.rtl,
                       ),
                       Divider(color: Colors.white),
                       Text(

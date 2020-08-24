@@ -3,23 +3,29 @@ import 'package:provider/provider.dart';
 
 import '../providers/months.dart';
 import 'package:intl/intl.dart';
+import 'dart:ui' as ui;
 
-class DateTile extends StatelessWidget {
+class DateTile extends StatefulWidget {
   final Date currentDate;
-  final String year;
-  DateTile(this.currentDate, this.year);
+  // final String year;
+  DateTile(this.currentDate);
 
+  @override
+  _DateTileState createState() => _DateTileState();
+}
+
+class _DateTileState extends State<DateTile> {
   @override
   Widget build(BuildContext context) {
     final monthData = Provider.of<Months>(context, listen: false)
         .months
-        .where((month) => month.monthID == currentDate.month)
+        .where((month) => month.monthID == widget.currentDate.month)
         .toList();
 
     String _wolofWeekday;
     String _wolofalWeekday;
     var currentDateTime = DateFormat("yyyy/M/dd", 'fr_FR').parse(
-        '${currentDate.year}/${currentDate.month}/${currentDate.westernDate}');
+        '${widget.currentDate.year}/${widget.currentDate.month}/${widget.currentDate.westernDate}');
 
     String currentDayOfWeek =
         DateFormat('EEEE', 'fr_FR').format(currentDateTime);
@@ -74,7 +80,8 @@ class DateTile extends StatelessWidget {
 
     bool showMonth;
 
-    if (currentDate.westernDate == "1" || currentDate.wolofDate == "1") {
+    if (widget.currentDate.westernDate == "1" ||
+        widget.currentDate.wolofDate == "1") {
       showMonth = true;
     } else {
       showMonth = false;
@@ -94,8 +101,31 @@ class DateTile extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(monthData[0].monthRS, style: headerStyle),
-                      Text(currentDate.wolofMonthRS, style: headerStyle),
-                      Text(currentDate.wolofMonthAS, style: headerStyle),
+                      Text(widget.currentDate.wolofMonthRS, style: headerStyle),
+                    ]),
+              )
+            : SizedBox(
+                height: 0,
+              ),
+        showMonth
+            ? Container(
+                color: Colors.white24,
+                padding: EdgeInsets.only(left: 5, right: 5),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        monthData[0].monthAS,
+                        style: headerStyle,
+                        textDirection: ui.TextDirection.rtl,
+                      ),
+
+                      Text(
+                        widget.currentDate.wolofMonthAS,
+                        style: headerStyle,
+                        // locale: Locale('ar_AR'),
+                        textDirection: ui.TextDirection.rtl,
+                      ),
                       // Directionality(
                       //     textDirection: TextDirection.RTL,
                       //     child: Text(currentDate.wolofMonthAS,
@@ -107,7 +137,7 @@ class DateTile extends StatelessWidget {
               ),
         Card(
           elevation: 5,
-          color: currentDate.holidays.length >= 1
+          color: widget.currentDate.holidays.length >= 1
               ? Theme.of(context).accentColor
               : Theme.of(context).cardColor,
           child: Padding(
@@ -117,52 +147,54 @@ class DateTile extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(currentDate.westernDate,
+                      Text(widget.currentDate.westernDate,
                           style: Theme.of(context).textTheme.headline6),
                       Column(children: [
                         Text(currentDayOfWeek,
                             style: Theme.of(context).textTheme.headline6),
                         Text(_wolofWeekday,
                             style: Theme.of(context).textTheme.headline6),
-                        Text(_wolofalWeekday,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline6
-                                .copyWith(
-                                    fontFamily: "Harmattan", fontSize: 30)),
+                        Text(
+                          _wolofalWeekday,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline6
+                              .copyWith(fontFamily: "Harmattan", fontSize: 30),
+                          textDirection: ui.TextDirection.rtl,
+                        ),
                       ]),
-                      Text(currentDate.wolofDate,
+                      Text(widget.currentDate.wolofDate,
                           style: Theme.of(context).textTheme.headline6),
                     ],
                   ),
                 ),
-                currentDate.holidays.length >= 1
+                widget.currentDate.holidays.length >= 1
                     ? Divider(
                         thickness: 3,
                       )
                     : SizedBox(
                         height: 0,
                       ),
-                currentDate.holidays.length >= 1
+                widget.currentDate.holidays.length >= 1
                     ? ListView.builder(
                         physics: NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         scrollDirection: Axis.vertical,
-                        itemCount: currentDate.holidays.length,
+                        itemCount: widget.currentDate.holidays.length,
                         itemBuilder: (BuildContext context, int i) => Container(
                             child: Column(
                           children: [
-                            Text(currentDate.holidays[i].holidayFR,
+                            Text(widget.currentDate.holidays[i].holidayFR,
                                 style: Theme.of(context).textTheme.headline6),
-                            Text(currentDate.holidays[i].holidayRS,
+                            Text(widget.currentDate.holidays[i].holidayRS,
                                 style: Theme.of(context).textTheme.headline6),
-                            Text(currentDate.holidays[i].holidayAS,
+                            Text(widget.currentDate.holidays[i].holidayAS,
                                 style: Theme.of(context)
                                     .textTheme
                                     .headline6
                                     .copyWith(
                                         fontFamily: "Harmattan", fontSize: 30)),
-                            currentDate.holidays.length - (i + 1) != 0
+                            widget.currentDate.holidays.length - (i + 1) != 0
                                 ? Divider(
                                     thickness: 3,
                                   )
