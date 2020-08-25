@@ -25,7 +25,7 @@ class MainDrawer extends StatelessWidget {
                       color: Theme.of(context).iconTheme.color,
                     ),
                     SizedBox(width: 25),
-                    Text(title, style: Theme.of(context).textTheme.headline6),
+                    Text(title, style: Theme.of(context).textTheme.headline5),
                   ],
                 ))),
       );
@@ -53,8 +53,8 @@ class MainDrawer extends StatelessWidget {
                         SizedBox(width: 25),
                         Text("Arminaatu wolof",
                             style:
-                                Theme.of(context).textTheme.headline6.copyWith(
-                                      fontSize: 25,
+                                Theme.of(context).textTheme.headline5.copyWith(
+                                      fontSize: 24,
                                       fontFamily: 'Lato',
                                       fontWeight: FontWeight.w300,
                                       letterSpacing: -0.5,

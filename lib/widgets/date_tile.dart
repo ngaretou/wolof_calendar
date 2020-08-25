@@ -89,7 +89,9 @@ class _DateTileState extends State<DateTile> {
     TextStyle headerStyle = TextStyle(
         fontFamily: "Harmattan",
         fontSize: 30,
-        color: Theme.of(context).textTheme.headline6.color);
+        color: Theme.of(context).textTheme.headline5.color);
+
+    TextStyle head5 = Theme.of(context).textTheme.headline5;
 
     return Column(
       children: [
@@ -147,24 +149,20 @@ class _DateTileState extends State<DateTile> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(widget.currentDate.westernDate,
-                          style: Theme.of(context).textTheme.headline6),
+                      Text(widget.currentDate.westernDate, style: head5),
                       Column(children: [
-                        Text(currentDayOfWeek,
-                            style: Theme.of(context).textTheme.headline6),
-                        Text(_wolofWeekday,
-                            style: Theme.of(context).textTheme.headline6),
+                        Text(currentDayOfWeek, style: head5),
+                        Text(_wolofWeekday, style: head5),
                         Text(
                           _wolofalWeekday,
                           style: Theme.of(context)
                               .textTheme
-                              .headline6
+                              .headline5
                               .copyWith(fontFamily: "Harmattan", fontSize: 30),
                           textDirection: ui.TextDirection.rtl,
                         ),
                       ]),
-                      Text(widget.currentDate.wolofDate,
-                          style: Theme.of(context).textTheme.headline6),
+                      Text(widget.currentDate.wolofDate, style: head5),
                     ],
                   ),
                 ),
@@ -185,13 +183,13 @@ class _DateTileState extends State<DateTile> {
                             child: Column(
                           children: [
                             Text(widget.currentDate.holidays[i].holidayFR,
-                                style: Theme.of(context).textTheme.headline6),
+                                style: head5),
                             Text(widget.currentDate.holidays[i].holidayRS,
-                                style: Theme.of(context).textTheme.headline6),
+                                style: head5),
                             Text(widget.currentDate.holidays[i].holidayAS,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .headline6
+                                    .headline5
                                     .copyWith(
                                         fontFamily: "Harmattan", fontSize: 30)),
                             widget.currentDate.holidays.length - (i + 1) != 0

@@ -27,7 +27,7 @@ class MonthsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title:
-            Text(formattedDate, style: Theme.of(context).textTheme.headline6),
+            Text(formattedDate, style: Theme.of(context).textTheme.headline5),
         actions: [
           IconButton(
             icon: const Icon(Icons.calendar_today),

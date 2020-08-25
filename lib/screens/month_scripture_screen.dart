@@ -23,13 +23,13 @@ class MonthScriptureScreen extends StatelessWidget {
     final MonthScriptureScreenArgs args =
         ModalRoute.of(context).settings.arguments;
 
-    TextStyle asStyle = Theme.of(context).textTheme.headline6.copyWith(
+    TextStyle asStyle = Theme.of(context).textTheme.headline5.copyWith(
           fontFamily: "Harmattan",
           fontSize: 40,
         );
     TextStyle rsStyle = Theme.of(context)
         .textTheme
-        .headline6
+        .headline5
         .copyWith(fontFamily: "Charis", fontSize: 30);
 
     TextStyle asRefStyle = asStyle.copyWith(fontSize: 24);
@@ -139,8 +139,12 @@ class MonthScriptureScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(AppLocalization.of(context).clickHereToReadMore,
-                            style: TextStyle(color: Colors.black54)),
-                        Icon(Icons.arrow_forward, color: Colors.black54),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline5
+                                .copyWith(fontSize: 18)),
+                        Icon(Icons.arrow_forward,
+                            color: Theme.of(context).textTheme.headline5.color),
                       ],
                     ),
                     onPressed: () async {

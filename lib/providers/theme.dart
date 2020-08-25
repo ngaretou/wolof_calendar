@@ -15,7 +15,7 @@ ThemeData darkTheme = ThemeData.dark().copyWith(
     iconTheme: IconThemeData(color: Colors.white70),
     textTheme: TextTheme(
         headline6:
-            TextStyle(color: Colors.white70, fontFamily: 'Lato', fontSize: 20),
+            TextStyle(color: Colors.white, fontFamily: 'Lato', fontSize: 20),
         subtitle2: TextStyle(color: Colors.white),
         subtitle1: TextStyle(color: Colors.white),
         bodyText2: TextStyle(color: Colors.white)),
@@ -36,6 +36,8 @@ ThemeData lightTheme = ThemeData.light().copyWith(
         backgroundColor: Colors.teal),
     iconTheme: IconThemeData(color: Colors.black54),
     textTheme: TextTheme(
+      headline5:
+          TextStyle(color: Colors.black54, fontFamily: 'Lato', fontSize: 20),
       headline6: TextStyle(color: Colors.black54, fontFamily: 'Lato'),
       subtitle2: TextStyle(color: Colors.black54),
       subtitle1: TextStyle(color: Colors.black54),
@@ -53,14 +55,17 @@ ThemeData lightTheme = ThemeData.light().copyWith(
     buttonTheme: ButtonThemeData(minWidth: 80));
 
 ThemeData blueTheme = ThemeData.light().copyWith(
-    primaryColor: Colors.blueGrey[100],
-    accentColor: Colors.blueAccent[300],
+    primaryColor: Colors.blue,
+    accentColor: Colors.blueAccent[100],
+    cardColor: Colors.blue[400],
     backgroundColor: Colors.blue,
     scaffoldBackgroundColor: Colors.blue,
     floatingActionButtonTheme: FloatingActionButtonThemeData(
         foregroundColor: Colors.white, backgroundColor: Colors.blue[700]),
-    iconTheme: IconThemeData(color: Colors.black54),
+    iconTheme: IconThemeData(color: Colors.white70),
     textTheme: TextTheme(
+        headline5:
+            TextStyle(color: Colors.white, fontFamily: 'Lato', fontSize: 20),
         headline6: TextStyle(color: Colors.black54, fontFamily: 'Lato'),
         subtitle2: TextStyle(color: Colors.black54),
         subtitle1: TextStyle(color: Colors.black54),
@@ -76,14 +81,17 @@ ThemeData blueTheme = ThemeData.light().copyWith(
 
 ThemeData tealTheme = ThemeData.light().copyWith(
     primaryColor: Colors.tealAccent,
-    accentColor: Color(0xff40bf7a),
+    accentColor: Colors.tealAccent[700],
+    cardColor: Colors.teal[900],
     backgroundColor: Colors.teal,
     scaffoldBackgroundColor: Colors.teal,
     floatingActionButtonTheme: FloatingActionButtonThemeData(
         foregroundColor: Colors.white70, backgroundColor: Colors.teal[800]),
     iconTheme: IconThemeData(color: Colors.white70),
     textTheme: TextTheme(
-      headline6: TextStyle(color: Colors.white70, fontFamily: 'Lato'),
+      headline5:
+          TextStyle(color: Colors.white, fontFamily: 'Lato', fontSize: 20),
+      headline6: TextStyle(color: Colors.black54, fontFamily: 'Lato'),
       subtitle2: TextStyle(color: Colors.black54),
       subtitle1: TextStyle(color: Colors.black54),
       bodyText2: TextStyle(color: Colors.black87),

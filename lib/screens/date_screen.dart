@@ -152,6 +152,9 @@ class _DateScreenState extends State<DateScreen> {
         lastDate: DateTime(2022, 1, 31),
         locale: const Locale("fr", "FR"),
       );
+      if (chosenDate == null) {
+        return;
+      }
 
       var goToYear = DateFormat('yyyy', 'fr_FR').format(chosenDate).toString();
       var goToMonth = DateFormat('M', 'fr_FR').format(chosenDate).toString();
@@ -165,7 +168,7 @@ class _DateScreenState extends State<DateScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(appBarTitle, style: Theme.of(context).textTheme.headline6),
+        title: Text(appBarTitle, style: Theme.of(context).textTheme.headline5),
         actions: [
           IconButton(
               icon: Icon(Icons.arrow_back_ios),
@@ -179,30 +182,26 @@ class _DateScreenState extends State<DateScreen> {
               onPressed: () => moveMonths('forward')),
         ],
       ),
-      body: _datesToDisplay.length == 0
-          ? Center(
-              child: Text('Fii la arminaat bi yem TT',
-                  style: Theme.of(context).textTheme.headline6))
-          : Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-              child: NotificationListener(
-                onNotification: (notification) {
-                  if (notification is ScrollEndNotification) {
-                    updateAppBarTitle(
-                        itemPositionsListener.itemPositions.value.first.index);
-                  }
-                  return;
-                },
-                child: ScrollablePositionedList.builder(
-                  itemScrollController: itemScrollController,
-                  itemPositionsListener: itemPositionsListener,
-                  physics: BouncingScrollPhysics(),
-                  initialScrollIndex: scrollToIndex,
-                  itemBuilder: (ctx, i) => DateTile(_datesToDisplay[i]),
-                  itemCount: _datesToDisplay.length,
-                ),
-              ),
-            ),
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+        child: NotificationListener(
+          onNotification: (notification) {
+            if (notification is ScrollEndNotification) {
+              updateAppBarTitle(
+                  itemPositionsListener.itemPositions.value.first.index);
+            }
+            return;
+          },
+          child: ScrollablePositionedList.builder(
+            itemScrollController: itemScrollController,
+            itemPositionsListener: itemPositionsListener,
+            physics: BouncingScrollPhysics(),
+            initialScrollIndex: scrollToIndex,
+            itemBuilder: (ctx, i) => DateTile(_datesToDisplay[i]),
+            itemCount: _datesToDisplay.length,
+          ),
+        ),
+      ),
     );
   }
 }
