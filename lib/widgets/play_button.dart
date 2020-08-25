@@ -60,14 +60,19 @@ class _PlayerState extends State<Player> {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      icon: Icon(
-        isPlaying ? Icons.pause : Icons.play_arrow,
-        color: Colors.white,
-      ),
-      onPressed: () {
-        playHandler();
-      },
+    return FloatingActionButton(
+      onPressed: playHandler,
+      child: isPlaying ? Icon(Icons.pause) : Icon(Icons.play_arrow),
     );
+
+    // IconButton(
+    //   icon: Icon(
+    //     isPlaying ? Icons.pause : Icons.play_arrow,
+    //     color: Colors.white,
+    //   ),
+    //   onPressed: () {
+    //     playHandler();
+    //   },
+    // );
   }
 }

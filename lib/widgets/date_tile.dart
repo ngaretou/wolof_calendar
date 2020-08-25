@@ -88,14 +88,14 @@ class _DateTileState extends State<DateTile> {
     }
     TextStyle headerStyle = TextStyle(
         fontFamily: "Harmattan",
-        fontSize: 25,
+        fontSize: 30,
         color: Theme.of(context).textTheme.headline6.color);
 
     return Column(
       children: [
         showMonth
             ? Container(
-                color: Colors.white24,
+                // color: Colors.white24,
                 padding: EdgeInsets.only(left: 5, right: 5),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -109,7 +109,7 @@ class _DateTileState extends State<DateTile> {
               ),
         showMonth
             ? Container(
-                color: Colors.white24,
+                // color: Colors.white24,
                 padding: EdgeInsets.only(left: 5, right: 5),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

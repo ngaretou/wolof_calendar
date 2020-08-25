@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
-import 'package:wolof_calendar/screens/date_screen.dart';
-import 'package:wolof_calendar/widgets/drawer.dart';
+import './date_screen.dart';
 
 import '../providers/months.dart';
+import '../providers/route_args.dart';
 
 import '../widgets/month_tile.dart';
+import '../widgets/drawer.dart';
 
 class MonthsScreen extends StatelessWidget {
   static const routeName = '/months-screen';
@@ -17,13 +18,12 @@ class MonthsScreen extends StatelessWidget {
     final monthsData = Provider.of<Months>(context, listen: false).months;
 
     var now = new DateTime.now();
-    // var currentDate = DateFormat('d', 'fr_FR').format(now);
+    var currentDate = DateFormat('d', 'fr_FR').format(now);
     var currentMonth = DateFormat('M', 'fr_FR').format(now);
     var currentYear = DateFormat('yyyy', 'fr_FR').format(now);
     var formatter = new DateFormat.yMMMMEEEEd('fr_FR');
     String formattedDate = formatter.format(now);
 
-    print('MonthsScreen build');
     return Scaffold(
       appBar: AppBar(
         title:
@@ -34,14 +34,9 @@ class MonthsScreen extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).pushNamed(DateScreen.routeName,
                   arguments: DateScreenArgs(
-                    // for production:
-                    year: currentYear,
-                    month: currentMonth,
-
-                    // or for testing:
-                    // year: '2021',
-                    // month: '1',
-                  ));
+                      year: currentYear,
+                      month: currentMonth,
+                      date: currentDate));
             },
           ),
         ],

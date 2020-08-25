@@ -62,13 +62,6 @@ class Date {
   });
 }
 
-class DateScreenArgs {
-  final String year;
-  final String month;
-
-  DateScreenArgs({this.year, this.month});
-}
-
 class Month with ChangeNotifier {
   final String monthID;
   final String monthFR;

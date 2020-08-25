@@ -80,9 +80,10 @@ ThemeData tealTheme = ThemeData.light().copyWith(
     backgroundColor: Colors.teal,
     scaffoldBackgroundColor: Colors.teal,
     floatingActionButtonTheme: FloatingActionButtonThemeData(
-        foregroundColor: Colors.white, backgroundColor: Colors.teal[800]),
+        foregroundColor: Colors.white70, backgroundColor: Colors.teal[800]),
+    iconTheme: IconThemeData(color: Colors.white70),
     textTheme: TextTheme(
-      headline6: TextStyle(color: Colors.black54, fontFamily: 'Lato'),
+      headline6: TextStyle(color: Colors.white70, fontFamily: 'Lato'),
       subtitle2: TextStyle(color: Colors.black54),
       subtitle1: TextStyle(color: Colors.black54),
       bodyText2: TextStyle(color: Colors.black87),

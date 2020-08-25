@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+
 import 'dart:ui' as ui;
-import 'package:wolof_calendar/screens/date_screen.dart';
 
 import '../providers/months.dart';
+import '../providers/route_args.dart';
+
+import '../screens/month_scripture_screen.dart';
 
 class MonthTile extends StatelessWidget {
   final Month currentMonth;
@@ -13,60 +16,70 @@ class MonthTile extends StatelessWidget {
         .textTheme
         .headline6
         .copyWith(color: Colors.white, fontSize: 30);
+
     TextStyle asStyle = Theme.of(context).textTheme.headline6.copyWith(
           color: Colors.white,
           fontSize: 40,
           fontFamily: "Harmattan",
         );
+
     return Padding(
       padding: EdgeInsets.only(bottom: 0, top: 10),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.black54,
-          borderRadius: BorderRadius.circular(10.0),
-          image: DecorationImage(
-            fit: BoxFit.cover,
-            image: AssetImage("assets/images/${currentMonth.monthID}.jpg"),
-          ),
-        ),
-        child: Container(
+      child: GestureDetector(
+        onTap: () {
+          print('tile ontap');
+          Navigator.of(context).pushNamed(MonthScriptureScreen.routeName,
+              arguments: MonthScriptureScreenArgs(data: currentMonth));
+        },
+        child: Hero(
+          tag: currentMonth.monthID,
+          child: Container(
             decoration: BoxDecoration(
+              color: Colors.black54,
               borderRadius: BorderRadius.circular(10.0),
-              gradient: LinearGradient(
-                begin: Alignment.bottomRight,
-                colors: [
-                  Colors.black.withOpacity(.9),
-                  Colors.black.withOpacity(.3)
-                ],
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                image: AssetImage("assets/images/${currentMonth.monthID}.jpg"),
               ),
             ),
-            //Card text
-            child: GestureDetector(
-              onTap: () {
-                Navigator.of(context).pushNamed(DateScreen.routeName);
-              },
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10.0),
+                gradient: LinearGradient(
+                  begin: Alignment.bottomRight,
+                  colors: [
+                    Colors.black.withOpacity(.9),
+                    Colors.black.withOpacity(.3)
+                  ],
+                ),
+              ),
+              //Card text
+
               child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 30),
-                  child: Column(
-                    children: [
-                      Text(
-                        currentMonth.monthRS,
-                        style: rsStyle,
-                      ),
-                      Divider(color: Colors.white),
-                      Text(
-                        currentMonth.monthAS,
-                        style: asStyle,
-                        textDirection: ui.TextDirection.rtl,
-                      ),
-                      Divider(color: Colors.white),
-                      Text(
-                        currentMonth.monthFR,
-                        style: rsStyle,
-                      ),
-                    ],
-                  )),
-            )),
+                padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 30),
+                child: Column(
+                  children: [
+                    Text(
+                      currentMonth.monthRS,
+                      style: rsStyle,
+                    ),
+                    Divider(color: Colors.white),
+                    Text(
+                      currentMonth.monthAS,
+                      style: asStyle,
+                      textDirection: ui.TextDirection.rtl,
+                    ),
+                    Divider(color: Colors.white),
+                    Text(
+                      currentMonth.monthFR,
+                      style: rsStyle,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

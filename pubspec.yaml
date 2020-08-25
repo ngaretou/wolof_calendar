@@ -55,6 +55,7 @@ flutter:
   uses-material-design: true
   # To add assets to your application, add an assets section, like this:
   assets:
+    - assets/audio/
     - assets/dates.json
     - assets/holidays.json
     - assets/months.json
@@ -90,6 +91,8 @@ flutter:
     - family: Lato
       fonts:
         - asset: assets/fonts/Lato-Regular.ttf
+        - asset: assets/fonts/Lato-Light.ttf
+          weight: 300
     - family: Charis
       fonts:
         - asset: assets/fonts/CharisSILCompact-R.ttf

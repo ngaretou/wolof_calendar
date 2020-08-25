@@ -10,9 +10,10 @@ import './providers/theme.dart';
 
 import './screens/settings_screen.dart';
 import './screens/about_screen.dart';
-import 'screens/months_screen.dart';
+import './screens/months_screen.dart';
 import './screens/onboarding_screen.dart';
 import './screens/date_screen.dart';
+import './screens/month_scripture_screen.dart';
 
 void main() {
   runApp(
@@ -77,6 +78,7 @@ class _MyAppState extends State<MyApp> {
         AboutScreen.routeName: (ctx) => AboutScreen(),
         OnboardingScreen.routeName: (ctx) => OnboardingScreen(),
         DateScreen.routeName: (ctx) => DateScreen(),
+        MonthScriptureScreen.routeName: (ctx) => MonthScriptureScreen(),
       },
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,

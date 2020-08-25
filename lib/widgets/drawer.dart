@@ -35,7 +35,7 @@ class MainDrawer extends StatelessWidget {
       elevation: 5.0,
       child: Container(
         width: MediaQuery.of(context).size.width * .8,
-        color: Theme.of(context).scaffoldBackgroundColor,
+        color: Theme.of(context).appBarTheme.color,
         child: ListView(
           children: [
             //Main title
@@ -52,10 +52,13 @@ class MainDrawer extends StatelessWidget {
                         ),
                         SizedBox(width: 25),
                         Text("Arminaatu wolof",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline6
-                                .copyWith(fontSize: 22)),
+                            style:
+                                Theme.of(context).textTheme.headline6.copyWith(
+                                      fontSize: 25,
+                                      fontFamily: 'Lato',
+                                      fontWeight: FontWeight.w300,
+                                      letterSpacing: -0.5,
+                                    ))
                       ],
                     ))),
             Divider(
