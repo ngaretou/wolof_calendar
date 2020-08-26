@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-// import 'package:provider/provider.dart';
+import 'package:wolof_calendar/screens/date_screen.dart';
+import 'package:provider/provider.dart';
 // import 'package:intl/intl.dart';
-// import '../providers/months.dart';
+import '../providers/months.dart';
 import '../providers/route_args.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../locale/app_localization.dart';
@@ -51,6 +52,19 @@ class MonthScriptureScreen extends StatelessWidget {
             expandedHeight: 300,
             floating: false,
             pinned: true,
+            actions: [
+              //show calendar in this month
+              IconButton(
+                  icon: Icon(Icons.calendar_today),
+                  onPressed: () {
+                    Navigator.of(context).pushNamed(DateScreen.routeName,
+                        arguments: DateScreenArgs(
+                            year: Provider.of<Months>(context, listen: false)
+                                .currentCalendarYear,
+                            month: args.data.monthID,
+                            date: '1'));
+                  })
+            ],
             flexibleSpace: FlexibleSpaceBar(
               title: MainTitle(args.data.arabicName),
               centerTitle: true,

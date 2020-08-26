@@ -95,6 +95,7 @@ class _DateTileState extends State<DateTile> {
 
     return Column(
       children: [
+        //Month headers
         showMonth
             ? Container(
                 // color: Colors.white24,
@@ -137,70 +138,87 @@ class _DateTileState extends State<DateTile> {
             : SizedBox(
                 height: 0,
               ),
+        //Regular date card
         Card(
           elevation: 5,
           color: widget.currentDate.holidays.length >= 1
               ? Theme.of(context).accentColor
               : Theme.of(context).cardColor,
+          //Western date, column of weekdays, Wolof date
           child: Padding(
-              padding: EdgeInsets.only(top: 10.0, left: 20, right: 20),
+              padding:
+                  EdgeInsets.only(top: 10.0, bottom: 10, left: 20, right: 20),
               child: Column(children: [
                 Container(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(widget.currentDate.westernDate, style: head5),
-                      Column(children: [
-                        Text(currentDayOfWeek, style: head5),
-                        Text(_wolofWeekday, style: head5),
-                        Text(
-                          _wolofalWeekday,
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline5
-                              .copyWith(fontFamily: "Harmattan", fontSize: 30),
-                          textDirection: ui.TextDirection.rtl,
-                        ),
-                      ]),
+                      Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(_wolofWeekday, style: head5),
+                            Text(
+                              _wolofalWeekday,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline5
+                                  .copyWith(
+                                      fontFamily: "Harmattan", fontSize: 30),
+                              textDirection: ui.TextDirection.rtl,
+                            ),
+                            Text(currentDayOfWeek, style: head5),
+                            SizedBox(
+                              height: 16,
+                            ),
+                          ]),
                       Text(widget.currentDate.wolofDate, style: head5),
                     ],
                   ),
                 ),
+                //Holiday extension to the card
                 widget.currentDate.holidays.length >= 1
                     ? Divider(
-                        thickness: 3,
+                        thickness: 4,
                       )
                     : SizedBox(
                         height: 0,
                       ),
                 widget.currentDate.holidays.length >= 1
-                    ? ListView.builder(
-                        physics: NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        scrollDirection: Axis.vertical,
-                        itemCount: widget.currentDate.holidays.length,
-                        itemBuilder: (BuildContext context, int i) => Container(
-                            child: Column(
-                          children: [
-                            Text(widget.currentDate.holidays[i].holidayFR,
-                                style: head5),
-                            Text(widget.currentDate.holidays[i].holidayRS,
-                                style: head5),
-                            Text(widget.currentDate.holidays[i].holidayAS,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline5
-                                    .copyWith(
-                                        fontFamily: "Harmattan", fontSize: 30)),
-                            widget.currentDate.holidays.length - (i + 1) != 0
-                                ? Divider(
-                                    thickness: 3,
-                                  )
-                                : SizedBox(
-                                    height: 0,
-                                  ),
-                          ],
-                        )),
+                    ? Container(
+                        child: ListView.builder(
+                          physics: NeverScrollableScrollPhysics(),
+                          padding: EdgeInsets.symmetric(vertical: 10),
+                          shrinkWrap: true,
+                          scrollDirection: Axis.vertical,
+                          itemCount: widget.currentDate.holidays.length,
+                          itemBuilder: (BuildContext context, int i) =>
+                              Container(
+                                  child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(widget.currentDate.holidays[i].holidayRS,
+                                  style: head5),
+                              Text(widget.currentDate.holidays[i].holidayAS,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5
+                                      .copyWith(
+                                          fontFamily: "Harmattan",
+                                          fontSize: 30)),
+                              Text(
+                                widget.currentDate.holidays[i].holidayFR,
+                                style: head5,
+                              ),
+                              widget.currentDate.holidays.length - (i + 1) != 0
+                                  ? Divider(thickness: 3, height: 40)
+                                  : SizedBox(
+                                      height: 0,
+                                    ),
+                            ],
+                          )),
+                        ),
                       )
                     : SizedBox(height: 0),
               ])),
