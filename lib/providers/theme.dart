@@ -48,12 +48,13 @@ ThemeData lightTheme = ThemeData.light().copyWith(
     appBarTheme: AppBarTheme(
         iconTheme: IconThemeData(color: Colors.white),
         textTheme: TextTheme(
-          headline6: TextStyle(color: Colors.white, fontFamily: 'Lato'),
+          headline6:
+              TextStyle(color: Colors.white, fontFamily: 'Lato', fontSize: 20),
         ),
         //     subtitle2: TextStyle(color: Colors.white),
         //     subtitle1: TextStyle(color: Colors.white)),
         color: Colors.teal,
-        actionsIconTheme: IconThemeData(color: Colors.black54)),
+        actionsIconTheme: IconThemeData(color: Colors.white)),
     buttonTheme: ButtonThemeData(minWidth: 80));
 
 ThemeData blueTheme = ThemeData.light().copyWith(
@@ -73,6 +74,10 @@ ThemeData blueTheme = ThemeData.light().copyWith(
         subtitle1: TextStyle(color: Colors.black54),
         bodyText2: TextStyle(color: Colors.black87)),
     appBarTheme: AppBarTheme(
+        iconTheme: IconThemeData(color: Colors.white),
+        textTheme: TextTheme(
+            headline6: TextStyle(
+                color: Colors.white, fontFamily: 'Lato', fontSize: 20)),
         color: Colors.blueAccent,
         actionsIconTheme: IconThemeData(color: Colors.white)),
     buttonTheme: ButtonThemeData(minWidth: 80),
@@ -99,6 +104,10 @@ ThemeData tealTheme = ThemeData.light().copyWith(
       bodyText2: TextStyle(color: Colors.black87),
     ),
     appBarTheme: AppBarTheme(
+        iconTheme: IconThemeData(color: Colors.white),
+        textTheme: TextTheme(
+            headline6: TextStyle(
+                color: Colors.white, fontFamily: 'Lato', fontSize: 20)),
         color: Color(0xff1f655d),
         actionsIconTheme: IconThemeData(color: Colors.white)),
     buttonTheme: ButtonThemeData(

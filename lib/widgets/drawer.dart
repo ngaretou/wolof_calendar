@@ -22,10 +22,12 @@ class MainDrawer extends StatelessWidget {
                     Icon(
                       icon,
                       size: 27,
-                      color: Theme.of(context).iconTheme.color,
+                      color: Theme.of(context).appBarTheme.iconTheme.color,
                     ),
                     SizedBox(width: 25),
-                    Text(title, style: Theme.of(context).textTheme.headline5),
+                    Text(title,
+                        style:
+                            Theme.of(context).appBarTheme.textTheme.headline6),
                   ],
                 ))),
       );
@@ -48,17 +50,20 @@ class MainDrawer extends StatelessWidget {
                         Icon(
                           Icons.blur_circular,
                           size: 27,
-                          color: Theme.of(context).iconTheme.color,
+                          color: Theme.of(context).appBarTheme.iconTheme.color,
                         ),
                         SizedBox(width: 25),
                         Text("Arminaatu wolof",
-                            style:
-                                Theme.of(context).textTheme.headline5.copyWith(
-                                      fontSize: 24,
-                                      fontFamily: 'Lato',
-                                      fontWeight: FontWeight.w300,
-                                      letterSpacing: -0.5,
-                                    ))
+                            style: Theme.of(context)
+                                .appBarTheme
+                                .textTheme
+                                .headline6
+                                .copyWith(
+                                  fontSize: 24,
+                                  fontFamily: 'Lato',
+                                  fontWeight: FontWeight.w300,
+                                  letterSpacing: -0.5,
+                                ))
                       ],
                     ))),
             Divider(
@@ -68,7 +73,7 @@ class MainDrawer extends StatelessWidget {
               "Settings TT",
               Icons.settings,
               () {
-                Navigator.of(context).pushNamed(SettingsScreen.routeName);
+                Navigator.of(context).popAndPushNamed(SettingsScreen.routeName);
               },
             ),
             Divider(

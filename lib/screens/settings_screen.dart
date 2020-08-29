@@ -387,7 +387,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
       appBar: AppBar(
         title: Text(
           AppLocalization.of(context).settingsTitle,
-          style: Theme.of(context).textTheme.headline6,
         ),
       ),
       //If the width of the screen is greater or equal to 500

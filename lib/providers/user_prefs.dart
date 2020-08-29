@@ -67,9 +67,9 @@ class UserPrefs with ChangeNotifier {
         showFavs: jsonResponse['showFavs'],
         showOnboarding: jsonResponse['showOnboarding'],
       );
-
-      // notifyListeners();
     }
+    print('in setup');
+    print(_userPrefs.wolofalVerseEnabled);
   }
 
   Future<void> savePref(String setting, userPref) async {
@@ -101,10 +101,10 @@ class UserPrefs with ChangeNotifier {
       _tempUserPrefs.showOnboarding = userPref;
     }
 
-    //now set it in memory
+    // set it in memory
     _userPrefs = _tempUserPrefs;
-    // notifyListeners();
-    //now save it to disk
+
+    // save it to disk
     final _userPrefsData = json.encode({
       'textDirection': _tempUserPrefs.textDirection,
       'imageEnabled': _tempUserPrefs.imageEnabled,

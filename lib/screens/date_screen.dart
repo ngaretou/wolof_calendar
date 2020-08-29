@@ -168,7 +168,7 @@ class _DateScreenState extends State<DateScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(appBarTitle, style: Theme.of(context).textTheme.headline5),
+        title: Text(appBarTitle),
         actions: [
           IconButton(
               icon: Icon(Icons.arrow_back_ios),

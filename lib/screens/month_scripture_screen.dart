@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 // import 'package:intl/intl.dart';
 import '../providers/months.dart';
 import '../providers/route_args.dart';
+import '../providers/user_prefs.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../locale/app_localization.dart';
 
@@ -36,11 +37,15 @@ class MonthScriptureScreen extends StatelessWidget {
     TextStyle asRefStyle = asStyle.copyWith(fontSize: 24);
     TextStyle rsRefStyle = rsStyle.copyWith(fontSize: 18);
 
-    TextStyle asHeaderStyle = asStyle.copyWith(fontSize: 46);
-    TextStyle rsHeaderStyle = rsStyle.copyWith(fontSize: 36);
+    TextStyle asHeaderStyle = asStyle.copyWith(fontSize: 46, height: 1.5);
+    TextStyle rsHeaderStyle = rsStyle.copyWith(fontSize: 36, height: 1.7);
 
     ui.TextDirection rtlText = ui.TextDirection.rtl;
     ui.TextDirection ltrText = ui.TextDirection.ltr;
+
+    var nameColWidth = (MediaQuery.of(context).size.width / 2) - 40;
+
+    var userPrefs = Provider.of<UserPrefs>(context, listen: false).userPrefs;
 
     return Scaffold(
         floatingActionButton: Builder(builder: (context) {
@@ -50,6 +55,7 @@ class MonthScriptureScreen extends StatelessWidget {
         body: CustomScrollView(slivers: [
           SliverAppBar(
             expandedHeight: 300,
+            stretch: true,
             floating: false,
             pinned: true,
             actions: [
@@ -66,6 +72,7 @@ class MonthScriptureScreen extends StatelessWidget {
                   })
             ],
             flexibleSpace: FlexibleSpaceBar(
+              stretchModes: [StretchMode.zoomBackground],
               title: MainTitle(args.data.arabicName),
               centerTitle: true,
               background: Hero(
@@ -99,14 +106,21 @@ class MonthScriptureScreen extends StatelessWidget {
             sliver: SliverList(
               delegate: SliverChildListDelegate(
                 [
+                  //Main Wolof names heading
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(args.data.wolofName, style: rsHeaderStyle),
-                      Text(
-                        args.data.wolofalName,
-                        style: asHeaderStyle,
-                        textDirection: ui.TextDirection.rtl,
+                      Container(
+                          width: nameColWidth,
+                          child:
+                              Text(args.data.wolofName, style: rsHeaderStyle)),
+                      Container(
+                        width: nameColWidth,
+                        child: Text(
+                          args.data.wolofalName,
+                          style: asHeaderStyle,
+                          textDirection: ui.TextDirection.rtl,
+                        ),
                       ),
                     ],
                   ),
@@ -115,37 +129,51 @@ class MonthScriptureScreen extends StatelessWidget {
                     height: 40,
                     color: Theme.of(context).accentColor,
                   ),
-                  ListView.builder(
-                    itemCount: args.data.verses.length,
-                    itemBuilder: (ctx, i) => VerseBuilder(
-                        args.data.verses[i].verseAS,
-                        args.data.verses[i].verseRefAS,
-                        asStyle,
-                        asRefStyle,
-                        rtlText,
-                        args.data.verses.length,
-                        i),
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                  ),
-                  Divider(
-                    height: 60,
-                    thickness: 2,
-                    color: Theme.of(context).accentColor,
-                  ),
-                  ListView.builder(
-                    itemCount: args.data.verses.length,
-                    itemBuilder: (ctx, i) => VerseBuilder(
-                        args.data.verses[i].verseRS,
-                        args.data.verses[i].verseRefRS,
-                        rsStyle,
-                        rsRefStyle,
-                        ltrText,
-                        args.data.verses.length,
-                        i),
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                  ),
+
+                  //Verses start here
+                  //AS verses
+                  userPrefs.wolofalVerseEnabled
+                      ? ListView.builder(
+                          itemCount: args.data.verses.length,
+                          itemBuilder: (ctx, i) => VerseBuilder(
+                              args.data.verses[i].verseAS,
+                              args.data.verses[i].verseRefAS,
+                              asStyle,
+                              asRefStyle,
+                              rtlText,
+                              args.data.verses.length,
+                              i),
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                        )
+                      : SizedBox(
+                          height: 0,
+                        ),
+                  (userPrefs.wolofalVerseEnabled && userPrefs.wolofVerseEnabled)
+                      ? Divider(
+                          height: 60,
+                          thickness: 2,
+                          color: Theme.of(context).accentColor,
+                        )
+                      : SizedBox(height: 0),
+                  //RS verses
+                  userPrefs.wolofVerseEnabled
+                      ? ListView.builder(
+                          itemCount: args.data.verses.length,
+                          itemBuilder: (ctx, i) => VerseBuilder(
+                              args.data.verses[i].verseRS,
+                              args.data.verses[i].verseRefRS,
+                              rsStyle,
+                              rsRefStyle,
+                              ltrText,
+                              args.data.verses.length,
+                              i),
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                        )
+                      : SizedBox(
+                          height: 0,
+                        ),
                   SizedBox(height: 60),
                   FlatButton(
                     color: Colors.white10,
@@ -216,7 +244,7 @@ class VerseBuilder extends StatelessWidget {
         ),
         numItems - i != 1
             ? Divider(
-                thickness: 1, height: 40, color: Theme.of(context).accentColor)
+                thickness: 1, height: 60, color: Theme.of(context).accentColor)
             : SizedBox(
                 height: 0,
               )
@@ -258,10 +286,8 @@ class _MainTitleState extends State<MainTitle> {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle asStyle = Theme.of(context)
-        .textTheme
-        .headline6
-        .copyWith(fontFamily: "Harmattan", fontSize: 40, color: Colors.white);
+    TextStyle asStyle = Theme.of(context).textTheme.headline6.copyWith(
+        fontFamily: "Harmattan", fontSize: 40, color: Colors.white, height: 1);
 
     return AnimatedOpacity(
       opacity: _opacity,

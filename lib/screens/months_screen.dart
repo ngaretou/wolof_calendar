@@ -29,7 +29,7 @@ class MonthsScreen extends StatelessWidget {
         title: Text(formattedDate),
         actions: [
           IconButton(
-            icon: const Icon(Icons.calendar_today),
+            icon: Icon(Icons.calendar_today),
             onPressed: () {
               Navigator.of(context).pushNamed(DateScreen.routeName,
                   arguments: DateScreenArgs(
