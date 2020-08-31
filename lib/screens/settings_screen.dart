@@ -47,7 +47,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     Icon(
                       icon,
                       size: 27,
-                      color: Theme.of(context).iconTheme.color,
+                      color: Theme.of(context).textTheme.headline6.color,
                     ),
                     SizedBox(width: 25),
                     Text(title, style: Theme.of(context).textTheme.headline6),
@@ -407,32 +407,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   rsScriptPicker(),
                   Divider(),
                   settingRow(languageTitle(), languageSetting()),
-                  Divider(),
-                  settingTitle(
-                    AppLocalization.of(context).settingsAbout,
-                    Icons.question_answer,
-                    () {
-                      Navigator.of(context).pushNamed(AboutScreen.routeName);
-                    },
-                  ),
-                  Divider(),
-                  settingTitle(
-                    AppLocalization.of(context).settingsContactUs,
-                    Icons.email,
-                    () async {
-                      const url = 'mailto:equipedevmbs@gmail.com';
-                      if (await canLaunch(url)) {
-                        await launch(url);
-                      } else {
-                        throw 'Could not launch $url';
-                      }
-                    },
-                  ),
-                  Divider(),
-                  settingTitle(AppLocalization.of(context).settingsViewIntro,
-                      Icons.replay, () {
-                    Navigator.of(context).pushNamed(OnboardingScreen.routeName);
-                  }),
                 ],
               ),
             )
@@ -446,32 +420,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 rsScriptPicker(),
                 Divider(),
                 settingColumn(languageTitle(), languageSetting()),
-                settingTitle(
-                  AppLocalization.of(context).settingsAbout,
-                  Icons.question_answer,
-                  () {
-                    Navigator.of(context).pushNamed(AboutScreen.routeName);
-                  },
-                ),
-                Divider(),
-                settingTitle(
-                  AppLocalization.of(context).settingsContactUs,
-                  Icons.email,
-                  () async {
-                    const url = 'mailto:equipedevmbs@gmail.com';
-                    if (await canLaunch(url)) {
-                      await launch(url);
-                    } else {
-                      throw 'Could not launch $url';
-                    }
-                  },
-                ),
-                Divider(),
-                settingTitle(
-                    AppLocalization.of(context).settingsViewIntro, Icons.replay,
-                    () {
-                  Navigator.of(context).pushNamed(OnboardingScreen.routeName);
-                }),
               ],
             ),
       // ),

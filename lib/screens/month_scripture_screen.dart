@@ -2,7 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:wolof_calendar/screens/date_screen.dart';
 import 'package:provider/provider.dart';
-// import 'package:intl/intl.dart';
+import 'package:share/share.dart';
+
 import '../providers/months.dart';
 import '../providers/route_args.dart';
 import '../providers/user_prefs.dart';
@@ -59,6 +60,70 @@ class MonthScriptureScreen extends StatelessWidget {
             floating: false,
             pinned: true,
             actions: [
+              //share the verse
+              IconButton(
+                  icon: Icon(Icons.share),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text(
+                            AppLocalization.of(context).sharingTitle,
+                          ),
+                          content: Text(AppLocalization.of(context).sharingMsg),
+                          actions: [
+                            FlatButton(
+                                child: Text("Wolof"),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                  String versesToShare = '';
+                                  args.data.verses.forEach((element) {
+                                    versesToShare = versesToShare +
+                                        " " +
+                                        element.verseRS +
+                                        " -- " +
+                                        element.verseRefRS +
+                                        '\n';
+                                  });
+                                  Share.share('Yàlla mooy ' +
+                                      args.data.wolofName +
+                                      ":  " +
+                                      versesToShare);
+                                }),
+                            FlatButton(
+                                child: Text("وࣷلࣷفَلْ",
+                                    style: TextStyle(
+                                        fontFamily: "Harmattan", fontSize: 22)),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                  String versesToShare = '';
+                                  args.data.verses.forEach((element) {
+                                    versesToShare = versesToShare +
+                                        " " +
+                                        element.verseAS +
+                                        " -- " +
+                                        element.verseRefAS +
+                                        '\n';
+                                  });
+
+                                  Share.share(' يࣵلَّ مࣷويْ' +
+                                      args.data.wolofalName +
+                                      ":  " +
+                                      versesToShare);
+                                }),
+                            FlatButton(
+                                child: Text(
+                                  AppLocalization.of(context).cancel,
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                }),
+                          ],
+                        );
+                      },
+                    );
+                  }),
               //show calendar in this month
               IconButton(
                   icon: Icon(Icons.calendar_today),
@@ -175,18 +240,20 @@ class MonthScriptureScreen extends StatelessWidget {
                           height: 0,
                         ),
                   SizedBox(height: 60),
-                  FlatButton(
-                    color: Colors.white10,
+                  RaisedButton(
+                    color: Theme.of(context).appBarTheme.color,
+                    elevation: 2,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(AppLocalization.of(context).clickHereToReadMore,
                             style: Theme.of(context)
+                                .appBarTheme
                                 .textTheme
-                                .headline5
-                                .copyWith(fontSize: 18)),
+                                .headline6),
                         Icon(Icons.arrow_forward,
-                            color: Theme.of(context).textTheme.headline5.color),
+                            color:
+                                Theme.of(context).appBarTheme.iconTheme.color),
                       ],
                     ),
                     onPressed: () async {

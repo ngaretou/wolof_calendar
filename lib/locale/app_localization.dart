@@ -132,7 +132,7 @@ class AppLocalization {
 
   String get settingsContactUs {
     return Intl.message(
-      'Contact Us',
+      'Contact us via email',
       name: 'settingsContactUs',
       desc: 'settingsContactUs',
     );
@@ -225,8 +225,47 @@ class AppLocalization {
       desc: 'OK',
     );
   }
-  //to add:
-  //skip and start on intro page
+
+//down to here
+  String get addHolidays {
+    return Intl.message(
+      "Add Holidays to\nGoogle Calendar",
+      name: 'addHolidays',
+      desc: 'Add Holidays to Google Calendar',
+    );
+  }
+
+  String get contactWhatsApp {
+    return Intl.message(
+      "Contact us on\nWhatsApp",
+      name: 'contactWhatsApp',
+      desc: 'Contact us on WhatsApp',
+    );
+  }
+
+  String get contactFBMessenger {
+    return Intl.message(
+      "Contact us on\nFacebook Messenger",
+      name: 'contactFBMessenger',
+      desc: 'Contact us on Facebook Messenger',
+    );
+  }
+
+  String get shareAppLink {
+    return Intl.message(
+      "Share app",
+      name: 'shareAppLink',
+      desc: 'Share link to app on app store',
+    );
+  }
+
+  String get moreApps {
+    return Intl.message(
+      "More apps",
+      name: 'moreApps',
+      desc: 'More apps',
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalization> {

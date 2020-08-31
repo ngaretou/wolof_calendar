@@ -1,11 +1,13 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
-import 'months.dart';
-import 'user_prefs.dart';
+
 import '../locale/app_localization.dart';
+
+import './months.dart';
+import './user_prefs.dart';
 
 ThemeData darkTheme = ThemeData.dark().copyWith(
     primaryColor: Color(0xff1f655d),
@@ -22,6 +24,9 @@ ThemeData darkTheme = ThemeData.dark().copyWith(
         subtitle1: TextStyle(color: Colors.white),
         bodyText2: TextStyle(color: Colors.white)),
     appBarTheme: AppBarTheme(
+      textTheme: TextTheme(
+          headline6:
+              TextStyle(color: Colors.white, fontFamily: 'Lato', fontSize: 20)),
       color: Color(0xff1f655d),
       iconTheme: IconThemeData(color: Colors.white),
     ),
@@ -62,7 +67,7 @@ ThemeData blueTheme = ThemeData.light().copyWith(
     accentColor: Colors.blueAccent[100],
     cardColor: Colors.blue[600],
     backgroundColor: Colors.blue,
-    scaffoldBackgroundColor: Colors.blue,
+    scaffoldBackgroundColor: Colors.blue[300],
     floatingActionButtonTheme: FloatingActionButtonThemeData(
         foregroundColor: Colors.white, backgroundColor: Colors.blue[700]),
     iconTheme: IconThemeData(color: Colors.white70),
@@ -91,7 +96,7 @@ ThemeData tealTheme = ThemeData.light().copyWith(
     accentColor: Colors.tealAccent[700],
     cardColor: Colors.teal[900],
     backgroundColor: Colors.teal,
-    scaffoldBackgroundColor: Colors.teal,
+    scaffoldBackgroundColor: Colors.teal[200],
     floatingActionButtonTheme: FloatingActionButtonThemeData(
         foregroundColor: Colors.white70, backgroundColor: Colors.teal[800]),
     iconTheme: IconThemeData(color: Colors.white70),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../locale/app_localization.dart';
 
@@ -16,14 +17,20 @@ class MainDrawer extends StatelessWidget {
         child: Container(
             width: 300,
             child: Padding(
-                padding: EdgeInsets.all(20),
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 child: Row(
                   children: [
-                    Icon(
-                      icon,
-                      size: 27,
-                      color: Theme.of(context).appBarTheme.iconTheme.color,
-                    ),
+                    icon.toString().startsWith("FontAwesomeIcons")
+                        ? FaIcon(icon,
+                            size: 27,
+                            color:
+                                Theme.of(context).appBarTheme.iconTheme.color)
+                        : Icon(
+                            icon,
+                            size: 27,
+                            color:
+                                Theme.of(context).appBarTheme.iconTheme.color,
+                          ),
                     SizedBox(width: 25),
                     Text(title,
                         style:
@@ -47,8 +54,8 @@ class MainDrawer extends StatelessWidget {
                         top: 30, bottom: 20, left: 20, right: 20),
                     child: Row(
                       children: [
-                        Icon(
-                          Icons.blur_circular,
+                        FaIcon(
+                          FontAwesomeIcons.calendarAlt,
                           size: 27,
                           color: Theme.of(context).appBarTheme.iconTheme.color,
                         ),
@@ -70,7 +77,7 @@ class MainDrawer extends StatelessWidget {
               thickness: 3,
             ),
             drawerTitle(
-              "Settings TT",
+              AppLocalization.of(context).settingsTitle,
               Icons.settings,
               () {
                 Navigator.of(context).popAndPushNamed(SettingsScreen.routeName);
@@ -90,10 +97,12 @@ class MainDrawer extends StatelessWidget {
               thickness: 1,
             ),
             drawerTitle(
-              'Add holidays to\nGoogle Calendar TT',
+              // 'Add holidays to\nGoogle Calendar TT',
+              AppLocalization.of(context).addHolidays,
               Icons.calendar_today,
               () async {
-                const url = 'mailto:equipedevmbs@gmail.com';
+                const url =
+                    'https://calendar.google.com/calendar?cid=NWlzbHZmZXVsczY3MG05Y2t2cG9wNDBhbzRAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ';
                 if (await canLaunch(url)) {
                   await launch(url);
                 } else {
@@ -110,6 +119,62 @@ class MainDrawer extends StatelessWidget {
               Icons.email,
               () async {
                 const url = 'mailto:equipedevmbs@gmail.com';
+                if (await canLaunch(url)) {
+                  await launch(url);
+                } else {
+                  throw 'Could not launch $url';
+                }
+              },
+            ),
+            Divider(
+              thickness: 1,
+            ),
+            drawerTitle(
+              AppLocalization.of(context).contactWhatsApp,
+              FontAwesomeIcons.whatsapp,
+              () async {
+                const url = 'https://wa.me/221776427432';
+                if (await canLaunch(url)) {
+                  await launch(url);
+                } else {
+                  throw 'Could not launch $url';
+                }
+              },
+            ),
+            Divider(
+              thickness: 1,
+            ),
+            drawerTitle(
+              AppLocalization.of(context).contactFBMessenger,
+              FontAwesomeIcons.facebookMessenger,
+              () async {
+                const url = 'https://m.me/kaddugyallagi/';
+                if (await canLaunch(url)) {
+                  await launch(url);
+                } else {
+                  throw 'Could not launch $url';
+                }
+              },
+            ),
+            Divider(
+              thickness: 1,
+            ),
+            drawerTitle(
+              AppLocalization.of(context).shareAppLink,
+              Icons.share,
+              () async {
+                Navigator.of(context).pop();
+                Share.share('https://sng.al/cal');
+              },
+            ),
+            Divider(
+              thickness: 1,
+            ),
+            drawerTitle(
+              AppLocalization.of(context).moreApps,
+              Icons.web_asset,
+              () async {
+                const url = 'https://sng.al/app';
                 if (await canLaunch(url)) {
                   await launch(url);
                 } else {

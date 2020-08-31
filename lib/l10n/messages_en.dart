@@ -20,31 +20,43 @@ class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
   final messages = _notInlinedMessages(_notInlinedMessages);
-  static _notInlinedMessages(_) => <String, Function> {
-    "cancel" : MessageLookupByLibrary.simpleMessage("Cancel"),
-    "clickHereToReadMore" : MessageLookupByLibrary.simpleMessage("Click here to read more"),
-    "favsNoneYet" : MessageLookupByLibrary.simpleMessage("No favorites yet"),
-    "favsNoneYetInstructions" : MessageLookupByLibrary.simpleMessage("Click the heart icon on your favorite names to add some."),
-    "introPage1" : MessageLookupByLibrary.simpleMessage("introPage1"),
-    "introPage2" : MessageLookupByLibrary.simpleMessage("introPage2"),
-    "introPage3" : MessageLookupByLibrary.simpleMessage("introPage3"),
-    "settingsAbout" : MessageLookupByLibrary.simpleMessage("About & Copyright"),
-    "settingsCardBackground" : MessageLookupByLibrary.simpleMessage("Card Background"),
-    "settingsCardDirection" : MessageLookupByLibrary.simpleMessage("Card Direction"),
-    "settingsContactUs" : MessageLookupByLibrary.simpleMessage("Contact Us"),
-    "settingsFavorites" : MessageLookupByLibrary.simpleMessage("Favorites"),
-    "settingsLTR" : MessageLookupByLibrary.simpleMessage("LTR"),
-    "settingsLanguage" : MessageLookupByLibrary.simpleMessage("Language"),
-    "settingsRTL" : MessageLookupByLibrary.simpleMessage("RTL"),
-    "settingsShowFavs" : MessageLookupByLibrary.simpleMessage("Show Favorites"),
-    "settingsTextAll" : MessageLookupByLibrary.simpleMessage("All"),
-    "settingsTheme" : MessageLookupByLibrary.simpleMessage("Theme"),
-    "settingsTitle" : MessageLookupByLibrary.simpleMessage("Settings"),
-    "settingsVerseDisplay" : MessageLookupByLibrary.simpleMessage("Verse Display"),
-    "settingsVerseinWolof" : MessageLookupByLibrary.simpleMessage("Verse in Wolof"),
-    "settingsVerseinWolofal" : MessageLookupByLibrary.simpleMessage("Verse in Wolofal"),
-    "settingsViewIntro" : MessageLookupByLibrary.simpleMessage("View intro again"),
-    "sharingMsg" : MessageLookupByLibrary.simpleMessage("Choose which script you\'d like to share"),
-    "sharingTitle" : MessageLookupByLibrary.simpleMessage("Share a verse")
-  };
+  static _notInlinedMessages(_) => <String, Function>{
+        "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+        "clickHereToReadMore":
+            MessageLookupByLibrary.simpleMessage("Click here to read more"),
+        "favsNoneYet": MessageLookupByLibrary.simpleMessage("No favorites yet"),
+        "favsNoneYetInstructions": MessageLookupByLibrary.simpleMessage(
+            "Click the heart icon on your favorite names to add some."),
+        "introPage1": MessageLookupByLibrary.simpleMessage("introPage1"),
+        "introPage2": MessageLookupByLibrary.simpleMessage("introPage2"),
+        "introPage3": MessageLookupByLibrary.simpleMessage("introPage3"),
+        "settingsAbout":
+            MessageLookupByLibrary.simpleMessage("About & Copyright"),
+        "settingsCardBackground":
+            MessageLookupByLibrary.simpleMessage("Card Background"),
+        "settingsCardDirection":
+            MessageLookupByLibrary.simpleMessage("Card Direction"),
+        "settingsContactUs":
+            MessageLookupByLibrary.simpleMessage("Contact us via email"),
+        "settingsFavorites": MessageLookupByLibrary.simpleMessage("Favorites"),
+        "settingsLTR": MessageLookupByLibrary.simpleMessage("LTR"),
+        "settingsLanguage": MessageLookupByLibrary.simpleMessage("Language"),
+        "settingsRTL": MessageLookupByLibrary.simpleMessage("RTL"),
+        "settingsShowFavs":
+            MessageLookupByLibrary.simpleMessage("Show Favorites"),
+        "settingsTextAll": MessageLookupByLibrary.simpleMessage("All"),
+        "settingsTheme": MessageLookupByLibrary.simpleMessage("Theme"),
+        "settingsTitle": MessageLookupByLibrary.simpleMessage("Settings"),
+        "settingsVerseDisplay":
+            MessageLookupByLibrary.simpleMessage("Verse Display"),
+        "settingsVerseinWolof":
+            MessageLookupByLibrary.simpleMessage("Verse in Wolof"),
+        "settingsVerseinWolofal":
+            MessageLookupByLibrary.simpleMessage("Verse in Wolofal"),
+        "settingsViewIntro":
+            MessageLookupByLibrary.simpleMessage("View intro again"),
+        "sharingMsg": MessageLookupByLibrary.simpleMessage(
+            "Choose which script you\'d like to share"),
+        "sharingTitle": MessageLookupByLibrary.simpleMessage("Share a verse")
+      };
 }
