@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../locale/app_localization.dart';
 
 class AboutScreen extends StatelessWidget {
   static const routeName = 'about-screen';
@@ -28,7 +29,9 @@ class AboutScreen extends StatelessWidget {
     TextStyle defaultStyle = Theme.of(context).textTheme.bodyText2;
     return Scaffold(
         appBar: AppBar(
-          title: Text('About', style: Theme.of(context).textTheme.headline6),
+          title: Text(
+            AppLocalization.of(context).settingsAbout,
+          ),
         ),
         body: Padding(
           padding: EdgeInsets.only(top: 0, left: 20, right: 20),
@@ -37,7 +40,7 @@ class AboutScreen extends StatelessWidget {
             RichText(
                 text: TextSpan(style: defaultStyle, children: [
               TextSpan(
-                  text: 'Arminaatu Wolof © 2020 SIM.',
+                  text: 'Arminaatu Wolof',
                   style: Theme.of(context).textTheme.headline6),
             ])),
             Divider(
@@ -45,6 +48,8 @@ class AboutScreen extends StatelessWidget {
             ),
             RichText(
                 text: TextSpan(style: defaultStyle, children: [
+              TextSpan(text: 'App code © 2020 SIM.\n\n'),
+              TextSpan(text: 'Concept © 2020 MEAO.\n\n'),
               TextSpan(
                   text: 'Kàddug Yàlla gi',
                   style: TextStyle(fontStyle: FontStyle.italic)),
@@ -81,16 +86,50 @@ class AboutScreen extends StatelessWidget {
                   TextSpan(
                       text: 'Photos:\n\n',
                       style: Theme.of(context).textTheme.subtitle2),
-                  urlGo('Adrien Olichon\n\n',
-                      'https://unsplash.com/@adrienolichon', linkTheme),
-                  urlGo('Mike Ko\n\n', 'https://unsplash.com/@kocreated',
+                  // urlGo('Adrien Olichon\n\n',
+                  //     'https://unsplash.com/@adrienolichon', linkTheme),
+                  // urlGo('Mike Ko\n\n', 'https://unsplash.com/@kocreated',
+                  //     linkTheme),
+                  // urlGo('Augustine Wong\n\n',
+                  //     'https://unsplash.com/@augustinewong', linkTheme),
+                  // urlGo('Annie Spratt\n\n', 'https://unsplash.com/@anniespratt',
+                  //     linkTheme),
+                  // urlGo('Chiranjeeb Mitra\n\n',
+                  //     'https://unsplash.com/@chiro_007', linkTheme),
+                  //Cover
+                  urlGo('Nick Scheerbart\n\n', 'https://unsplash.com/@nck',
                       linkTheme),
-                  urlGo('Augustine Wong\n\n',
-                      'https://unsplash.com/@augustinewong', linkTheme),
-                  urlGo('Annie Spratt\n\n', 'https://unsplash.com/@anniespratt',
+                  //January
+                  // Dirka
+                  //February
+                  urlGo('Han Lahandoe\n\n', 'https://unsplash.com/@blcksdz',
                       linkTheme),
-                  urlGo('Chiranjeeb Mitra\n\n',
-                      'https://unsplash.com/@chiro_007', linkTheme),
+                  //March
+                  urlGo('Aaron Hare\n\n', 'https://unsplash.com/@aaronhare',
+                      linkTheme),
+
+                  //April
+
+                  //May
+
+                  //Jun
+                  urlGo('Jeff Attaway\n\n',
+                      'https://www.flickr.com/photos/attawayjl/', linkTheme),
+                  //Jul - already existing
+
+                  //Aug
+                  urlGo('Vince Gx\n\n', 'https://unsplash.com/@vincegx',
+                      linkTheme),
+                  //Sep
+                  urlGo('Anton Lecock\n\n', 'https://unsplash.com/@antonlec',
+                      linkTheme),
+                  //Oct Jeff Attaway
+                  //Nov - Jeff Attaway
+
+                  //Dec
+                  urlGo('Frank McKenna\n\n',
+                      'https://unsplash.com/@frankiefoto', linkTheme),
+
                   TextSpan(
                       text: 'Licenses:\n\n',
                       style: Theme.of(context).textTheme.subtitle2),
@@ -125,7 +164,10 @@ class AboutScreen extends StatelessWidget {
                   TextSpan(
                       text: 'License:\n\n',
                       style: Theme.of(context).textTheme.headline6),
-                  TextSpan(text: 'Arminaatu Wolof © 2020 SIM.\n\n'),
+                  TextSpan(
+                      text: 'Arminaatu Wolof ',
+                      style: TextStyle(fontStyle: FontStyle.italic)),
+                  TextSpan(text: 'app code © 2020 SIM.\n\n'),
                   TextSpan(
                       text:
                           'Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n\n'),

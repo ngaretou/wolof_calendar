@@ -35,8 +35,10 @@ ThemeData darkTheme = ThemeData.dark().copyWith(
     ));
 
 ThemeData lightTheme = ThemeData.light().copyWith(
-    primaryColor: Color(0xfff5f5f5),
-    accentColor: Color(0xff40bf7a),
+    // primaryColor: Color(0xfff5f5f5),
+    // accentColor: Color(0xff40bf7a),
+    primaryColor: Colors.teal,
+    accentColor: Colors.teal[200],
     floatingActionButtonTheme: FloatingActionButtonThemeData(
         // foregroundColor: Colors.white, backgroundColor: Colors.black54),
         foregroundColor: Colors.white,
@@ -64,10 +66,10 @@ ThemeData lightTheme = ThemeData.light().copyWith(
 
 ThemeData blueTheme = ThemeData.light().copyWith(
     primaryColor: Colors.blue,
-    accentColor: Colors.blueAccent[100],
-    cardColor: Colors.blue[600],
+    accentColor: Colors.lightBlue[200],
+    cardColor: Colors.blue[200],
     backgroundColor: Colors.blue,
-    scaffoldBackgroundColor: Colors.blue[300],
+    scaffoldBackgroundColor: Colors.blue[100],
     floatingActionButtonTheme: FloatingActionButtonThemeData(
         foregroundColor: Colors.white, backgroundColor: Colors.blue[700]),
     iconTheme: IconThemeData(color: Colors.white70),
@@ -92,9 +94,9 @@ ThemeData blueTheme = ThemeData.light().copyWith(
             color: Colors.black54, fontFamily: 'Lato', fontSize: 20)));
 
 ThemeData tealTheme = ThemeData.light().copyWith(
-    primaryColor: Colors.tealAccent,
-    accentColor: Colors.tealAccent[700],
-    cardColor: Colors.teal[900],
+    primaryColor: Colors.teal,
+    accentColor: Colors.teal[300],
+    cardColor: Colors.teal[100],
     backgroundColor: Colors.teal,
     scaffoldBackgroundColor: Colors.teal[200],
     floatingActionButtonTheme: FloatingActionButtonThemeData(

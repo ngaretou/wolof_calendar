@@ -21,20 +21,26 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
+    "addHolidays" : MessageLookupByLibrary.simpleMessage("Add Holidays to\nGoogle Calendar"),
     "cancel" : MessageLookupByLibrary.simpleMessage("Fomm"),
     "clickHereToReadMore" : MessageLookupByLibrary.simpleMessage("Boo bëgg doole ci njàng mi: "),
+    "contactFBMessenger" : MessageLookupByLibrary.simpleMessage("Facebook Messenger"),
+    "contactWhatsApp" : MessageLookupByLibrary.simpleMessage("WhatsApp"),
     "favsNoneYet" : MessageLookupByLibrary.simpleMessage("Tànnuguloo ay tuur"),
     "favsNoneYetInstructions" : MessageLookupByLibrary.simpleMessage("Bëssal ci xol ba ci tuur yi nga gën bëgg."),
     "introPage1" : MessageLookupByLibrary.simpleMessage("introPage1 WO"),
     "introPage2" : MessageLookupByLibrary.simpleMessage("introPage2 WO"),
     "introPage3" : MessageLookupByLibrary.simpleMessage("introPage3 WO"),
+    "moreApps" : MessageLookupByLibrary.simpleMessage("Yeenen appli"),
     "settingsAbout" : MessageLookupByLibrary.simpleMessage("Ci mbirum appli bi"),
     "settingsCardBackground" : MessageLookupByLibrary.simpleMessage("Melow kàrt yi"),
     "settingsCardDirection" : MessageLookupByLibrary.simpleMessage("Kàrt man nañu dem: "),
-    "settingsContactUs" : MessageLookupByLibrary.simpleMessage("Yónnee nu email"),
+    "settingsContactUs" : MessageLookupByLibrary.simpleMessage("Jokkook ñun ci: "),
+    "settingsContactUsEmail" : MessageLookupByLibrary.simpleMessage("Email"),
     "settingsFavorites" : MessageLookupByLibrary.simpleMessage("Yi ma tànn"),
     "settingsLTR" : MessageLookupByLibrary.simpleMessage("CN"),
     "settingsLanguage" : MessageLookupByLibrary.simpleMessage("Làmmiñu diisookaay bi"),
+    "settingsOK" : MessageLookupByLibrary.simpleMessage("OK"),
     "settingsRTL" : MessageLookupByLibrary.simpleMessage("NC"),
     "settingsShowFavs" : MessageLookupByLibrary.simpleMessage("Woneel tuur: "),
     "settingsTextAll" : MessageLookupByLibrary.simpleMessage("Yepp"),
@@ -42,8 +48,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "settingsTitle" : MessageLookupByLibrary.simpleMessage("Kërale yi"),
     "settingsVerseDisplay" : MessageLookupByLibrary.simpleMessage("Yan aaya lañu wone"),
     "settingsVerseinWolof" : MessageLookupByLibrary.simpleMessage("Aaya yi ci Wolofal"),
-    "settingsVerseinWolofal" : MessageLookupByLibrary.simpleMessage("Aaya yi ci Wolofal"),
+    "settingsVerseinWolofal" : MessageLookupByLibrary.simpleMessage("Aaya yi ci Wolof"),
     "settingsViewIntro" : MessageLookupByLibrary.simpleMessage("Xòolat ubbite gi"),
+    "shareAppLink" : MessageLookupByLibrary.simpleMessage("Sédool appli bi"),
     "sharingMsg" : MessageLookupByLibrary.simpleMessage("Ban mbindin nga bëgg séddo?"),
     "sharingTitle" : MessageLookupByLibrary.simpleMessage("Séddoo ab aaya")
   };

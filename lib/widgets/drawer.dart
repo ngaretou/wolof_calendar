@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 import '../locale/app_localization.dart';
 
 import '../screens/about_screen.dart';
@@ -10,7 +11,7 @@ import '../screens/settings_screen.dart';
 class MainDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    //Main template for all  titles
+    //Main template for all titles
     Widget drawerTitle(String title, IconData icon, Function tapHandler) {
       return InkWell(
         onTap: tapHandler,
@@ -83,16 +84,7 @@ class MainDrawer extends StatelessWidget {
                 Navigator.of(context).popAndPushNamed(SettingsScreen.routeName);
               },
             ),
-            Divider(
-              thickness: 1,
-            ),
-            drawerTitle(
-              AppLocalization.of(context).settingsAbout,
-              Icons.question_answer,
-              () {
-                Navigator.of(context).pushNamed(AboutScreen.routeName);
-              },
-            ),
+
             Divider(
               thickness: 1,
             ),
@@ -111,51 +103,6 @@ class MainDrawer extends StatelessWidget {
               },
             ),
 
-            Divider(
-              thickness: 1,
-            ),
-            drawerTitle(
-              AppLocalization.of(context).settingsContactUs,
-              Icons.email,
-              () async {
-                const url = 'mailto:equipedevmbs@gmail.com';
-                if (await canLaunch(url)) {
-                  await launch(url);
-                } else {
-                  throw 'Could not launch $url';
-                }
-              },
-            ),
-            Divider(
-              thickness: 1,
-            ),
-            drawerTitle(
-              AppLocalization.of(context).contactWhatsApp,
-              FontAwesomeIcons.whatsapp,
-              () async {
-                const url = 'https://wa.me/221776427432';
-                if (await canLaunch(url)) {
-                  await launch(url);
-                } else {
-                  throw 'Could not launch $url';
-                }
-              },
-            ),
-            Divider(
-              thickness: 1,
-            ),
-            drawerTitle(
-              AppLocalization.of(context).contactFBMessenger,
-              FontAwesomeIcons.facebookMessenger,
-              () async {
-                const url = 'https://m.me/kaddugyallagi/';
-                if (await canLaunch(url)) {
-                  await launch(url);
-                } else {
-                  throw 'Could not launch $url';
-                }
-              },
-            ),
             Divider(
               thickness: 1,
             ),
@@ -182,8 +129,73 @@ class MainDrawer extends StatelessWidget {
                 }
               },
             ),
+            //Contact Us section
             Divider(
-              thickness: 1,
+              thickness: 2,
+            ),
+
+            Container(
+                width: 300,
+                child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    child: Row(
+                      children: [
+                        Text(AppLocalization.of(context).settingsContactUs,
+                            style: Theme.of(context)
+                                .appBarTheme
+                                .textTheme
+                                .headline6),
+                      ],
+                    ))),
+
+            // drawerTitle(
+            //     AppLocalization.of(context).settingsContactUs, null, null),
+            drawerTitle(
+              AppLocalization.of(context).settingsContactUsEmail,
+              Icons.email,
+              () async {
+                const url = 'mailto:equipedevmbs@gmail.com';
+                if (await canLaunch(url)) {
+                  await launch(url);
+                } else {
+                  throw 'Could not launch $url';
+                }
+              },
+            ),
+
+            drawerTitle(
+              AppLocalization.of(context).contactWhatsApp,
+              FontAwesomeIcons.whatsapp,
+              () async {
+                const url = 'https://wa.me/221776427432';
+                if (await canLaunch(url)) {
+                  await launch(url);
+                } else {
+                  throw 'Could not launch $url';
+                }
+              },
+            ),
+            drawerTitle(
+              AppLocalization.of(context).contactFBMessenger,
+              FontAwesomeIcons.facebookMessenger,
+              () async {
+                const url = 'https://m.me/kaddugyallagi/';
+                if (await canLaunch(url)) {
+                  await launch(url);
+                } else {
+                  throw 'Could not launch $url';
+                }
+              },
+            ),
+            Divider(
+              thickness: 2,
+            ),
+            drawerTitle(
+              AppLocalization.of(context).settingsAbout,
+              Icons.question_answer,
+              () {
+                Navigator.of(context).popAndPushNamed(AboutScreen.routeName);
+              },
             ),
           ],
         ),

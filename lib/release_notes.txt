@@ -1,0 +1,7 @@
+1.01
+Corrected verses on wrong months Jan, Feb, Mar
+Added 'cover' as a month
+
+2020 Sep 8
+1.00
+First release

@@ -54,7 +54,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "settingsVerseinWolofal": "Aaya yi ci Wolofal",
+  "settingsVerseinWolofal": "Aaya yi ci Wolof",
   "@settingsVerseinWolofal": {
     "description": "settingsVerseinWolofal",
     "type": "text",
@@ -81,12 +81,6 @@
   "settingsTextAll": "Yepp",
   "@settingsTextAll": {
     "description": "settingsTextAll",
-    "type": "text",
-    "placeholders": {}
-  },
-  "settingsContactUs": "Yónnee nu email",
-  "@settingsContactUs": {
-    "description": "settingsContactUs",
     "type": "text",
     "placeholders": {}
   },
@@ -147,6 +141,54 @@
   "favsNoneYetInstructions": "Bëssal ci xol ba ci tuur yi nga gën bëgg.",
   "@favsNoneYetInstructions": {
     "description": "favsNoneYetInstructions",
+    "type": "text",
+    "placeholders": {}
+  },
+  "settingsOK": "OK",
+  "@settingsOK": {
+    "description": "OK",
+    "type": "text",
+    "placeholders": {}
+  },
+  "addHolidays": "Add Holidays to\nGoogle Calendar",
+  "@addHolidays": {
+    "description": "Add Holidays to Google Calendar",
+    "type": "text",
+    "placeholders": {}
+  },
+  "settingsContactUs": "Jokkook ñun ci: ",
+  "@settingsContactUs": {
+    "description": "settingsContactUs",
+    "type": "text",
+    "placeholders": {}
+  },
+  "settingsContactUsEmail": "Email",
+  "@settingsContactUsEmail": {
+    "description": "settingsContactUsEmail",
+    "type": "text",
+    "placeholders": {}
+  },
+  "contactWhatsApp": "WhatsApp",
+  "@contactWhatsApp": {
+    "description": "Contact us on WhatsApp",
+    "type": "text",
+    "placeholders": {}
+  },
+  "contactFBMessenger": "Facebook Messenger",
+  "@contactFBMessenger": {
+    "description": "Contact us on Facebook Messenger",
+    "type": "text",
+    "placeholders": {}
+  },
+  "shareAppLink": "Sédool appli bi",
+  "@shareAppLink": {
+    "description": "Share link to app on app store",
+    "type": "text",
+    "placeholders": {}
+  },
+  "moreApps": "Yeenen appli",
+  "@moreApps": {
+    "description": "More apps",
     "type": "text",
     "placeholders": {}
   }

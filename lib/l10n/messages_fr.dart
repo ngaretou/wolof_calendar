@@ -21,20 +21,26 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
+    "addHolidays" : MessageLookupByLibrary.simpleMessage("Ajouter les fêtes à\nGoogle Calendar"),
     "cancel" : MessageLookupByLibrary.simpleMessage("Annuler"),
     "clickHereToReadMore" : MessageLookupByLibrary.simpleMessage("Cliquez ici pour en lire plus"),
+    "contactFBMessenger" : MessageLookupByLibrary.simpleMessage("Facebook Messenger"),
+    "contactWhatsApp" : MessageLookupByLibrary.simpleMessage("WhatsApp"),
     "favsNoneYet" : MessageLookupByLibrary.simpleMessage("Vous n\'avez pas encore choisi des favoris"),
     "favsNoneYetInstructions" : MessageLookupByLibrary.simpleMessage("Cliquez sur l\'icône du cœur pour ajouter quelques favoris"),
     "introPage1" : MessageLookupByLibrary.simpleMessage("introPage1 FR"),
     "introPage2" : MessageLookupByLibrary.simpleMessage("introPage2 FR"),
     "introPage3" : MessageLookupByLibrary.simpleMessage("introPage3 FR"),
+    "moreApps" : MessageLookupByLibrary.simpleMessage("D\'autres applis"),
     "settingsAbout" : MessageLookupByLibrary.simpleMessage("A propos & Copyright"),
     "settingsCardBackground" : MessageLookupByLibrary.simpleMessage("Fond de carte"),
     "settingsCardDirection" : MessageLookupByLibrary.simpleMessage("Sens des cartes"),
-    "settingsContactUs" : MessageLookupByLibrary.simpleMessage("Contactez-nous"),
+    "settingsContactUs" : MessageLookupByLibrary.simpleMessage("Contacter nous par: "),
+    "settingsContactUsEmail" : MessageLookupByLibrary.simpleMessage("Courriel"),
     "settingsFavorites" : MessageLookupByLibrary.simpleMessage("Les favoris"),
     "settingsLTR" : MessageLookupByLibrary.simpleMessage("GD"),
     "settingsLanguage" : MessageLookupByLibrary.simpleMessage("Langue"),
+    "settingsOK" : MessageLookupByLibrary.simpleMessage("OK"),
     "settingsRTL" : MessageLookupByLibrary.simpleMessage("DG"),
     "settingsShowFavs" : MessageLookupByLibrary.simpleMessage("Affichage des favoris"),
     "settingsTextAll" : MessageLookupByLibrary.simpleMessage("Tout"),
@@ -44,6 +50,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "settingsVerseinWolof" : MessageLookupByLibrary.simpleMessage("Versets en wolof"),
     "settingsVerseinWolofal" : MessageLookupByLibrary.simpleMessage("Versets en wolofal"),
     "settingsViewIntro" : MessageLookupByLibrary.simpleMessage("Regarder l\'introduction"),
+    "shareAppLink" : MessageLookupByLibrary.simpleMessage("Partager l\'appli"),
     "sharingMsg" : MessageLookupByLibrary.simpleMessage("Choisissez le script dans lequel que vous souhaitez partager"),
     "sharingTitle" : MessageLookupByLibrary.simpleMessage("Partage")
   };

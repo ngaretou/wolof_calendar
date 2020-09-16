@@ -62,7 +62,7 @@ class _DateScreenState extends State<DateScreen> {
   @override
   Widget build(BuildContext context) {
     var navigateToDateIndex; //this is for later on when the user navigates
-
+    var lastIndex = _datesToDisplay.length - 1;
     void updateAppBarTitle(index) {
       print(index);
       // var _topIndexShown =
@@ -139,6 +139,9 @@ class _DateScreenState extends State<DateScreen> {
         }
       }
       //This uses the scrollcontroller to whisk us to the desired date
+      if (navigateToDateIndex > lastIndex) {
+        navigateToDateIndex = lastIndex;
+      }
       itemScrollController.jumpTo(index: navigateToDateIndex);
       updateAppBarTitle(navigateToDateIndex);
     }

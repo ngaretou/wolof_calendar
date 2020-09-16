@@ -84,12 +84,6 @@
     "type": "text",
     "placeholders": {}
   },
-  "settingsContactUs": "Contactez-nous",
-  "@settingsContactUs": {
-    "description": "settingsContactUs",
-    "type": "text",
-    "placeholders": {}
-  },
   "settingsViewIntro": "Regarder l'introduction",
   "@settingsViewIntro": {
     "description": "settingsViewIntro",
@@ -147,6 +141,54 @@
   "favsNoneYetInstructions": "Cliquez sur l'icône du cœur pour ajouter quelques favoris",
   "@favsNoneYetInstructions": {
     "description": "favsNoneYetInstructions",
+    "type": "text",
+    "placeholders": {}
+  },
+  "settingsOK": "OK",
+  "@settingsOK": {
+    "description": "OK",
+    "type": "text",
+    "placeholders": {}
+  },
+  "addHolidays": "Ajouter les fêtes à\nGoogle Calendar",
+  "@addHolidays": {
+    "description": "Add Holidays to Google Calendar",
+    "type": "text",
+    "placeholders": {}
+  },
+  "settingsContactUs": "Contacter nous par: ",
+  "@settingsContactUs": {
+    "description": "settingsContactUs",
+    "type": "text",
+    "placeholders": {}
+  },
+  "settingsContactUsEmail": "Courriel",
+  "@settingsContactUsEmail": {
+    "description": "settingsContactUsEmail",
+    "type": "text",
+    "placeholders": {}
+  },
+  "contactWhatsApp": "WhatsApp",
+  "@contactWhatsApp": {
+    "description": "Contact us on WhatsApp",
+    "type": "text",
+    "placeholders": {}
+  },
+  "contactFBMessenger": "Facebook Messenger",
+  "@contactFBMessenger": {
+    "description": "Contact us on Facebook Messenger",
+    "type": "text",
+    "placeholders": {}
+  },
+  "shareAppLink": "Partager l'appli",
+  "@shareAppLink": {
+    "description": "Share link to app on app store",
+    "type": "text",
+    "placeholders": {}
+  },
+  "moreApps": "D'autres applis",
+  "@moreApps": {
+    "description": "More apps",
     "type": "text",
     "placeholders": {}
   }

@@ -26,13 +26,13 @@ class MonthScriptureScreen extends StatelessWidget {
     final MonthScriptureScreenArgs args =
         ModalRoute.of(context).settings.arguments;
 
-    TextStyle asStyle = Theme.of(context).textTheme.headline5.copyWith(
+    TextStyle asStyle = Theme.of(context).textTheme.headline6.copyWith(
           fontFamily: "Harmattan",
           fontSize: 40,
         );
     TextStyle rsStyle = Theme.of(context)
         .textTheme
-        .headline5
+        .headline6
         .copyWith(fontFamily: "Charis", fontSize: 30);
 
     TextStyle asRefStyle = asStyle.copyWith(fontSize: 24);
@@ -44,16 +44,18 @@ class MonthScriptureScreen extends StatelessWidget {
     ui.TextDirection rtlText = ui.TextDirection.rtl;
     ui.TextDirection ltrText = ui.TextDirection.ltr;
 
+// Column width for the name row
     var nameColWidth = (MediaQuery.of(context).size.width / 2) - 40;
 
     var userPrefs = Provider.of<UserPrefs>(context, listen: false).userPrefs;
 
     return Scaffold(
-        floatingActionButton: Builder(builder: (context) {
-          return Player(args.data.monthID);
-        }),
-        // appBar: AppBar(floating),
-        body: CustomScrollView(slivers: [
+      floatingActionButton: Builder(builder: (context) {
+        return Player(args.data.monthID);
+      }),
+      // appBar: AppBar(floating),
+      body: CustomScrollView(
+        slivers: [
           SliverAppBar(
             expandedHeight: 300,
             stretch: true,
@@ -107,7 +109,7 @@ class MonthScriptureScreen extends StatelessWidget {
                                         '\n';
                                   });
 
-                                  Share.share(' يࣵلَّ مࣷويْ' +
+                                  Share.share('  يࣵلَّ مࣷويْ' +
                                       args.data.wolofalName +
                                       ":  " +
                                       versesToShare);
@@ -128,7 +130,7 @@ class MonthScriptureScreen extends StatelessWidget {
               IconButton(
                   icon: Icon(Icons.calendar_today),
                   onPressed: () {
-                    Navigator.of(context).pushNamed(DateScreen.routeName,
+                    Navigator.of(context).popAndPushNamed(DateScreen.routeName,
                         arguments: DateScreenArgs(
                             year: Provider.of<Months>(context, listen: false)
                                 .currentCalendarYear,
@@ -138,7 +140,9 @@ class MonthScriptureScreen extends StatelessWidget {
             ],
             flexibleSpace: FlexibleSpaceBar(
               stretchModes: [StretchMode.zoomBackground],
-              title: MainTitle(args.data.arabicName),
+              title: args.data.monthID == "cover"
+                  ? Text(args.data.monthRS)
+                  : MainTitle(args.data.arabicName),
               centerTitle: true,
               background: Hero(
                 tag: args.data.monthID,
@@ -156,7 +160,7 @@ class MonthScriptureScreen extends StatelessWidget {
                         begin: Alignment.bottomRight,
                         colors: [
                           Colors.black.withOpacity(.9),
-                          Colors.black.withOpacity(.3)
+                          Colors.black.withOpacity(.0)
                         ],
                       ),
                     ),
@@ -172,73 +176,71 @@ class MonthScriptureScreen extends StatelessWidget {
               delegate: SliverChildListDelegate(
                 [
                   //Main Wolof names heading
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
+                  if (args.data.monthID != "cover")
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                            width: nameColWidth,
+                            child: Text(args.data.wolofName,
+                                style: rsHeaderStyle)),
+                        Container(
                           width: nameColWidth,
-                          child:
-                              Text(args.data.wolofName, style: rsHeaderStyle)),
-                      Container(
-                        width: nameColWidth,
-                        child: Text(
-                          args.data.wolofalName,
-                          style: asHeaderStyle,
-                          textDirection: ui.TextDirection.rtl,
+                          child: Text(
+                            args.data.wolofalName,
+                            style: asHeaderStyle,
+                            textDirection: ui.TextDirection.rtl,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  Divider(
-                    thickness: 2,
-                    height: 40,
-                    color: Theme.of(context).accentColor,
-                  ),
+                      ],
+                    ),
+                  if (args.data.monthID != "cover")
+                    Divider(
+                      thickness: 2,
+                      height: 40,
+                      color: Theme.of(context).accentColor,
+                    ),
 
                   //Verses start here
                   //AS verses
-                  userPrefs.wolofalVerseEnabled
-                      ? ListView.builder(
-                          itemCount: args.data.verses.length,
-                          itemBuilder: (ctx, i) => VerseBuilder(
-                              args.data.verses[i].verseAS,
-                              args.data.verses[i].verseRefAS,
-                              asStyle,
-                              asRefStyle,
-                              rtlText,
-                              args.data.verses.length,
-                              i),
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                        )
-                      : SizedBox(
-                          height: 0,
-                        ),
-                  (userPrefs.wolofalVerseEnabled && userPrefs.wolofVerseEnabled)
-                      ? Divider(
-                          height: 60,
-                          thickness: 2,
-                          color: Theme.of(context).accentColor,
-                        )
-                      : SizedBox(height: 0),
+                  if (userPrefs.wolofalVerseEnabled)
+                    ListView.builder(
+                      itemCount: args.data.verses.length,
+                      itemBuilder: (ctx, i) => VerseBuilder(
+                          args.data.verses[i].verseAS,
+                          args.data.verses[i].verseRefAS,
+                          asStyle,
+                          asRefStyle,
+                          rtlText,
+                          args.data.verses.length,
+                          i),
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                    ),
+
+                  if (userPrefs.wolofalVerseEnabled &&
+                      userPrefs.wolofVerseEnabled)
+                    Divider(
+                      height: 60,
+                      thickness: 2,
+                      color: Theme.of(context).accentColor,
+                    ),
+
                   //RS verses
-                  userPrefs.wolofVerseEnabled
-                      ? ListView.builder(
-                          itemCount: args.data.verses.length,
-                          itemBuilder: (ctx, i) => VerseBuilder(
-                              args.data.verses[i].verseRS,
-                              args.data.verses[i].verseRefRS,
-                              rsStyle,
-                              rsRefStyle,
-                              ltrText,
-                              args.data.verses.length,
-                              i),
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                        )
-                      : SizedBox(
-                          height: 0,
-                        ),
+                  if (userPrefs.wolofVerseEnabled)
+                    ListView.builder(
+                      itemCount: args.data.verses.length,
+                      itemBuilder: (ctx, i) => VerseBuilder(
+                          args.data.verses[i].verseRS,
+                          args.data.verses[i].verseRefRS,
+                          rsStyle,
+                          rsRefStyle,
+                          ltrText,
+                          args.data.verses.length,
+                          i),
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                    ),
                   SizedBox(height: 60),
                   RaisedButton(
                     color: Theme.of(context).appBarTheme.color,
@@ -250,7 +252,8 @@ class MonthScriptureScreen extends StatelessWidget {
                             style: Theme.of(context)
                                 .appBarTheme
                                 .textTheme
-                                .headline6),
+                                .headline6
+                                .copyWith(fontSize: 18)),
                         Icon(Icons.arrow_forward,
                             color:
                                 Theme.of(context).appBarTheme.iconTheme.color),
@@ -265,16 +268,174 @@ class MonthScriptureScreen extends StatelessWidget {
                       }
                     },
                   ),
+                  //Holiday list
+                  HolidayBuilder(args.data.monthID),
                   SizedBox(height: 100),
                 ],
               ),
             ),
           ),
-        ]));
+        ],
+      ),
+    );
   }
 }
 
 //--------------------------------------
+class HolidayBuilder extends StatelessWidget {
+  final String monthID;
+  HolidayBuilder(this.monthID);
+
+  @override
+  // ignore: missing_return
+  Widget build(BuildContext context) {
+//Set up some styling for use down below
+    TextStyle asStyle = Theme.of(context).textTheme.headline6.copyWith(
+          fontFamily: "Harmattan",
+          fontSize: 30,
+        );
+    TextStyle rsStyle = Theme.of(context)
+        .textTheme
+        .headline6
+        .copyWith(fontFamily: "Charis", fontSize: 22);
+
+    ui.TextDirection rtlText = ui.TextDirection.rtl;
+    ui.TextDirection ltrText = ui.TextDirection.ltr;
+
+    final currentCalendarYear =
+        Provider.of<Months>(context, listen: false).currentCalendarYear;
+
+    final monthData = Provider.of<Months>(context, listen: false)
+        .months
+        .where((month) => month.monthID == monthID)
+        .toList();
+
+    final datesData = Provider.of<Months>(context, listen: false)
+        .dates
+        .where((element) =>
+            element.month == monthID && element.year == currentCalendarYear)
+        .toList();
+
+    var previousWolofDate;
+    // Before we do anything, check if there are holidays in this month. If there are none, just put in a zero sized box below.
+    bool hasHolidays = datesData.any((date) => date.holidays.length != 0);
+
+    List<Holiday> holidaysList = [];
+
+//only build the holidaysList if you know for sure there are holidays
+    if (hasHolidays) {
+      datesData.forEach((day) {
+        if (day.holidays.length != 0) {
+          day.holidays.forEach((holiday) {
+            holidaysList.add(Holiday(
+              year: day.year,
+              monthID: day.month,
+              westernMonthDate: day.westernDate,
+              wolofMonthDate: day.wolofDate,
+              holidayFR: holiday.holidayFR,
+              holidayAS: holiday.holidayAS,
+              holidayRS: holiday.holidayRS,
+            ));
+          });
+        }
+      });
+      previousWolofDate = holidaysList[0].wolofMonthDate;
+    }
+
+    Widget monthHeaderRow(wolofMonth) {
+      return Column(children: [
+        // Divider(thickness: 1),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(monthData[0].monthRS, style: rsStyle),
+            Text(datesData[wolofMonth].wolofMonthRS, style: rsStyle),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(monthData[0].monthAS,
+                style: asStyle, textDirection: ui.TextDirection.rtl),
+            Text(datesData[wolofMonth].wolofMonthAS,
+                style: asStyle, textDirection: ui.TextDirection.rtl),
+          ],
+        ),
+        Divider(thickness: 2),
+      ]);
+    }
+
+    return !hasHolidays
+        ? SizedBox(height: 0)
+        : Column(
+            children: [
+              SizedBox(height: 30),
+              //This is the part that never changes, a header row with the four months.
+              monthHeaderRow(0),
+
+              //Here are the holidays
+              ListView.builder(
+                padding: EdgeInsets.all(0),
+                itemCount: holidaysList.length,
+                itemBuilder: (ctx, i) {
+                  if (i != 0) {
+                    previousWolofDate = holidaysList[i - 1].wolofMonthDate;
+                  }
+                  return Column(
+                    children: [
+                      //repeat the header row only if we've moved to a new month
+                      if (int.parse(holidaysList[i].wolofMonthDate) <
+                          int.parse(previousWolofDate))
+                        //The indexWhere finds the index of the new month and then grabs the wolof month name there -
+                        //you can only turn over the month one time in a month, so grabbing the 1 suffices here
+                        monthHeaderRow(datesData
+                            .indexWhere((element) => element.wolofDate == "1")),
+
+                      //but in any case put in the holiday row
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context).pushNamed(DateScreen.routeName,
+                              arguments: DateScreenArgs(
+                                  year: currentCalendarYear,
+                                  month: monthID,
+                                  date: holidaysList[i].westernMonthDate));
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            //Western date
+                            Text(holidaysList[i].westernMonthDate,
+                                style: rsStyle),
+                            //Three versions of holiday name
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(holidaysList[i].holidayRS, style: rsStyle),
+                                Text(holidaysList[i].holidayAS,
+                                    style: asStyle,
+                                    textDirection: ui.TextDirection.rtl),
+                                Text(holidaysList[i].holidayFR, style: rsStyle),
+                              ],
+                            ),
+                            //Wolof date
+                            Text(holidaysList[i].wolofMonthDate,
+                                style: rsStyle),
+                          ],
+                        ),
+                      ),
+                      Divider(thickness: 1),
+                    ],
+                  );
+                },
+                shrinkWrap: true,
+                physics: ClampingScrollPhysics(),
+              ),
+            ],
+          );
+  }
+}
+
 class VerseBuilder extends StatelessWidget {
   final String verse;
   final String ref;
@@ -309,12 +470,9 @@ class VerseBuilder extends StatelessWidget {
           textDirection: direction,
           textAlign: TextAlign.center,
         ),
-        numItems - i != 1
-            ? Divider(
-                thickness: 1, height: 60, color: Theme.of(context).accentColor)
-            : SizedBox(
-                height: 0,
-              )
+        if (numItems - i != 1)
+          Divider(
+              thickness: 1, height: 60, color: Theme.of(context).accentColor)
       ],
     );
   }
@@ -361,7 +519,7 @@ class _MainTitleState extends State<MainTitle> {
       duration: const Duration(seconds: 1),
       child: Text(
         widget.text,
-        style: asStyle,
+        style: asStyle.copyWith(height: 1),
         textDirection: ui.TextDirection.rtl,
       ),
     );

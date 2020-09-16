@@ -18,7 +18,8 @@ So normally:
 iOS: 
 >>flutter build ios                                                        
 
-
+Icons: 
+flutter pub run flutter_launcher_icons:main
 
 
 

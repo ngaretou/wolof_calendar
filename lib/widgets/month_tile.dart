@@ -48,15 +48,18 @@ class MonthTile extends StatelessWidget {
                 gradient: LinearGradient(
                   begin: Alignment.bottomRight,
                   colors: [
-                    Colors.black.withOpacity(.9),
-                    Colors.black.withOpacity(.3)
+                    Colors.black.withOpacity(.7),
+                    Colors.black.withOpacity(.2)
                   ],
                 ),
               ),
               //Card text
 
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 30),
+                padding: currentMonth.monthID == "cover"
+                    ? EdgeInsets.only(
+                        left: 40.0, right: 40, top: 40, bottom: 30)
+                    : EdgeInsets.symmetric(vertical: 40.0, horizontal: 30),
                 child: Column(
                   children: [
                     Text(
@@ -69,11 +72,19 @@ class MonthTile extends StatelessWidget {
                       style: asStyle,
                       textDirection: ui.TextDirection.rtl,
                     ),
-                    Divider(color: Colors.white),
-                    Text(
-                      currentMonth.monthFR,
-                      style: rsStyle,
-                    ),
+                    currentMonth.monthID == "cover"
+                        ? SizedBox(
+                            height: 0,
+                          )
+                        : Divider(color: Colors.white),
+                    currentMonth.monthID == "cover"
+                        ? SizedBox(
+                            height: 0,
+                          )
+                        : Text(
+                            currentMonth.monthFR,
+                            style: rsStyle,
+                          ),
                   ],
                 ),
               ),

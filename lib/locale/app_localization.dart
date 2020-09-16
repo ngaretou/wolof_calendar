@@ -130,14 +130,6 @@ class AppLocalization {
     );
   }
 
-  String get settingsContactUs {
-    return Intl.message(
-      'Contact us via email',
-      name: 'settingsContactUs',
-      desc: 'settingsContactUs',
-    );
-  }
-
   String get settingsViewIntro {
     return Intl.message(
       'View intro again',
@@ -218,10 +210,10 @@ class AppLocalization {
     );
   }
 
-  String get ok {
+  String get settingsOK {
     return Intl.message(
       "OK",
-      name: 'OK',
+      name: 'settingsOK',
       desc: 'OK',
     );
   }
@@ -235,9 +227,25 @@ class AppLocalization {
     );
   }
 
+  String get settingsContactUs {
+    return Intl.message(
+      'Contact us',
+      name: 'settingsContactUs',
+      desc: 'settingsContactUs',
+    );
+  }
+
+  String get settingsContactUsEmail {
+    return Intl.message(
+      'Contact us via email',
+      name: 'settingsContactUsEmail',
+      desc: 'settingsContactUsEmail',
+    );
+  }
+
   String get contactWhatsApp {
     return Intl.message(
-      "Contact us on\nWhatsApp",
+      "WhatsApp",
       name: 'contactWhatsApp',
       desc: 'Contact us on WhatsApp',
     );
@@ -245,7 +253,7 @@ class AppLocalization {
 
   String get contactFBMessenger {
     return Intl.message(
-      "Contact us on\nFacebook Messenger",
+      "Facebook Messenger",
       name: 'contactFBMessenger',
       desc: 'Contact us on Facebook Messenger',
     );
