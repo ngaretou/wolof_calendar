@@ -16,7 +16,8 @@ So normally:
 >>flutter build apk --split-per-abi --bundle-sksl-path flutter_01.sksl.json
 
 iOS: 
->>flutter build ios                                                        
+>>flutter build ios
+https://flutter.dev/docs/deployment/ios
 
 Icons: 
 flutter pub run flutter_launcher_icons:main
