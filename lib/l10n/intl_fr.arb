@@ -150,7 +150,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "addHolidays": "Ajouter les fêtes à\nGoogle Calendar",
+  "addHolidays": "Ajouter les fêtes à\nGoogle Agenda",
   "@addHolidays": {
     "description": "Add Holidays to Google Calendar",
     "type": "text",

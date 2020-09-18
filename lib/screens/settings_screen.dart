@@ -18,6 +18,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   //Main Settings screen construction:
   @override
   Widget build(BuildContext context) {
+    final bool _isPhone = (MediaQuery.of(context).size.width +
+            MediaQuery.of(context).size.height) <=
+        1350;
     final userThemeName =
         Provider.of<ThemeModel>(context, listen: false).userThemeName;
     final themeProvider = Provider.of<ThemeModel>(context, listen: false);
@@ -156,6 +159,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
+              width: 300,
               child: Padding(
                   padding: EdgeInsets.only(left: 80),
                   child: Row(children: [
@@ -165,7 +169,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ]))),
           Expanded(
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: _isPhone
+                  ? MainAxisAlignment.end
+                  : MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Switch(
@@ -189,6 +195,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
+              width: 300,
               child: Padding(
                   padding: EdgeInsets.only(left: 80),
                   child: Row(children: [
@@ -198,7 +205,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ]))),
           Expanded(
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment:
+                  _isPhone ? MainAxisAlignment.end : MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Switch(

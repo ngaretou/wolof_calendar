@@ -61,16 +61,14 @@ class _DateScreenState extends State<DateScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final _screenwidth = MediaQuery.of(context).size.width;
+    final bool _isPhone =
+        (_screenwidth + MediaQuery.of(context).size.height) <= 1350;
+
     var navigateToDateIndex; //this is for later on when the user navigates
     var lastIndex = _datesToDisplay.length - 1;
     void updateAppBarTitle(index) {
-      print(index);
-      // var _topIndexShown =
-      //     itemPositionsListener.itemPositions.value.first.index;
-
       var scrolledMonth = (_datesToDisplay[index].month);
-      // print(scrolledMonth);
-      // if (currentMonthAppBarTitle != scrolledMonth) {
       var scrolledYear = (_datesToDisplay[index].year);
       var scrolledDateTime =
           DateFormat('M/yyyy', "fr_FR").parse('$scrolledMonth/$scrolledYear');
@@ -186,7 +184,9 @@ class _DateScreenState extends State<DateScreen> {
         ],
       ),
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+        padding: _isPhone
+            ? EdgeInsets.symmetric(horizontal: 10, vertical: 0)
+            : EdgeInsets.symmetric(horizontal: _screenwidth / 20, vertical: 0),
         child: NotificationListener(
           onNotification: (notification) {
             if (notification is ScrollEndNotification) {

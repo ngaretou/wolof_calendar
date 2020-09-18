@@ -54,13 +54,13 @@
     "type": "text",
     "placeholders": {}
   },
-  "settingsVerseinWolofal": "Aaya yi ci Wolof",
+  "settingsVerseinWolofal": "Aaya yi ci Wolofal",
   "@settingsVerseinWolofal": {
     "description": "settingsVerseinWolofal",
     "type": "text",
     "placeholders": {}
   },
-  "settingsVerseinWolof": "Aaya yi ci Wolofal",
+  "settingsVerseinWolof": "Aaya yi ci Wolof",
   "@settingsVerseinWolof": {
     "description": "settingsVerseinWolof",
     "type": "text",
@@ -108,7 +108,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "clickHereToReadMore": "Boo bëgg doole ci njàng mi: ",
+  "clickHereToReadMore": "Boo bëgg dolli ci njàng mi: ",
   "@clickHereToReadMore": {
     "description": "clickHereToReadMore",
     "type": "text",
@@ -150,7 +150,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "addHolidays": "Add Holidays to\nGoogle Calendar",
+  "addHolidays": "Arminaat bi ci sa\nGoogle Agenda",
   "@addHolidays": {
     "description": "Add Holidays to Google Calendar",
     "type": "text",

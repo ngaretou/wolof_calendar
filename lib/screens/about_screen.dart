@@ -48,8 +48,8 @@ class AboutScreen extends StatelessWidget {
             ),
             RichText(
                 text: TextSpan(style: defaultStyle, children: [
+              TextSpan(text: 'Produced by MEAO.\n\n'),
               TextSpan(text: 'App code © 2020 SIM.\n\n'),
-              TextSpan(text: 'Concept © 2020 MEAO.\n\n'),
               TextSpan(
                   text: 'Kàddug Yàlla gi',
                   style: TextStyle(fontStyle: FontStyle.italic)),

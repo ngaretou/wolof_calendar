@@ -21,7 +21,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
-    "addHolidays" : MessageLookupByLibrary.simpleMessage("Add Holidays to\nGoogle Calendar"),
+    "addHolidays" : MessageLookupByLibrary.simpleMessage("Arminaat bi ci sa\nGoogle Agenda"),
     "cancel" : MessageLookupByLibrary.simpleMessage("Fomm"),
     "clickHereToReadMore" : MessageLookupByLibrary.simpleMessage("Boo bëgg doole ci njàng mi: "),
     "contactFBMessenger" : MessageLookupByLibrary.simpleMessage("Facebook Messenger"),
@@ -47,8 +47,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "settingsTheme" : MessageLookupByLibrary.simpleMessage("Theme (WO)"),
     "settingsTitle" : MessageLookupByLibrary.simpleMessage("Kërale yi"),
     "settingsVerseDisplay" : MessageLookupByLibrary.simpleMessage("Yan aaya lañu wone"),
-    "settingsVerseinWolof" : MessageLookupByLibrary.simpleMessage("Aaya yi ci Wolofal"),
-    "settingsVerseinWolofal" : MessageLookupByLibrary.simpleMessage("Aaya yi ci Wolof"),
+    "settingsVerseinWolof" : MessageLookupByLibrary.simpleMessage("Aaya yi ci Wolof"),
+    "settingsVerseinWolofal" : MessageLookupByLibrary.simpleMessage("Aaya yi ci Wolofal"),
     "settingsViewIntro" : MessageLookupByLibrary.simpleMessage("Xòolat ubbite gi"),
     "shareAppLink" : MessageLookupByLibrary.simpleMessage("Sédool appli bi"),
     "sharingMsg" : MessageLookupByLibrary.simpleMessage("Ban mbindin nga bëgg séddo?"),

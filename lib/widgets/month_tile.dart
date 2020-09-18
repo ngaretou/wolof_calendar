@@ -12,6 +12,9 @@ class MonthTile extends StatelessWidget {
   MonthTile(this.currentMonth);
   @override
   Widget build(BuildContext context) {
+    final bool _isPhone = (MediaQuery.of(context).size.width +
+            MediaQuery.of(context).size.height) <=
+        1350;
     TextStyle rsStyle = Theme.of(context)
         .textTheme
         .headline6
@@ -22,6 +25,22 @@ class MonthTile extends StatelessWidget {
           fontSize: 40,
           fontFamily: "Harmattan",
         );
+
+    EdgeInsetsGeometry getPadding() {
+      EdgeInsetsGeometry cardPadding;
+      if (currentMonth.monthID == "cover" && _isPhone) {
+        cardPadding =
+            EdgeInsets.only(left: 40.0, right: 40, top: 40, bottom: 30);
+      } else if (currentMonth.monthID != "cover" && _isPhone) {
+        cardPadding = EdgeInsets.symmetric(vertical: 40.0, horizontal: 30);
+      } else if (currentMonth.monthID == "cover" && !_isPhone) {
+        cardPadding =
+            EdgeInsets.only(left: 40.0, right: 40, top: 40, bottom: 30);
+      } else if (currentMonth.monthID != "cover" && !_isPhone) {
+        cardPadding = EdgeInsets.symmetric(vertical: 100.0, horizontal: 80);
+      }
+      return cardPadding;
+    }
 
     return Padding(
       padding: EdgeInsets.only(bottom: 0, top: 10),
@@ -56,17 +75,14 @@ class MonthTile extends StatelessWidget {
               //Card text
 
               child: Padding(
-                padding: currentMonth.monthID == "cover"
-                    ? EdgeInsets.only(
-                        left: 40.0, right: 40, top: 40, bottom: 30)
-                    : EdgeInsets.symmetric(vertical: 40.0, horizontal: 30),
+                padding: getPadding(),
                 child: Column(
                   children: [
                     Text(
                       currentMonth.monthRS,
                       style: rsStyle,
                     ),
-                    Divider(color: Colors.white),
+                    Divider(color: Colors.white, height: _isPhone ? 16 : 80),
                     Text(
                       currentMonth.monthAS,
                       style: asStyle,
@@ -76,7 +92,8 @@ class MonthTile extends StatelessWidget {
                         ? SizedBox(
                             height: 0,
                           )
-                        : Divider(color: Colors.white),
+                        : Divider(
+                            color: Colors.white, height: _isPhone ? 16 : 80),
                     currentMonth.monthID == "cover"
                         ? SizedBox(
                             height: 0,

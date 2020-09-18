@@ -1,4 +1,14 @@
+1.02
+Fixed wolofal/wolof labels
+Added and fixed translations for wolof
+Included tablet specific formatting
+Fixed Google Calendar link
+Non-breaking spaces in references
+Changed copyright to add Producer credit to MEAO
+Fixed cover scripture page not going to a calendar page correctly
+
 1.01
+New pictures
 Corrected verses on wrong months Jan, Feb, Mar
 Added 'cover' as a month
 

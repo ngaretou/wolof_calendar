@@ -94,7 +94,9 @@ class MainDrawer extends StatelessWidget {
               Icons.calendar_today,
               () async {
                 const url =
-                    'https://calendar.google.com/calendar?cid=NWlzbHZmZXVsczY3MG05Y2t2cG9wNDBhbzRAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ';
+                    'https://calendar.google.com/calendar/u/0/r?cid=NWlzbHZmZXVsczY3MG05Y2t2cG9wNDBhbzRAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ';
+                // 'https://calendar.google.com/calendar?cid=NWlzbHZmZXVsczY3MG05Y2t2cG9wNDBhbzRAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ';
+
                 if (await canLaunch(url)) {
                   await launch(url);
                 } else {

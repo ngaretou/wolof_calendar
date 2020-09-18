@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:wolof_calendar/screens/date_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
+import 'package:intl/intl.dart';
 
 import '../providers/months.dart';
 import '../providers/route_args.dart';
@@ -19,10 +20,14 @@ class MonthScriptureScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final bool _isDark =
-    //     Provider.of<ThemeModel>(context, listen: false).userThemeName ==
-    //         'darkTheme';
-    // Color _fontColor = _isDark ? Colors.white : Colors.black;
+    var now = new DateTime.now();
+    var currentDate = DateFormat('d', 'fr_FR').format(now);
+    var currentMonth = DateFormat('M', 'fr_FR').format(now);
+    var currentYear = DateFormat('yyyy', 'fr_FR').format(now);
+    final _screenwidth = MediaQuery.of(context).size.width;
+    final bool _isPhone =
+        (_screenwidth + MediaQuery.of(context).size.height) <= 1350;
+
     final MonthScriptureScreenArgs args =
         ModalRoute.of(context).settings.arguments;
 
@@ -45,7 +50,7 @@ class MonthScriptureScreen extends StatelessWidget {
     ui.TextDirection ltrText = ui.TextDirection.ltr;
 
 // Column width for the name row
-    var nameColWidth = (MediaQuery.of(context).size.width / 2) - 40;
+    var nameColWidth = (_screenwidth / 2) - 40;
 
     var userPrefs = Provider.of<UserPrefs>(context, listen: false).userPrefs;
 
@@ -131,11 +136,17 @@ class MonthScriptureScreen extends StatelessWidget {
                   icon: Icon(Icons.calendar_today),
                   onPressed: () {
                     Navigator.of(context).popAndPushNamed(DateScreen.routeName,
-                        arguments: DateScreenArgs(
-                            year: Provider.of<Months>(context, listen: false)
-                                .currentCalendarYear,
-                            month: args.data.monthID,
-                            date: '1'));
+                        arguments: args.data.monthID == "cover"
+                            ? DateScreenArgs(
+                                year: currentYear,
+                                month: currentMonth,
+                                date: currentDate)
+                            : DateScreenArgs(
+                                year:
+                                    Provider.of<Months>(context, listen: false)
+                                        .currentCalendarYear,
+                                month: args.data.monthID,
+                                date: '1'));
                   })
             ],
             flexibleSpace: FlexibleSpaceBar(
@@ -242,34 +253,42 @@ class MonthScriptureScreen extends StatelessWidget {
                       physics: NeverScrollableScrollPhysics(),
                     ),
                   SizedBox(height: 60),
-                  RaisedButton(
-                    color: Theme.of(context).appBarTheme.color,
-                    elevation: 2,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(AppLocalization.of(context).clickHereToReadMore,
-                            style: Theme.of(context)
-                                .appBarTheme
-                                .textTheme
-                                .headline6
-                                .copyWith(fontSize: 18)),
-                        Icon(Icons.arrow_forward,
-                            color:
-                                Theme.of(context).appBarTheme.iconTheme.color),
-                      ],
+
+                  Container(
+                    margin: _isPhone
+                        ? EdgeInsets.symmetric(horizontal: 0)
+                        : EdgeInsets.symmetric(horizontal: _screenwidth / 4),
+                    child: RaisedButton(
+                      color: Theme.of(context).appBarTheme.color,
+                      elevation: 2,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(AppLocalization.of(context).clickHereToReadMore,
+                              style: Theme.of(context)
+                                  .appBarTheme
+                                  .textTheme
+                                  .headline6
+                                  .copyWith(fontSize: 18)),
+                          Icon(Icons.arrow_forward,
+                              color: Theme.of(context)
+                                  .appBarTheme
+                                  .iconTheme
+                                  .color),
+                        ],
+                      ),
+                      onPressed: () async {
+                        const url = 'https://sng.al/chrono';
+                        if (await canLaunch(url)) {
+                          await launch(url);
+                        } else {
+                          throw 'Could not launch $url';
+                        }
+                      },
                     ),
-                    onPressed: () async {
-                      const url = 'https://sng.al/chrono';
-                      if (await canLaunch(url)) {
-                        await launch(url);
-                      } else {
-                        throw 'Could not launch $url';
-                      }
-                    },
                   ),
                   //Holiday list
-                  HolidayBuilder(args.data.monthID),
+                  HolidayBuilder(args.data.monthID, _isPhone, _screenwidth),
                   SizedBox(height: 100),
                 ],
               ),
@@ -284,7 +303,9 @@ class MonthScriptureScreen extends StatelessWidget {
 //--------------------------------------
 class HolidayBuilder extends StatelessWidget {
   final String monthID;
-  HolidayBuilder(this.monthID);
+  final bool _isPhone;
+  final double _screenwidth;
+  HolidayBuilder(this.monthID, this._isPhone, this._screenwidth);
 
   @override
   // ignore: missing_return
@@ -300,7 +321,7 @@ class HolidayBuilder extends StatelessWidget {
         .copyWith(fontFamily: "Charis", fontSize: 22);
 
     ui.TextDirection rtlText = ui.TextDirection.rtl;
-    ui.TextDirection ltrText = ui.TextDirection.ltr;
+    // ui.TextDirection ltrText = ui.TextDirection.ltr;
 
     final currentCalendarYear =
         Provider.of<Months>(context, listen: false).currentCalendarYear;
@@ -355,10 +376,9 @@ class HolidayBuilder extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(monthData[0].monthAS,
-                style: asStyle, textDirection: ui.TextDirection.rtl),
+            Text(monthData[0].monthAS, style: asStyle, textDirection: rtlText),
             Text(datesData[wolofMonth].wolofMonthAS,
-                style: asStyle, textDirection: ui.TextDirection.rtl),
+                style: asStyle, textDirection: rtlText),
           ],
         ),
         Divider(thickness: 2),
@@ -367,71 +387,79 @@ class HolidayBuilder extends StatelessWidget {
 
     return !hasHolidays
         ? SizedBox(height: 0)
-        : Column(
-            children: [
-              SizedBox(height: 30),
-              //This is the part that never changes, a header row with the four months.
-              monthHeaderRow(0),
+        : Padding(
+            padding: _isPhone
+                ? const EdgeInsets.all(0.0)
+                : EdgeInsets.symmetric(horizontal: _screenwidth / 5),
+            child: Column(
+              children: [
+                SizedBox(height: 30),
+                //This is the part that never changes, a header row with the four months.
+                monthHeaderRow(0),
 
-              //Here are the holidays
-              ListView.builder(
-                padding: EdgeInsets.all(0),
-                itemCount: holidaysList.length,
-                itemBuilder: (ctx, i) {
-                  if (i != 0) {
-                    previousWolofDate = holidaysList[i - 1].wolofMonthDate;
-                  }
-                  return Column(
-                    children: [
-                      //repeat the header row only if we've moved to a new month
-                      if (int.parse(holidaysList[i].wolofMonthDate) <
-                          int.parse(previousWolofDate))
-                        //The indexWhere finds the index of the new month and then grabs the wolof month name there -
-                        //you can only turn over the month one time in a month, so grabbing the 1 suffices here
-                        monthHeaderRow(datesData
-                            .indexWhere((element) => element.wolofDate == "1")),
+                //Here are the holidays
+                ListView.builder(
+                  padding: EdgeInsets.all(0),
+                  itemCount: holidaysList.length,
+                  itemBuilder: (ctx, i) {
+                    if (i != 0) {
+                      previousWolofDate = holidaysList[i - 1].wolofMonthDate;
+                    }
+                    return Column(
+                      children: [
+                        //repeat the header row only if we've moved to a new month
+                        if (int.parse(holidaysList[i].wolofMonthDate) <
+                            int.parse(previousWolofDate))
+                          //The indexWhere finds the index of the new month and then grabs the wolof month name there -
+                          //you can only turn over the month one time in a month, so grabbing the 1 suffices here
+                          monthHeaderRow(datesData.indexWhere(
+                              (element) => element.wolofDate == "1")),
 
-                      //but in any case put in the holiday row
-                      InkWell(
-                        onTap: () {
-                          Navigator.of(context).pushNamed(DateScreen.routeName,
-                              arguments: DateScreenArgs(
-                                  year: currentCalendarYear,
-                                  month: monthID,
-                                  date: holidaysList[i].westernMonthDate));
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            //Western date
-                            Text(holidaysList[i].westernMonthDate,
-                                style: rsStyle),
-                            //Three versions of holiday name
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(holidaysList[i].holidayRS, style: rsStyle),
-                                Text(holidaysList[i].holidayAS,
-                                    style: asStyle,
-                                    textDirection: ui.TextDirection.rtl),
-                                Text(holidaysList[i].holidayFR, style: rsStyle),
-                              ],
-                            ),
-                            //Wolof date
-                            Text(holidaysList[i].wolofMonthDate,
-                                style: rsStyle),
-                          ],
+                        //but in any case put in the holiday row
+                        InkWell(
+                          onTap: () {
+                            Navigator.of(context).pushNamed(
+                                DateScreen.routeName,
+                                arguments: DateScreenArgs(
+                                    year: currentCalendarYear,
+                                    month: monthID,
+                                    date: holidaysList[i].westernMonthDate));
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              //Western date
+                              Text(holidaysList[i].westernMonthDate,
+                                  style: rsStyle),
+                              //Three versions of holiday name
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(holidaysList[i].holidayRS,
+                                      style: rsStyle),
+                                  Text(holidaysList[i].holidayAS,
+                                      style: asStyle,
+                                      textDirection: ui.TextDirection.rtl),
+                                  Text(holidaysList[i].holidayFR,
+                                      style: rsStyle),
+                                ],
+                              ),
+                              //Wolof date
+                              Text(holidaysList[i].wolofMonthDate,
+                                  style: rsStyle),
+                            ],
+                          ),
                         ),
-                      ),
-                      Divider(thickness: 1),
-                    ],
-                  );
-                },
-                shrinkWrap: true,
-                physics: ClampingScrollPhysics(),
-              ),
-            ],
+                        Divider(thickness: 1),
+                      ],
+                    );
+                  },
+                  shrinkWrap: true,
+                  physics: ClampingScrollPhysics(),
+                ),
+              ],
+            ),
           );
   }
 }
