@@ -2,4 +2,4 @@
 
 A companion app to the Wolof Calendar.
 
-Still in pre alpha-level development.
+Still in alpha-level development.
