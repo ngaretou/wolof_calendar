@@ -1,3 +1,9 @@
+1.03
+fix date display so year is more evident in calendar view
+
+to do: 
+more translations
+
 1.02
 Fixed wolofal/wolof labels
 Added and fixed translations for wolof

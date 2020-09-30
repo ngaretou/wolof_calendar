@@ -6,7 +6,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "settingsTheme": "Theme (WO)",
+  "settingsTheme": "Melow wërale bi",
   "@settingsTheme": {
     "description": "settings: Theme section",
     "type": "text",
@@ -30,25 +30,25 @@
     "type": "text",
     "placeholders": {}
   },
-  "settingsCardDirection": "Kàrt man nañu dem: ",
+  "settingsCardDirection": "Kàrt yi man nañu jëm: ",
   "@settingsCardDirection": {
     "description": "settingsCardDirection",
     "type": "text",
     "placeholders": {}
   },
-  "settingsLTR": "CN",
+  "settingsLTR": "Ndeyjoor",
   "@settingsLTR": {
     "description": "settingsLTR",
     "type": "text",
     "placeholders": {}
   },
-  "settingsRTL": "NC",
+  "settingsRTL": "Càmmoñ",
   "@settingsRTL": {
     "description": "settingsRTL",
     "type": "text",
     "placeholders": {}
   },
-  "settingsVerseDisplay": "Yan aaya lañu wone",
+  "settingsVerseDisplay": "Aaya yi nga bëgga gis: ",
   "@settingsVerseDisplay": {
     "description": "settingsVerseDisplay",
     "type": "text",
@@ -66,7 +66,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "settingsShowFavs": "Woneel tuur: ",
+  "settingsShowFavs": "Woneel tur: ",
   "@settingsShowFavs": {
     "description": "settingsShowFavs",
     "type": "text",
@@ -78,13 +78,13 @@
     "type": "text",
     "placeholders": {}
   },
-  "settingsTextAll": "Yepp",
+  "settingsTextAll": "Yépp",
   "@settingsTextAll": {
     "description": "settingsTextAll",
     "type": "text",
     "placeholders": {}
   },
-  "settingsViewIntro": "Xòolat ubbite gi",
+  "settingsViewIntro": "Xoolat ubbite gi",
   "@settingsViewIntro": {
     "description": "settingsViewIntro",
     "type": "text",
@@ -96,7 +96,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "sharingMsg": "Ban mbindin nga bëgg séddo?",
+  "sharingMsg": "Ci ban mbindin nga bëgga séddoo?",
   "@sharingMsg": {
     "description": "sharingMsg",
     "type": "text",
@@ -108,7 +108,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "clickHereToReadMore": "Boo bëgg dolli ci njàng mi: ",
+  "clickHereToReadMore": "Bësal fii ngir yokk sa njàng: ",
   "@clickHereToReadMore": {
     "description": "clickHereToReadMore",
     "type": "text",
@@ -132,7 +132,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "favsNoneYet": "Tànnuguloo ay tuur",
+  "favsNoneYet": "Tànnaguloo benn tur",
   "@favsNoneYet": {
     "description": "favsNoneYet",
     "type": "text",
@@ -150,13 +150,13 @@
     "type": "text",
     "placeholders": {}
   },
-  "addHolidays": "Arminaat bi ci sa\nGoogle Agenda",
+  "addHolidays": "Arminaat bi ci sa\nAgenda Google",
   "@addHolidays": {
     "description": "Add Holidays to Google Calendar",
     "type": "text",
     "placeholders": {}
   },
-  "settingsContactUs": "Jokkook ñun ci: ",
+  "settingsContactUs": "Jokkook nun ci: ",
   "@settingsContactUs": {
     "description": "settingsContactUs",
     "type": "text",
@@ -180,13 +180,13 @@
     "type": "text",
     "placeholders": {}
   },
-  "shareAppLink": "Sédool appli bi",
+  "shareAppLink": "Séddoo appli bi",
   "@shareAppLink": {
     "description": "Share link to app on app store",
     "type": "text",
     "placeholders": {}
   },
-  "moreApps": "Yeenen appli",
+  "moreApps": "Yeneen appli",
   "@moreApps": {
     "description": "More apps",
     "type": "text",

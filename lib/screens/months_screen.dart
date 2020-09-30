@@ -21,7 +21,7 @@ class MonthsScreen extends StatelessWidget {
     var currentDate = DateFormat('d', 'fr_FR').format(now);
     var currentMonth = DateFormat('M', 'fr_FR').format(now);
     var currentYear = DateFormat('yyyy', 'fr_FR').format(now);
-    var formatter = new DateFormat.yMMMMEEEEd('fr_FR');
+    var formatter = new DateFormat.yMMMd('fr_FR');
     String formattedDate = formatter.format(now);
     final bool _isPhone = (MediaQuery.of(context).size.width +
             MediaQuery.of(context).size.height) <=

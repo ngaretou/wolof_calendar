@@ -48,7 +48,8 @@ class _DateScreenState extends State<DateScreen> {
     initialDateTime = DateFormat('yyyy M d', 'fr_FR')
         .parse('${args.year} ${args.month} ${args.date}');
     //Then make it nice for the initial appBarTitle
-    appBarTitle = DateFormat('MMMM yyyy', 'fr_FR').format(initialDateTime);
+    //To change format of title bar change both in didChangeDependencies & in main build
+    appBarTitle = DateFormat('yMMM', 'fr_FR').format(initialDateTime);
     //This sets up the first date you see as that initialDateIndex but will be changed as we scroll
     scrollToIndex = initialDateIndex;
 
@@ -67,13 +68,15 @@ class _DateScreenState extends State<DateScreen> {
 
     var navigateToDateIndex; //this is for later on when the user navigates
     var lastIndex = _datesToDisplay.length - 1;
+
     void updateAppBarTitle(index) {
       var scrolledMonth = (_datesToDisplay[index].month);
       var scrolledYear = (_datesToDisplay[index].year);
       var scrolledDateTime =
           DateFormat('M/yyyy', "fr_FR").parse('$scrolledMonth/$scrolledYear');
+      //To change format of title bar change both in didChangeDependencies & in main build
       var scrolledDateTimeString =
-          DateFormat('MMMM yyyy', 'fr_FR').format(scrolledDateTime);
+          DateFormat('yMMM', 'fr_FR').format(scrolledDateTime);
 
       setState(() {
         appBarTitle = scrolledDateTimeString;
@@ -169,7 +172,14 @@ class _DateScreenState extends State<DateScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(appBarTitle),
+        title: _screenwidth < 330
+            ? Text(appBarTitle,
+                style: Theme.of(context)
+                    .appBarTheme
+                    .textTheme
+                    .headline6
+                    .copyWith(fontSize: 18))
+            : Text(appBarTitle),
         actions: [
           IconButton(
               icon: Icon(Icons.arrow_back_ios),
