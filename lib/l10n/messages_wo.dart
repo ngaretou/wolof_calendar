@@ -39,7 +39,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "settingsContactUsEmail" : MessageLookupByLibrary.simpleMessage("Email"),
     "settingsFavorites" : MessageLookupByLibrary.simpleMessage("Yi ma tànn"),
     "settingsLTR" : MessageLookupByLibrary.simpleMessage("Ndeyjoor"),
-    "settingsLanguage" : MessageLookupByLibrary.simpleMessage("Làmmiñu diisookaay bi"),
+    "settingsLanguage" : MessageLookupByLibrary.simpleMessage("Làkku tegtal yi"),
     "settingsOK" : MessageLookupByLibrary.simpleMessage("OK"),
     "settingsRTL" : MessageLookupByLibrary.simpleMessage("Càmmoñ"),
     "settingsShowFavs" : MessageLookupByLibrary.simpleMessage("Woneel tur: "),
