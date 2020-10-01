@@ -50,7 +50,7 @@ class MonthScriptureScreen extends StatelessWidget {
     ui.TextDirection ltrText = ui.TextDirection.ltr;
 
 // Column width for the name row
-    var nameColWidth = (_screenwidth / 2) - 40;
+    var nameColWidth = (_screenwidth / 2) - 20;
 
     var userPrefs = Provider.of<UserPrefs>(context, listen: false).userPrefs;
 
@@ -152,7 +152,12 @@ class MonthScriptureScreen extends StatelessWidget {
             flexibleSpace: FlexibleSpaceBar(
               stretchModes: [StretchMode.zoomBackground],
               title: args.data.monthID == "cover"
-                  ? Text(args.data.monthRS)
+                  ? Text(args.data.monthRS + "  |  " + args.data.monthAS,
+                      style: Theme.of(context)
+                          .appBarTheme
+                          .textTheme
+                          .headline6
+                          .copyWith(fontFamily: 'Charis'))
                   : MainTitle(args.data.arabicName),
               centerTitle: true,
               background: Hero(
@@ -381,7 +386,8 @@ class HolidayBuilder extends StatelessWidget {
                 style: asStyle, textDirection: rtlText),
           ],
         ),
-        Divider(thickness: 2),
+        // Divider(thickness: 2),
+        SizedBox(height: 10)
       ]);
     }
 
@@ -394,8 +400,17 @@ class HolidayBuilder extends StatelessWidget {
             child: Column(
               children: [
                 SizedBox(height: 30),
-                //This is the part that never changes, a header row with the four months.
-                monthHeaderRow(0),
+                //This is the first month header row that will always appear when there are holidays.
+                //The complication is that sometimes the first holiday comes in the Wolof month that started the previous month,
+                //and sometimes will be in the new Wolof month that starts part way through the Western month.
+                //If the first Wolof date of the month is greater than the Wolof date on the first holiday,
+                monthHeaderRow((int.parse(datesData[0].wolofDate) >
+                        int.parse(holidaysList[0].wolofMonthDate))
+                    //then the holiday is in the Wolof month that starts halfway through the Western month.
+                    ? datesData
+                        .indexWhere((element) => element.wolofDate == "1")
+                    //otherwise it's in the Wolof month that begins the 1st of the Western month
+                    : 0),
 
                 //Here are the holidays
                 ListView.builder(
@@ -425,33 +440,42 @@ class HolidayBuilder extends StatelessWidget {
                                     month: monthID,
                                     date: holidaysList[i].westernMonthDate));
                           },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              //Western date
-                              Text(holidaysList[i].westernMonthDate,
-                                  style: rsStyle),
-                              //Three versions of holiday name
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                          child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 10),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  color: Theme.of(context).accentColor),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(holidaysList[i].holidayRS,
+                                  //Western date
+                                  Text(holidaysList[i].westernMonthDate,
                                       style: rsStyle),
-                                  Text(holidaysList[i].holidayAS,
-                                      style: asStyle,
-                                      textDirection: ui.TextDirection.rtl),
-                                  Text(holidaysList[i].holidayFR,
+                                  //Three versions of holiday name
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(holidaysList[i].holidayRS,
+                                          style: rsStyle),
+                                      Text(holidaysList[i].holidayAS,
+                                          style: asStyle,
+                                          textDirection: ui.TextDirection.rtl),
+                                      Text(holidaysList[i].holidayFR,
+                                          style: rsStyle),
+                                    ],
+                                  ),
+                                  //Wolof date
+                                  Text(holidaysList[i].wolofMonthDate,
                                       style: rsStyle),
                                 ],
-                              ),
-                              //Wolof date
-                              Text(holidaysList[i].wolofMonthDate,
-                                  style: rsStyle),
-                            ],
-                          ),
+                              )),
                         ),
-                        Divider(thickness: 1),
+                        // Divider(thickness: 1),
+                        SizedBox(height: 10)
                       ],
                     );
                   },
