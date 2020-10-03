@@ -18,38 +18,13 @@ So normally:
 iOS: 
 >>flutter build ios
 https://flutter.dev/docs/deployment/ios
+>>Xcode: 
+update build on general tab
+
+
 
 Icons: 
 flutter pub run flutter_launcher_icons:main
 
 
 
-
-    // List<Date> _datesToDisplay = Provider.of<Months>(context, listen: false)
-    //     .dates
-    //     .where((element) =>
-    //         element.month == args.month && element.year == args.year)
-    //     .toList();
-
-return Transform.scale(
-                      scale: !_isFlipped ? 0.9 : 1.0,
-                      // .9,
-
-                      //!_isFlipped ? animation.value : animation.value,
-
-                      child: GestureDetector(
-                          onTap: () => setState(() => _isFlipped = !_isFlipped),
-                          // Flippable box:
-                          // https://dev.to/mightytechno/flutter-flip-card-animation-with-3d-effect-4i3
-                          child: FlippableBox(
-                            front: imageCard(
-                              "millet",
-                              Months.names[i],
-                              context,
-                            ),
-                            back: textCard(
-                              Months.names[i],
-                              context,
-                            ),
-                            isFlipped: _isFlipped,
-                          )));

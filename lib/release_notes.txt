@@ -1,8 +1,9 @@
 1.03
-fix date display so year is more evident in calendar view
+Fixed date display so year is more evident in calendar view
+Wolof translations from team now final
+Fixed wrong month displaying on month screen if first holiday not in the Wolof month that starts the Western month
+A few other content and display fixes
 
-to do: 
-more translations
 
 1.02
 Fixed wolofal/wolof labels
