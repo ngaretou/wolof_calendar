@@ -28,8 +28,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final userPrefs = Provider.of<UserPrefs>(context, listen: false);
     final _wolof = userPrefs.userPrefs.wolofVerseEnabled;
     final _wolofal = userPrefs.userPrefs.wolofalVerseEnabled;
-    // final screenWidth = MediaQuery.of(context).size.width;
-    print('in settings');
 
     //Widgets
     //Main template for all setting titles
@@ -293,9 +291,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           AppLocalization.of(context).settingsTitle,
         ),
       ),
-      //If the width of the screen is greater or equal to 500
+      //If the width of the screen is greater or equal to 730 (whether or not _isPhone is true)
       //show the wide view
-      body: MediaQuery.of(context).size.width >= 500
+      body: MediaQuery.of(context).size.width >= 730
           ? Padding(
               padding: EdgeInsets.symmetric(horizontal: 50),
               child: ListView(
