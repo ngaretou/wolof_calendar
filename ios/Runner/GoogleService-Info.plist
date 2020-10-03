@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>613913153946-m3f1rpp2cu6pk0j4720km0isfk9to32e.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.613913153946-m3f1rpp2cu6pk0j4720km0isfk9to32e</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDqfHI_en-CqQCAQbNI_ZZbIb0WtVpyR3U</string>
+	<key>GCM_SENDER_ID</key>
+	<string>613913153946</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>org.mbs.cal.wol</string>
+	<key>PROJECT_ID</key>
+	<string>wolof-calendar</string>
+	<key>STORAGE_BUCKET</key>
+	<string>wolof-calendar.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:613913153946:ios:3c22e16d0015905d406a23</string>
+	<key>DATABASE_URL</key>
+	<string>https://wolof-calendar.firebaseio.com</string>
+</dict>
+</plist>
