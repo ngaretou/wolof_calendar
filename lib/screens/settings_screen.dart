@@ -20,7 +20,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     final bool _isPhone = (MediaQuery.of(context).size.width +
             MediaQuery.of(context).size.height) <=
-        1350;
+        1400;
     final userThemeName =
         Provider.of<ThemeModel>(context, listen: false).userThemeName;
     final themeProvider = Provider.of<ThemeModel>(context, listen: false);

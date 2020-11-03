@@ -21,10 +21,8 @@ class _PlayerState extends State<Player> {
     if (isPlaying) {
       player.stop();
     } else {
-      player = await cache.play('audio/${widget.file}.m4a');
+      player = await cache.play('audio/${widget.file}.mp3');
       player.onPlayerCompletion.listen((_) {
-        print('oncompletion');
-
         player.stop();
         setState(() {
           if (isPaused) {
@@ -65,6 +63,7 @@ class _PlayerState extends State<Player> {
       child: isPlaying ? Icon(Icons.pause) : Icon(Icons.play_arrow),
     );
 
+//This is the IconButton version of this widget; FloatingActionButton above; ot
     // IconButton(
     //   icon: Icon(
     //     isPlaying ? Icons.pause : Icons.play_arrow,

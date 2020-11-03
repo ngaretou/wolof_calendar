@@ -14,7 +14,7 @@ class MonthTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool _isPhone = (MediaQuery.of(context).size.width +
             MediaQuery.of(context).size.height) <=
-        1350;
+        1400;
     TextStyle rsStyle = Theme.of(context)
         .textTheme
         .headline6

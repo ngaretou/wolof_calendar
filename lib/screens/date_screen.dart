@@ -64,7 +64,7 @@ class _DateScreenState extends State<DateScreen> {
   Widget build(BuildContext context) {
     final _screenwidth = MediaQuery.of(context).size.width;
     final bool _isPhone =
-        (_screenwidth + MediaQuery.of(context).size.height) <= 1350;
+        (_screenwidth + MediaQuery.of(context).size.height) <= 1400;
 
     var navigateToDateIndex; //this is for later on when the user navigates
     var lastIndex = _datesToDisplay.length - 1;

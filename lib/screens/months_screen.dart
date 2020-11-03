@@ -25,7 +25,7 @@ class MonthsScreen extends StatelessWidget {
     String formattedDate = formatter.format(now);
     final bool _isPhone = (MediaQuery.of(context).size.width +
             MediaQuery.of(context).size.height) <=
-        1350;
+        1400;
     final screenwidth = MediaQuery.of(context).size.width;
 
     return Scaffold(

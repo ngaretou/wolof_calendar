@@ -26,7 +26,7 @@ class MonthScriptureScreen extends StatelessWidget {
     var currentYear = DateFormat('yyyy', 'fr_FR').format(now);
     final _screenwidth = MediaQuery.of(context).size.width;
     final bool _isPhone =
-        (_screenwidth + MediaQuery.of(context).size.height) <= 1350;
+        (_screenwidth + MediaQuery.of(context).size.height) <= 1400;
 
     final MonthScriptureScreenArgs args =
         ModalRoute.of(context).settings.arguments;
