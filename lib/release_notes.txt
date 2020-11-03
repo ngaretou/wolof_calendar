@@ -1,3 +1,7 @@
+1.04
+New audio
+Audio stops on page navigation and on app quit
+
 1.03
 Fixed date display so year is more evident in calendar view
 Wolof translations from team now final

@@ -15,19 +15,32 @@ class _PlayerState extends State<Player> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    //allows you to observe the AppLifecycleState below so you can stop the
     WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
+    //dispose triggers on popping the page, so stops the audio player playing
+    _stopPlayOnExit();
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
-      _stopPlay();
-      print("app exited");
+      _stopPlayOnExit();
+    }
+    if (state == AppLifecycleState.resumed) {
+      //This setState just refreshes the view - if it was playing on pause and exits,
+      //this gets the play button back to pause as isPlaying was put to false in _stopPlayOnExit();
+      //A bit of a strange case though -
+      //in testing found that if you go back (pop the route), come back, play, then minimize,
+      //thus pausing the app as above and then resume it throws a "setState() called after dispose()" error,
+      //so this just quickly checks if the widget is mounted and setState if it is.
+      if (this.mounted) {
+        setState(() {});
+      }
     }
   }
 
@@ -65,14 +78,13 @@ class _PlayerState extends State<Player> with WidgetsBindingObserver {
     });
   }
 
-  void _stopPlay() {
-    //? is used to check null, so stop() will be called only if player != null. https://stackoverflow.com/questions/56360083/stop-audio-loop-audioplayers-package
-    player?.stop();
-    //If you don't setState the button will show the pause icon on resume
-    setState(() {
-      isPlaying = false;
-      isPaused = false;
-    });
+  void _stopPlayOnExit() {
+    if (isPlaying) {
+      player.stop();
+      //here just change isPlaying to false -
+      //it gets reflected on the screen on resume in didChangeAppLifecycleState on setState
+    }
+    isPlaying = false;
   }
 
   //pauseHandler not used in this app but here for reference
@@ -94,7 +106,7 @@ class _PlayerState extends State<Player> with WidgetsBindingObserver {
       child: isPlaying ? Icon(Icons.pause) : Icon(Icons.play_arrow),
     );
 
-//This is the IconButton version of this widget; FloatingActionButton above.
+    //This is the IconButton version of this widget, not used here but included for reference.
     // IconButton(
     //   icon: Icon(
     //     isPlaying ? Icons.pause : Icons.play_arrow,
