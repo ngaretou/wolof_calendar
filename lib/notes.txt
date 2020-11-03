@@ -28,3 +28,35 @@ flutter pub run flutter_launcher_icons:main
 
 
 
+
+----------
+...with WidgetsBindingObserver
+ @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.inactive:
+        print("Inactive");
+        break;
+      case AppLifecycleState.paused:
+        print("Paused");
+        break;
+      case AppLifecycleState.resumed:
+        print("Resumed");
+        break;
+      case AppLifecycleState.detached:
+        print("detached");
+        break;
+    }
+  }
+----------
