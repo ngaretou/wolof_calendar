@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 import '../providers/months.dart';
 import '../providers/route_args.dart';
@@ -171,50 +172,54 @@ class _DateScreenState extends State<DateScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: _screenwidth < 330
-            ? Text(appBarTitle,
-                style: Theme.of(context)
-                    .appBarTheme
-                    .textTheme
-                    .headline6
-                    .copyWith(fontSize: 18))
-            : Text(appBarTitle),
-        actions: [
-          IconButton(
-              icon: Icon(Icons.arrow_back_ios),
-              onPressed: () => moveMonths('backward')),
-          IconButton(
-            icon: Icon(Icons.date_range),
-            onPressed: () => pickDateToShow(),
-          ),
-          IconButton(
-              icon: Icon(Icons.arrow_forward_ios),
-              onPressed: () => moveMonths('forward')),
-        ],
-      ),
-      body: Padding(
-        padding: _isPhone
-            ? EdgeInsets.symmetric(horizontal: 10, vertical: 0)
-            : EdgeInsets.symmetric(horizontal: _screenwidth / 20, vertical: 0),
-        child: NotificationListener(
-          onNotification: (notification) {
-            if (notification is ScrollEndNotification) {
-              updateAppBarTitle(
-                  itemPositionsListener.itemPositions.value.first.index);
-            }
-            return;
-          },
-          child: ScrollablePositionedList.builder(
-            itemScrollController: itemScrollController,
-            itemPositionsListener: itemPositionsListener,
-            physics: BouncingScrollPhysics(),
-            initialScrollIndex: scrollToIndex,
-            itemBuilder: (ctx, i) => DateTile(_datesToDisplay[i]),
-            itemCount: _datesToDisplay.length,
-          ),
+        appBar: AppBar(
+          title: _screenwidth < 330
+              ? Text(appBarTitle,
+                  style: Theme.of(context)
+                      .appBarTheme
+                      .textTheme
+                      .headline6
+                      .copyWith(fontSize: 18))
+              : Text(appBarTitle),
+          actions: [
+            IconButton(
+                icon: Icon(Icons.arrow_back_ios),
+                onPressed: () => moveMonths('backward')),
+            IconButton(
+              icon: Icon(Icons.date_range),
+              onPressed: () => pickDateToShow(),
+            ),
+            IconButton(
+                icon: Icon(Icons.arrow_forward_ios),
+                onPressed: () => moveMonths('forward')),
+          ],
         ),
-      ),
-    );
+        body: Center(
+            child: Container(
+          width: (kIsWeb && _screenwidth > 1000) ? 800 : double.infinity,
+          child: Padding(
+            padding: _isPhone
+                ? EdgeInsets.symmetric(horizontal: 10, vertical: 0)
+                : EdgeInsets.symmetric(
+                    horizontal: _screenwidth / 20, vertical: 0),
+            child: NotificationListener(
+              onNotification: (notification) {
+                if (notification is ScrollEndNotification) {
+                  updateAppBarTitle(
+                      itemPositionsListener.itemPositions.value.first.index);
+                }
+                return;
+              },
+              child: ScrollablePositionedList.builder(
+                itemScrollController: itemScrollController,
+                itemPositionsListener: itemPositionsListener,
+                physics: BouncingScrollPhysics(),
+                initialScrollIndex: scrollToIndex,
+                itemBuilder: (ctx, i) => DateTile(_datesToDisplay[i]),
+                itemCount: _datesToDisplay.length,
+              ),
+            ),
+          ),
+        )));
   }
 }

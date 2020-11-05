@@ -4,6 +4,7 @@ import 'package:wolof_calendar/screens/date_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 import '../providers/months.dart';
 import '../providers/route_args.dart';
@@ -50,7 +51,14 @@ class MonthScriptureScreen extends StatelessWidget {
     ui.TextDirection ltrText = ui.TextDirection.ltr;
 
 // Column width for the name row
-    var nameColWidth = (_screenwidth / 2) - 20;
+    var _contentColWidth;
+    if (kIsWeb && _screenwidth > 1000) {
+      _contentColWidth = 800;
+    } else {
+      _contentColWidth = _screenwidth;
+    }
+
+    var _nameColWidth = (_contentColWidth / 2) - 20;
 
     var userPrefs = Provider.of<UserPrefs>(context, listen: false).userPrefs;
 
@@ -191,110 +199,123 @@ class MonthScriptureScreen extends StatelessWidget {
             sliver: SliverList(
               delegate: SliverChildListDelegate(
                 [
-                  //Main Wolof names heading
-                  if (args.data.monthID != "cover")
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                            width: nameColWidth,
-                            child: Text(args.data.wolofName,
-                                style: rsHeaderStyle)),
-                        Container(
-                          width: nameColWidth,
-                          child: Text(
-                            args.data.wolofalName,
-                            style: asHeaderStyle,
-                            textDirection: ui.TextDirection.rtl,
-                          ),
-                        ),
-                      ],
-                    ),
-                  if (args.data.monthID != "cover")
-                    Divider(
-                      thickness: 2,
-                      height: 40,
-                      color: Theme.of(context).accentColor,
-                    ),
-
-                  //Verses start here
-                  //AS verses
-                  if (userPrefs.wolofalVerseEnabled)
-                    ListView.builder(
-                      itemCount: args.data.verses.length,
-                      itemBuilder: (ctx, i) => VerseBuilder(
-                          args.data.verses[i].verseAS,
-                          args.data.verses[i].verseRefAS,
-                          asStyle,
-                          asRefStyle,
-                          rtlText,
-                          args.data.verses.length,
-                          i),
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                    ),
-
-                  if (userPrefs.wolofalVerseEnabled &&
-                      userPrefs.wolofVerseEnabled)
-                    Divider(
-                      height: 60,
-                      thickness: 2,
-                      color: Theme.of(context).accentColor,
-                    ),
-
-                  //RS verses
-                  if (userPrefs.wolofVerseEnabled)
-                    ListView.builder(
-                      itemCount: args.data.verses.length,
-                      itemBuilder: (ctx, i) => VerseBuilder(
-                          args.data.verses[i].verseRS,
-                          args.data.verses[i].verseRefRS,
-                          rsStyle,
-                          rsRefStyle,
-                          ltrText,
-                          args.data.verses.length,
-                          i),
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                    ),
-                  SizedBox(height: 60),
-
-                  Container(
-                    margin: _isPhone
-                        ? EdgeInsets.symmetric(horizontal: 0)
-                        : EdgeInsets.symmetric(horizontal: _screenwidth / 4),
-                    child: RaisedButton(
-                      color: Theme.of(context).appBarTheme.color,
-                      elevation: 2,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                  Center(
+                    child: Container(
+                      width: _contentColWidth,
+                      child: Column(
                         children: [
-                          Text(AppLocalization.of(context).clickHereToReadMore,
-                              style: Theme.of(context)
-                                  .appBarTheme
-                                  .textTheme
-                                  .headline6
-                                  .copyWith(fontSize: 18)),
-                          Icon(Icons.arrow_forward,
-                              color: Theme.of(context)
-                                  .appBarTheme
-                                  .iconTheme
-                                  .color),
+                          //Main Wolof names heading
+                          if (args.data.monthID != "cover")
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                    width: _nameColWidth,
+                                    child: Text(args.data.wolofName,
+                                        style: rsHeaderStyle)),
+                                Container(
+                                  width: _nameColWidth,
+                                  child: Text(
+                                    args.data.wolofalName,
+                                    style: asHeaderStyle,
+                                    textDirection: ui.TextDirection.rtl,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          if (args.data.monthID != "cover")
+                            Divider(
+                              thickness: 2,
+                              height: 40,
+                              color: Theme.of(context).accentColor,
+                            ),
+
+                          //Verses start here
+                          //AS verses
+                          if (userPrefs.wolofalVerseEnabled)
+                            ListView.builder(
+                              itemCount: args.data.verses.length,
+                              itemBuilder: (ctx, i) => VerseBuilder(
+                                  args.data.verses[i].verseAS,
+                                  args.data.verses[i].verseRefAS,
+                                  asStyle,
+                                  asRefStyle,
+                                  rtlText,
+                                  args.data.verses.length,
+                                  i),
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                            ),
+
+                          if (userPrefs.wolofalVerseEnabled &&
+                              userPrefs.wolofVerseEnabled)
+                            Divider(
+                              height: 60,
+                              thickness: 2,
+                              color: Theme.of(context).accentColor,
+                            ),
+
+                          //RS verses
+                          if (userPrefs.wolofVerseEnabled)
+                            ListView.builder(
+                              itemCount: args.data.verses.length,
+                              itemBuilder: (ctx, i) => VerseBuilder(
+                                  args.data.verses[i].verseRS,
+                                  args.data.verses[i].verseRefRS,
+                                  rsStyle,
+                                  rsRefStyle,
+                                  ltrText,
+                                  args.data.verses.length,
+                                  i),
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                            ),
+                          SizedBox(height: 60),
+
+                          Container(
+                            margin: _isPhone
+                                ? EdgeInsets.symmetric(horizontal: 0)
+                                : EdgeInsets.symmetric(
+                                    horizontal: _contentColWidth / 4),
+                            child: RaisedButton(
+                              color: Theme.of(context).appBarTheme.color,
+                              elevation: 2,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                      AppLocalization.of(context)
+                                          .clickHereToReadMore,
+                                      style: Theme.of(context)
+                                          .appBarTheme
+                                          .textTheme
+                                          .headline6
+                                          .copyWith(fontSize: 18)),
+                                  Icon(Icons.arrow_forward,
+                                      color: Theme.of(context)
+                                          .appBarTheme
+                                          .iconTheme
+                                          .color),
+                                ],
+                              ),
+                              onPressed: () async {
+                                const url = 'https://sng.al/chrono';
+                                if (await canLaunch(url)) {
+                                  await launch(url);
+                                } else {
+                                  throw 'Could not launch $url';
+                                }
+                              },
+                            ),
+                          ),
+                          //Holiday list
+                          HolidayBuilder(
+                              args.data.monthID, _isPhone, _contentColWidth),
+                          SizedBox(height: 100),
                         ],
                       ),
-                      onPressed: () async {
-                        const url = 'https://sng.al/chrono';
-                        if (await canLaunch(url)) {
-                          await launch(url);
-                        } else {
-                          throw 'Could not launch $url';
-                        }
-                      },
                     ),
                   ),
-                  //Holiday list
-                  HolidayBuilder(args.data.monthID, _isPhone, _screenwidth),
-                  SizedBox(height: 100),
                 ],
               ),
             ),
@@ -309,8 +330,8 @@ class MonthScriptureScreen extends StatelessWidget {
 class HolidayBuilder extends StatelessWidget {
   final String monthID;
   final bool _isPhone;
-  final double _screenwidth;
-  HolidayBuilder(this.monthID, this._isPhone, this._screenwidth);
+  final double _contentColWidth;
+  HolidayBuilder(this.monthID, this._isPhone, this._contentColWidth);
 
   @override
   // ignore: missing_return
@@ -396,7 +417,7 @@ class HolidayBuilder extends StatelessWidget {
         : Padding(
             padding: _isPhone
                 ? const EdgeInsets.all(0.0)
-                : EdgeInsets.symmetric(horizontal: _screenwidth / 5),
+                : EdgeInsets.symmetric(horizontal: _contentColWidth / 5),
             child: Column(
               children: [
                 SizedBox(height: 30),
