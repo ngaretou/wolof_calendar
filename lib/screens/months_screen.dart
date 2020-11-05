@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 import './date_screen.dart';
 
@@ -27,7 +28,7 @@ class MonthsScreen extends StatelessWidget {
             MediaQuery.of(context).size.height) <=
         1400;
     final screenwidth = MediaQuery.of(context).size.width;
-
+    print(screenwidth);
     return Scaffold(
         appBar: AppBar(
           title: Text(formattedDate),
@@ -45,26 +46,32 @@ class MonthsScreen extends StatelessWidget {
           ],
         ),
         drawer: MainDrawer(),
-        body: CustomScrollView(slivers: [
-          SliverPadding(
-            padding: _isPhone
-                ? EdgeInsets.symmetric(horizontal: 10, vertical: 0)
-                : EdgeInsets.symmetric(
-                    horizontal: screenwidth / 16, vertical: screenwidth / 25),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                // MonthTile("cover"),
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemBuilder: (ctx, i) => MonthTile(monthsData[i]),
-                  itemCount: monthsData.length,
+        body: Center(
+          child: Container(
+            width: (kIsWeb && screenwidth > 1000) ? 1000 : double.infinity,
+            child: CustomScrollView(slivers: [
+              SliverPadding(
+                padding: _isPhone
+                    ? EdgeInsets.symmetric(horizontal: 10, vertical: 0)
+                    : EdgeInsets.symmetric(
+                        horizontal: screenwidth / 16,
+                        vertical: screenwidth / 25),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    // MonthTile("cover"),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemBuilder: (ctx, i) => MonthTile(monthsData[i]),
+                      itemCount: monthsData.length,
+                    ),
+                  ]),
                 ),
-              ]),
-            ),
 
-            // drawer: SettingsScreen(),
-          )
-        ]));
+                // drawer: SettingsScreen(),
+              )
+            ]),
+          ),
+        ));
   }
 }
