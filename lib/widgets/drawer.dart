@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 import '../locale/app_localization.dart';
 
@@ -113,7 +114,18 @@ class MainDrawer extends StatelessWidget {
               Icons.share,
               () async {
                 Navigator.of(context).pop();
-                Share.share('https://sng.al/cal');
+                if (!kIsWeb) {
+                  Share.share('https://sng.al/cal');
+                } else {
+                  const url =
+                      "mailto:?subject=Arminaatu Wolof&body=Xoolal appli Arminaatu Wolof fii: https://sng.al/cal";
+
+                  if (await canLaunch(url)) {
+                    await launch(url);
+                  } else {
+                    throw 'Could not launch $url';
+                  }
+                }
               },
             ),
             Divider(
