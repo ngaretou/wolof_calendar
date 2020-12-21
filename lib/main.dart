@@ -61,17 +61,9 @@ class _MyAppState extends State<MyApp> {
         builder: (ctx, snapshot) =>
             snapshot.connectionState == ConnectionState.waiting
                 ? Center(child: CircularProgressIndicator())
-                :
-                // Provider.of<UserPrefs>(context, listen: false)
-                //         .userPrefs
-                //         .showOnboarding
-                //     ? OnboardingScreen()
-                //     :
-                MonthsScreen(),
+                : MonthsScreen(),
       ),
-      theme: Provider.of<ThemeModel>(context).currentTheme != null
-          ? Provider.of<ThemeModel>(context).currentTheme
-          : ThemeData.dark(),
+      theme: Provider.of<ThemeModel>(context).currentTheme,
       routes: {
         MonthsScreen.routeName: (ctx) => MonthsScreen(),
         SettingsScreen.routeName: (ctx) => SettingsScreen(),

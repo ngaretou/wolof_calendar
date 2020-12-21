@@ -2,4 +2,4 @@
 
 A companion app to the Wolof Calendar.
 
-Still in alpha-level development.
+Track the Western and Wolof months together with Scripture passages in Roman script, Arabic script, and audio.

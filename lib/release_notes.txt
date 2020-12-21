@@ -1,3 +1,8 @@
+1.06
+Corrected an incorrect date
+Corrected sharing links not working on web app
+Updated sharing plugin that was not working on iPads
+
 1.04
 New audio
 Audio stops on page navigation and on app quit

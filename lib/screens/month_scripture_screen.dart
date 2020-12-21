@@ -62,6 +62,54 @@ class MonthScriptureScreen extends StatelessWidget {
 
     var userPrefs = Provider.of<UserPrefs>(context, listen: false).userPrefs;
 
+    void _adaptiveShare(String script, List<Verses> verses) async {
+      String versesToShare = '';
+      String lineBreak, yallaMooy, vs, ref, name;
+
+      kIsWeb ? lineBreak = '%0d%0a' : lineBreak = '\n';
+
+      //Put together the verses to share. Do with forEach to take into account the multiple verse months.
+      args.data.verses.forEach((element) {
+        if (script == 'roman') {
+          yallaMooy = 'Yàlla mooy ';
+          vs = element.verseRS;
+          ref = element.verseRefRS;
+          name = args.data.wolofName;
+        } else if (script == 'arabic') {
+          yallaMooy = 'يࣵلَّ مࣷويْ ';
+          vs = element.verseAS;
+          ref = element.verseRefAS;
+          name = args.data.wolofalName;
+        }
+
+        versesToShare =
+            versesToShare + vs + lineBreak + ref + lineBreak + lineBreak;
+      });
+
+      //Put together the whole sharing string
+      final String textToShare = yallaMooy +
+          name +
+          ": " +
+          lineBreak +
+          lineBreak +
+          versesToShare +
+          'https://sng.al/cal';
+
+      //if it's not the web app, share using the device share function
+      if (!kIsWeb) {
+        Share.share(textToShare);
+      } else {
+        //If it's the web app version best way to share is probably email, so put the text to share in an email
+        final String url = "mailto:?subject=Arminaatu Wolof&body=$textToShare";
+
+        if (await canLaunch(url)) {
+          await launch(url);
+        } else {
+          throw 'Could not launch $url';
+        }
+      }
+    }
+
     return Scaffold(
       floatingActionButton: Builder(builder: (context) {
         return Player(args.data.monthID);
@@ -90,21 +138,9 @@ class MonthScriptureScreen extends StatelessWidget {
                           actions: [
                             FlatButton(
                                 child: Text("Wolof"),
-                                onPressed: () {
+                                onPressed: () async {
                                   Navigator.of(context).pop();
-                                  String versesToShare = '';
-                                  args.data.verses.forEach((element) {
-                                    versesToShare = versesToShare +
-                                        " " +
-                                        element.verseRS +
-                                        " -- " +
-                                        element.verseRefRS +
-                                        '\n';
-                                  });
-                                  Share.share('Yàlla mooy ' +
-                                      args.data.wolofName +
-                                      ":  " +
-                                      versesToShare);
+                                  _adaptiveShare('roman', args.data.verses);
                                 }),
                             FlatButton(
                                 child: Text("وࣷلࣷفَلْ",
@@ -112,20 +148,7 @@ class MonthScriptureScreen extends StatelessWidget {
                                         fontFamily: "Harmattan", fontSize: 22)),
                                 onPressed: () {
                                   Navigator.of(context).pop();
-                                  String versesToShare = '';
-                                  args.data.verses.forEach((element) {
-                                    versesToShare = versesToShare +
-                                        " " +
-                                        element.verseAS +
-                                        " -- " +
-                                        element.verseRefAS +
-                                        '\n';
-                                  });
-
-                                  Share.share('  يࣵلَّ مࣷويْ' +
-                                      args.data.wolofalName +
-                                      ":  " +
-                                      versesToShare);
+                                  _adaptiveShare('arabic', args.data.verses);
                                 }),
                             FlatButton(
                                 child: Text(
