@@ -2,6 +2,7 @@
 Corrected an incorrect date
 Corrected sharing links not working on web app
 Updated sharing plugin that was not working on iPads
+1.0 release - published before null safety; Flutter stable 1.22.5
 
 1.04
 New audio
