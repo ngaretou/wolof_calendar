@@ -4,7 +4,7 @@ import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
-import '../locale/app_localization.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../screens/about_screen.dart';
 import '../screens/settings_screen.dart';
@@ -79,7 +79,7 @@ class MainDrawer extends StatelessWidget {
               thickness: 3,
             ),
             drawerTitle(
-              AppLocalization.of(context).settingsTitle,
+              AppLocalizations.of(context).settingsTitle,
               Icons.settings,
               () {
                 Navigator.of(context).popAndPushNamed(SettingsScreen.routeName);
@@ -91,7 +91,7 @@ class MainDrawer extends StatelessWidget {
             ),
             drawerTitle(
               // 'Add holidays to\nGoogle Calendar TT',
-              AppLocalization.of(context).addHolidays,
+              AppLocalizations.of(context).addHolidays,
               Icons.calendar_today,
               () async {
                 const url =
@@ -110,7 +110,7 @@ class MainDrawer extends StatelessWidget {
               thickness: 1,
             ),
             drawerTitle(
-              AppLocalization.of(context).shareAppLink,
+              AppLocalizations.of(context).shareAppLink,
               Icons.share,
               () async {
                 Navigator.of(context).pop();
@@ -132,7 +132,7 @@ class MainDrawer extends StatelessWidget {
               thickness: 1,
             ),
             drawerTitle(
-              AppLocalization.of(context).moreApps,
+              AppLocalizations.of(context).moreApps,
               Icons.web_asset,
               () async {
                 const url = 'https://sng.al/app';
@@ -154,7 +154,7 @@ class MainDrawer extends StatelessWidget {
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     child: Row(
                       children: [
-                        Text(AppLocalization.of(context).settingsContactUs,
+                        Text(AppLocalizations.of(context).settingsContactUs,
                             style: Theme.of(context)
                                 .appBarTheme
                                 .textTheme
@@ -163,9 +163,9 @@ class MainDrawer extends StatelessWidget {
                     ))),
 
             // drawerTitle(
-            //     AppLocalization.of(context).settingsContactUs, null, null),
+            //     AppLocalizations.of(context).settingsContactUs, null, null),
             drawerTitle(
-              AppLocalization.of(context).settingsContactUsEmail,
+              AppLocalizations.of(context).settingsContactUsEmail,
               Icons.email,
               () async {
                 const url = 'mailto:equipedevmbs@gmail.com';
@@ -178,7 +178,7 @@ class MainDrawer extends StatelessWidget {
             ),
 
             drawerTitle(
-              AppLocalization.of(context).contactWhatsApp,
+              AppLocalizations.of(context).contactWhatsApp,
               FontAwesomeIcons.whatsapp,
               () async {
                 const url = 'https://wa.me/221776427432';
@@ -190,7 +190,7 @@ class MainDrawer extends StatelessWidget {
               },
             ),
             drawerTitle(
-              AppLocalization.of(context).contactFBMessenger,
+              AppLocalizations.of(context).contactFBMessenger,
               FontAwesomeIcons.facebookMessenger,
               () async {
                 const url = 'https://m.me/kaddugyallagi/';
@@ -205,7 +205,7 @@ class MainDrawer extends StatelessWidget {
               thickness: 2,
             ),
             drawerTitle(
-              AppLocalization.of(context).settingsAbout,
+              AppLocalizations.of(context).settingsAbout,
               Icons.question_answer,
               () {
                 Navigator.of(context).popAndPushNamed(AboutScreen.routeName);

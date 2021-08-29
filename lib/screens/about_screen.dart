@@ -1,7 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../locale/app_localization.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 class AboutScreen extends StatelessWidget {
@@ -32,7 +32,7 @@ class AboutScreen extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            AppLocalization.of(context).settingsAbout,
+            AppLocalizations.of(context).settingsAbout,
           ),
         ),
         body: Center(

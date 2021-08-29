@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../locale/app_localization.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../providers/theme.dart';
 import '../providers/user_prefs.dart';
 
@@ -82,65 +82,83 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     //Now individual implementations of it
     Widget themeTitle() {
-      return settingTitle(AppLocalization.of(context).settingsTheme,
+      return settingTitle(AppLocalizations.of(context).settingsTheme,
           Icons.settings_brightness, null);
     }
 
     // Widget backgroundTitle() {
-    //   return settingTitle(AppLocalization.of(context).settingsCardBackground,
+    //   return settingTitle(AppLocalizations.of(context).settingsCardBackground,
     //       Icons.image, null);
     // }
 
     // Widget directionTitle() {
-    //   return settingTitle(AppLocalization.of(context).settingsCardDirection,
+    //   return settingTitle(AppLocalizations.of(context).settingsCardDirection,
     //       Icons.compare_arrows, null);
     // }
 
     Widget scriptPickerTitle() {
-      return settingTitle(AppLocalization.of(context).settingsVerseDisplay,
+      return settingTitle(AppLocalizations.of(context).settingsVerseDisplay,
           Icons.format_quote, null);
     }
 
     Widget languageTitle() {
       return settingTitle(
-          AppLocalization.of(context).settingsLanguage, Icons.translate, null);
+          AppLocalizations.of(context).settingsLanguage, Icons.translate, null);
     }
 
     Widget themeSettings() {
+      ButtonStyle raisedButtonStyle = ElevatedButton.styleFrom(
+        padding: EdgeInsets.all(0),
+        shape: CircleBorder(),
+        //this one must be white
+        // primary: Colors.white
+      );
+
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          RaisedButton(
-            padding: EdgeInsets.all(0),
-            child: userThemeName == 'lightTheme' ? Icon(Icons.check) : null,
-            shape: CircleBorder(),
-            color: Colors.white,
+          ElevatedButton(
+            style: raisedButtonStyle.copyWith(
+              backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+            ),
+            child: userThemeName == 'lightTheme'
+                ? Icon(
+                    Icons.check,
+                    color: Colors.black,
+                  )
+                : null,
             onPressed: () {
               themeProvider.setLightTheme();
             },
           ),
-          RaisedButton(
-            padding: EdgeInsets.all(0),
+          ElevatedButton(
+            style: raisedButtonStyle.copyWith(
+              backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+            ),
             child: userThemeName == 'blueTheme' ? Icon(Icons.check) : null,
-            shape: CircleBorder(),
-            color: Colors.blue,
+            //must be blue
+            // color: Colors.blue,
             onPressed: () {
               themeProvider.setBlueTheme();
             },
           ),
-          RaisedButton(
-              padding: EdgeInsets.all(0),
+          ElevatedButton(
+              style: raisedButtonStyle.copyWith(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.teal),
+              ),
               child: userThemeName == 'tealTheme' ? Icon(Icons.check) : null,
-              shape: CircleBorder(),
-              color: Colors.teal,
+              //must be teal
+              // color: Colors.teal,
               onPressed: () {
                 themeProvider.setTealTheme();
               }),
-          RaisedButton(
-            padding: EdgeInsets.all(0),
+          ElevatedButton(
+            style: raisedButtonStyle.copyWith(
+              backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
+            ),
             child: userThemeName == 'darkTheme' ? Icon(Icons.check) : null,
-            shape: CircleBorder(),
-            color: Colors.black,
+            //must be black
+            // color: Colors.black,
             onPressed: () {
               setState(() {
                 themeProvider.setDarkTheme();
@@ -162,7 +180,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   padding: EdgeInsets.only(left: 80),
                   child: Row(children: [
                     // Expanded(child:
-                    Text(AppLocalization.of(context).settingsVerseinWolofal,
+                    Text(AppLocalizations.of(context).settingsVerseinWolofal,
                         style: Theme.of(context).textTheme.subtitle1),
                   ]))),
           Expanded(
@@ -198,7 +216,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   padding: EdgeInsets.only(left: 80),
                   child: Row(children: [
                     // Expanded(child:
-                    Text(AppLocalization.of(context).settingsVerseinWolof,
+                    Text(AppLocalizations.of(context).settingsVerseinWolof,
                         style: Theme.of(context).textTheme.subtitle1),
                   ]))),
           Expanded(
@@ -288,7 +306,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          AppLocalization.of(context).settingsTitle,
+          AppLocalizations.of(context).settingsTitle,
         ),
       ),
       //If the width of the screen is greater or equal to 730 (whether or not _isPhone is true)

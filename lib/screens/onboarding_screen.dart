@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'months_screen.dart';
-import '../locale/app_localization.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../providers/theme.dart';
 import '../providers/user_prefs.dart';
 
@@ -38,17 +38,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     isShowImageOnTop: false,
                     bgimage: 'assets/images/1.jpg',
                     // image: null,
-                    body: AppLocalization.of(context).introPage1,
+                    body: AppLocalizations.of(context).introPage1,
                     color: Color(0xFFFF7252)),
                 _buildPageContent(
                     isShowImageOnTop: true,
                     bgimage: 'assets/images/2.jpg',
-                    body: AppLocalization.of(context).introPage2,
+                    body: AppLocalizations.of(context).introPage2,
                     color: Color(0xFFFFA131)),
                 _buildPageContent(
                     isShowImageOnTop: false,
                     bgimage: 'assets/images/3.jpg',
-                    body: AppLocalization.of(context).introPage3,
+                    body: AppLocalizations.of(context).introPage3,
                     color: Color(0xFF3C60FF))
               ],
             ),

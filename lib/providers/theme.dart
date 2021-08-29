@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 
-import '../locale/app_localization.dart';
+// import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import './months.dart';
 import './user_prefs.dart';
@@ -249,16 +249,16 @@ class ThemeModel extends ChangeNotifier {
   }
 
   Future<void> setLang(incomingLang) async {
-    if (incomingLang == null) {
-      return;
-    } else {
-      userLang = incomingLang;
-      AppLocalization.load(Locale(userLang, ''));
-      //get prefs from disk
-      final prefs = await SharedPreferences.getInstance();
-      //save userLang to disk
-      final _userLang = json.encode(userLang);
-      prefs.setString('userLang', _userLang);
-    }
+    // if (incomingLang == null) {
+    //   return;
+    // } else {
+    //   userLang = incomingLang;
+    //   AppLocalizations.load(Locale(userLang, ''));
+    //   //get prefs from disk
+    //   final prefs = await SharedPreferences.getInstance();
+    //   //save userLang to disk
+    //   final _userLang = json.encode(userLang);
+    //   prefs.setString('userLang', _userLang);
+    // }
   }
 }
