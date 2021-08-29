@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'locale/app_localization.dart';
+
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'providers/user_prefs.dart';
 import 'providers/months.dart';
@@ -42,8 +42,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final AppLocalizationDelegate _localeOverrideDelegate =
-      AppLocalizationDelegate(Locale('fr', ''));
+  // final AppLocalizationsDelegate _localeOverrideDelegate =
+  //     AppLocalizationsDelegate(Locale('fr', ''));
 
   @override
   Widget build(BuildContext context) {
@@ -72,11 +72,7 @@ class _MyAppState extends State<MyApp> {
         DateScreen.routeName: (ctx) => DateScreen(),
         MonthScriptureScreen.routeName: (ctx) => MonthScriptureScreen(),
       },
-      localizationsDelegates: [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        _localeOverrideDelegate
-      ],
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: [
         const Locale('en', ''),
         const Locale('fr', ''),

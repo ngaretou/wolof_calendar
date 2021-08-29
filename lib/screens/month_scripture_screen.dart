@@ -10,7 +10,7 @@ import '../providers/months.dart';
 import '../providers/route_args.dart';
 import '../providers/user_prefs.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../locale/app_localization.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'dart:ui' as ui;
 
@@ -132,17 +132,24 @@ class MonthScriptureScreen extends StatelessWidget {
                       builder: (BuildContext context) {
                         return AlertDialog(
                           title: Text(
-                            AppLocalization.of(context).sharingTitle,
+                            AppLocalizations.of(context).sharingTitle,
                           ),
-                          content: Text(AppLocalization.of(context).sharingMsg),
+                          content:
+                              Text(AppLocalizations.of(context).sharingMsg),
                           actions: [
-                            FlatButton(
+                            TextButton(
                                 child: Text("Wolof"),
                                 onPressed: () async {
                                   Navigator.of(context).pop();
                                   _adaptiveShare('roman', args.data.verses);
                                 }),
-                            FlatButton(
+                            // FlatButton(
+                            //     child: Text("Wolof"),
+                            //     onPressed: () async {
+                            //       Navigator.of(context).pop();
+                            //       _adaptiveShare('roman', args.data.verses);
+                            //     }),
+                            TextButton(
                                 child: Text("وࣷلࣷفَلْ",
                                     style: TextStyle(
                                         fontFamily: "Harmattan", fontSize: 22)),
@@ -150,9 +157,9 @@ class MonthScriptureScreen extends StatelessWidget {
                                   Navigator.of(context).pop();
                                   _adaptiveShare('arabic', args.data.verses);
                                 }),
-                            FlatButton(
+                            TextButton(
                                 child: Text(
-                                  AppLocalization.of(context).cancel,
+                                  AppLocalizations.of(context).cancel,
                                 ),
                                 onPressed: () {
                                   Navigator.of(context).pop();
@@ -300,14 +307,15 @@ class MonthScriptureScreen extends StatelessWidget {
                                 ? EdgeInsets.symmetric(horizontal: 0)
                                 : EdgeInsets.symmetric(
                                     horizontal: _contentColWidth / 4),
-                            child: RaisedButton(
-                              color: Theme.of(context).appBarTheme.color,
-                              elevation: 2,
+                            child: ElevatedButton(
+                              //Below leftover from RaisedButton
+                              //color: Theme.of(context).appBarTheme.color,
+                              // elevation: 2,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                      AppLocalization.of(context)
+                                      AppLocalizations.of(context)
                                           .clickHereToReadMore,
                                       style: Theme.of(context)
                                           .appBarTheme
