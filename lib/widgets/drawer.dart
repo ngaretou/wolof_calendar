@@ -1,4 +1,4 @@
-// @dart=2.9
+
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -17,7 +17,7 @@ class MainDrawer extends StatelessWidget {
     //Main template for all titles
     Widget drawerTitle(String title, IconData icon, Function tapHandler) {
       return InkWell(
-        onTap: tapHandler,
+        onTap: tapHandler as void Function()?,
         child: Container(
             width: 300,
             child: Padding(
@@ -28,17 +28,17 @@ class MainDrawer extends StatelessWidget {
                         ? FaIcon(icon,
                             size: 27,
                             color:
-                                Theme.of(context).appBarTheme.iconTheme.color)
+                                Theme.of(context).appBarTheme.iconTheme!.color)
                         : Icon(
                             icon,
                             size: 27,
                             color:
-                                Theme.of(context).appBarTheme.iconTheme.color,
+                                Theme.of(context).appBarTheme.iconTheme!.color,
                           ),
                     SizedBox(width: 25),
                     Text(title,
                         style:
-                            Theme.of(context).appBarTheme.textTheme.headline6),
+                            Theme.of(context).appBarTheme.textTheme!.headline6),
                   ],
                 ))),
       );
@@ -61,14 +61,14 @@ class MainDrawer extends StatelessWidget {
                         FaIcon(
                           FontAwesomeIcons.calendarAlt,
                           size: 27,
-                          color: Theme.of(context).appBarTheme.iconTheme.color,
+                          color: Theme.of(context).appBarTheme.iconTheme!.color,
                         ),
                         SizedBox(width: 25),
                         Text("Arminaatu wolof",
                             style: Theme.of(context)
                                 .appBarTheme
-                                .textTheme
-                                .headline6
+                                .textTheme!
+                                .headline6!
                                 .copyWith(
                                   fontSize: 24,
                                   fontFamily: 'Lato',
@@ -81,7 +81,7 @@ class MainDrawer extends StatelessWidget {
               thickness: 3,
             ),
             drawerTitle(
-              AppLocalizations.of(context).settingsTitle,
+              AppLocalizations.of(context)!.settingsTitle,
               Icons.settings,
               () {
                 Navigator.of(context).popAndPushNamed(SettingsScreen.routeName);
@@ -93,7 +93,7 @@ class MainDrawer extends StatelessWidget {
             ),
             drawerTitle(
               // 'Add holidays to\nGoogle Calendar TT',
-              AppLocalizations.of(context).addHolidays,
+              AppLocalizations.of(context)!.addHolidays,
               Icons.calendar_today,
               () async {
                 const url =
@@ -112,7 +112,7 @@ class MainDrawer extends StatelessWidget {
               thickness: 1,
             ),
             drawerTitle(
-              AppLocalizations.of(context).shareAppLink,
+              AppLocalizations.of(context)!.shareAppLink,
               Icons.share,
               () async {
                 Navigator.of(context).pop();
@@ -134,7 +134,7 @@ class MainDrawer extends StatelessWidget {
               thickness: 1,
             ),
             drawerTitle(
-              AppLocalizations.of(context).moreApps,
+              AppLocalizations.of(context)!.moreApps,
               Icons.web_asset,
               () async {
                 const url = 'https://sng.al/app';
@@ -156,10 +156,10 @@ class MainDrawer extends StatelessWidget {
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     child: Row(
                       children: [
-                        Text(AppLocalizations.of(context).settingsContactUs,
+                        Text(AppLocalizations.of(context)!.settingsContactUs,
                             style: Theme.of(context)
                                 .appBarTheme
-                                .textTheme
+                                .textTheme!
                                 .headline6),
                       ],
                     ))),
@@ -167,7 +167,7 @@ class MainDrawer extends StatelessWidget {
             // drawerTitle(
             //     AppLocalizations.of(context).settingsContactUs, null, null),
             drawerTitle(
-              AppLocalizations.of(context).settingsContactUsEmail,
+              AppLocalizations.of(context)!.settingsContactUsEmail,
               Icons.email,
               () async {
                 const url = 'mailto:equipedevmbs@gmail.com';
@@ -180,7 +180,7 @@ class MainDrawer extends StatelessWidget {
             ),
 
             drawerTitle(
-              AppLocalizations.of(context).contactWhatsApp,
+              AppLocalizations.of(context)!.contactWhatsApp,
               FontAwesomeIcons.whatsapp,
               () async {
                 const url = 'https://wa.me/221776427432';
@@ -192,7 +192,7 @@ class MainDrawer extends StatelessWidget {
               },
             ),
             drawerTitle(
-              AppLocalizations.of(context).contactFBMessenger,
+              AppLocalizations.of(context)!.contactFBMessenger,
               FontAwesomeIcons.facebookMessenger,
               () async {
                 const url = 'https://m.me/kaddugyallagi/';
@@ -207,7 +207,7 @@ class MainDrawer extends StatelessWidget {
               thickness: 2,
             ),
             drawerTitle(
-              AppLocalizations.of(context).settingsAbout,
+              AppLocalizations.of(context)!.settingsAbout,
               Icons.question_answer,
               () {
                 Navigator.of(context).popAndPushNamed(AboutScreen.routeName);

@@ -1,4 +1,4 @@
-// @dart=2.9
+
 
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -17,7 +17,7 @@ class _PlayerState extends State<Player> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     //allows you to observe the AppLifecycleState below so you can stop the
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
   }
 
   @override
@@ -46,7 +46,7 @@ class _PlayerState extends State<Player> with WidgetsBindingObserver {
   }
 
   static AudioCache cache = AudioCache();
-  AudioPlayer player;
+  late AudioPlayer player;
 
   bool isPlaying = false;
   bool isPaused = false;

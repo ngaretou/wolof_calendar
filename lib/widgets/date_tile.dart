@@ -1,4 +1,4 @@
-// @dart=2.9
+
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -24,8 +24,8 @@ class _DateTileState extends State<DateTile> {
         .where((month) => month.monthID == widget.currentDate.month)
         .toList();
 
-    String _wolofWeekday;
-    String _wolofalWeekday;
+    late String _wolofWeekday;
+    late String _wolofalWeekday;
     var currentDateTime = DateFormat("yyyy/M/dd", 'fr_FR').parse(
         '${widget.currentDate.year}/${widget.currentDate.month}/${widget.currentDate.westernDate}');
 
@@ -91,9 +91,9 @@ class _DateTileState extends State<DateTile> {
     TextStyle headerStyle = TextStyle(
         fontFamily: "Harmattan",
         fontSize: 30,
-        color: Theme.of(context).textTheme.headline6.color);
+        color: Theme.of(context).textTheme.headline6!.color);
 
-    TextStyle/*!*/ head5 = Theme.of(context).textTheme.headline6;
+    TextStyle head5 = Theme.of(context).textTheme.headline6!;
 
     return Column(
       children: [
@@ -137,7 +137,7 @@ class _DateTileState extends State<DateTile> {
         //Regular date card
         Card(
           elevation: 5,
-          color: widget.currentDate.holidays.length >= 1
+          color: widget.currentDate.holidays!.length >= 1
               ? Theme.of(context).accentColor
               : Theme.of(context).cardColor,
           //Western date, column of weekdays, Wolof date
@@ -158,7 +158,7 @@ class _DateTileState extends State<DateTile> {
                               _wolofalWeekday,
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline6
+                                  .headline6!
                                   .copyWith(
                                       fontFamily: "Harmattan", fontSize: 30),
                               textDirection: ui.TextDirection.rtl,
@@ -173,39 +173,39 @@ class _DateTileState extends State<DateTile> {
                   ),
                 ),
                 //Holiday extension to the card
-                widget.currentDate.holidays.length >= 1
+                widget.currentDate.holidays!.length >= 1
                     ? Divider(
                         thickness: 4,
                       )
                     : SizedBox(
                         height: 0,
                       ),
-                if (widget.currentDate.holidays.length >= 1)
+                if (widget.currentDate.holidays!.length >= 1)
                   Container(
                     child: ListView.builder(
                       physics: NeverScrollableScrollPhysics(),
                       padding: EdgeInsets.symmetric(vertical: 10),
                       shrinkWrap: true,
                       scrollDirection: Axis.vertical,
-                      itemCount: widget.currentDate.holidays.length,
+                      itemCount: widget.currentDate.holidays!.length,
                       itemBuilder: (BuildContext context, int i) => Container(
                           child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text(widget.currentDate.holidays[i].holidayRS,
+                          Text(widget.currentDate.holidays![i].holidayRS,
                               style: head5),
-                          Text(widget.currentDate.holidays[i].holidayAS,
+                          Text(widget.currentDate.holidays![i].holidayAS,
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline6
+                                  .headline6!
                                   .copyWith(
                                       fontFamily: "Harmattan", fontSize: 30)),
                           Text(
-                            widget.currentDate.holidays[i].holidayFR,
+                            widget.currentDate.holidays![i].holidayFR,
                             style: head5,
                           ),
-                          widget.currentDate.holidays.length - (i + 1) != 0
+                          widget.currentDate.holidays!.length - (i + 1) != 0
                               ? Divider(thickness: 3, height: 40)
                               : SizedBox(
                                   height: 0,
