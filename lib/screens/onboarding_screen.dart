@@ -128,9 +128,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   Widget languageChooser() {
     int _value;
-    bool firstRun =
+    bool/*!*/ firstRun =
         Provider.of<UserPrefs>(context, listen: false).showOnboarding;
-    String chosenLang =
+    String/*!*/ chosenLang =
         Provider.of<ThemeModel>(context, listen: false).userLang;
     if (firstRun == true) {
       _value = 1;
