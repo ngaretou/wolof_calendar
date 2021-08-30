@@ -93,7 +93,7 @@ class _DateTileState extends State<DateTile> {
         fontSize: 30,
         color: Theme.of(context).textTheme.headline6.color);
 
-    TextStyle head5 = Theme.of(context).textTheme.headline6;
+    TextStyle/*!*/ head5 = Theme.of(context).textTheme.headline6;
 
     return Column(
       children: [

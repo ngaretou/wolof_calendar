@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:flutter/material.dart';
 
 import 'dart:ui' as ui;
@@ -19,17 +17,17 @@ class MonthTile extends StatelessWidget {
         1400;
     TextStyle rsStyle = Theme.of(context)
         .textTheme
-        .headline6
+        .headline6!
         .copyWith(color: Colors.white, fontSize: 30);
 
-    TextStyle asStyle = Theme.of(context).textTheme.headline6.copyWith(
+    TextStyle? asStyle = Theme.of(context).textTheme.headline6!.copyWith(
           color: Colors.white,
           fontSize: 40,
           fontFamily: "Harmattan",
         );
 
     EdgeInsetsGeometry getPadding() {
-      EdgeInsetsGeometry cardPadding;
+      late EdgeInsetsGeometry cardPadding;
       if (currentMonth.monthID == "cover" && _isPhone) {
         cardPadding =
             EdgeInsets.only(left: 40.0, right: 40, top: 40, bottom: 30);
@@ -48,7 +46,6 @@ class MonthTile extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 0, top: 10),
       child: GestureDetector(
         onTap: () {
-          print('tile ontap');
           Navigator.of(context).pushNamed(MonthScriptureScreen.routeName,
               arguments: MonthScriptureScreenArgs(data: currentMonth));
         },
@@ -85,11 +82,15 @@ class MonthTile extends StatelessWidget {
                       style: rsStyle,
                     ),
                     Divider(color: Colors.white, height: _isPhone ? 16 : 80),
-                    Text(
-                      currentMonth.monthAS,
-                      style: asStyle,
-                      textDirection: ui.TextDirection.rtl,
+                    //Arabic script Wolof month in the middle of the tile
+                    Container(
+                      child: Text(
+                        currentMonth.monthAS,
+                        style: asStyle,
+                        textDirection: ui.TextDirection.rtl,
+                      ),
                     ),
+
                     currentMonth.monthID == "cover"
                         ? SizedBox(
                             height: 0,
