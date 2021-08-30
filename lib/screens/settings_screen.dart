@@ -1,4 +1,4 @@
-// @dart=2.9
+
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -33,9 +33,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     //Widgets
     //Main template for all setting titles
-    Widget settingTitle(String title, IconData icon, Function tapHandler) {
+    Widget settingTitle(String title, IconData icon, Function? tapHandler) {
       return InkWell(
-        onTap: tapHandler,
+        onTap: tapHandler as void Function()?,
         child: Container(
             width: 300,
             child: Padding(
@@ -45,7 +45,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     Icon(
                       icon,
                       size: 27,
-                      color: Theme.of(context).textTheme.headline6.color,
+                      color: Theme.of(context).textTheme.headline6!.color,
                     ),
                     SizedBox(width: 25),
                     Text(title, style: Theme.of(context).textTheme.headline6),
@@ -84,7 +84,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     //Now individual implementations of it
     Widget themeTitle() {
-      return settingTitle(AppLocalizations.of(context).settingsTheme,
+      return settingTitle(AppLocalizations.of(context)!.settingsTheme,
           Icons.settings_brightness, null);
     }
 
@@ -99,13 +99,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
     // }
 
     Widget scriptPickerTitle() {
-      return settingTitle(AppLocalizations.of(context).settingsVerseDisplay,
+      return settingTitle(AppLocalizations.of(context)!.settingsVerseDisplay,
           Icons.format_quote, null);
     }
 
     Widget languageTitle() {
       return settingTitle(
-          AppLocalizations.of(context).settingsLanguage, Icons.translate, null);
+          AppLocalizations.of(context)!.settingsLanguage, Icons.translate, null);
     }
 
     Widget themeSettings() {
@@ -182,7 +182,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   padding: EdgeInsets.only(left: 80),
                   child: Row(children: [
                     // Expanded(child:
-                    Text(AppLocalizations.of(context).settingsVerseinWolofal,
+                    Text(AppLocalizations.of(context)!.settingsVerseinWolofal,
                         style: Theme.of(context).textTheme.subtitle1),
                   ]))),
           Expanded(
@@ -193,7 +193,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Switch(
-                  value: _wolofal,
+                  value: _wolofal!,
                   onChanged: (_) {
                     setState(() {
                       userPrefs.savePref('wolofalVerseEnabled', !_wolofal);
@@ -218,7 +218,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   padding: EdgeInsets.only(left: 80),
                   child: Row(children: [
                     // Expanded(child:
-                    Text(AppLocalizations.of(context).settingsVerseinWolof,
+                    Text(AppLocalizations.of(context)!.settingsVerseinWolof,
                         style: Theme.of(context).textTheme.subtitle1),
                   ]))),
           Expanded(
@@ -228,7 +228,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Switch(
-                  value: _wolof,
+                  value: _wolof!,
                   onChanged: (_) {
                     setState(() {
                       userPrefs.savePref('wolofVerseEnabled', !_wolof);
@@ -308,7 +308,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          AppLocalizations.of(context).settingsTitle,
+          AppLocalizations.of(context)!.settingsTitle,
         ),
       ),
       //If the width of the screen is greater or equal to 730 (whether or not _isPhone is true)
