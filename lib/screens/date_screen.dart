@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
@@ -26,17 +24,18 @@ class _DateScreenState extends State<DateScreen> {
   final ItemScrollController itemScrollController = ItemScrollController();
 
   //Things we declare here to get values in didChangeDependencies that we can then use in the first build
-  List<Date> _datesToDisplay;
-  int initialDateIndex;
-  int scrollToIndex;
-  String appBarTitle;
-  String currentMonthAppBarTitle;
-  DateTime initialDateTime;
+  late List<Date> _datesToDisplay;
+  late int initialDateIndex;
+  late int scrollToIndex;
+  late String appBarTitle;
+  late String currentMonthAppBarTitle;
+  late DateTime initialDateTime;
 
   @override
   void didChangeDependencies() {
     //Incoming args from the Navigator.of command from wherever we've arrived from
-    final DateScreenArgs args = ModalRoute.of(context).settings.arguments;
+    final DateScreenArgs args =
+        ModalRoute.of(context)!.settings.arguments as DateScreenArgs;
 
     //The data - display 'infinite' list, all dates in the data
     _datesToDisplay = Provider.of<Months>(context, listen: false).dates;
@@ -69,7 +68,7 @@ class _DateScreenState extends State<DateScreen> {
     final bool _isPhone =
         (_screenwidth + MediaQuery.of(context).size.height) <= 1400;
 
-    var navigateToDateIndex; //this is for later on when the user navigates
+    late var navigateToDateIndex; //this is for later on when the user navigates
     var lastIndex = _datesToDisplay.length - 1;
 
     void updateAppBarTitle(index) {
@@ -179,8 +178,8 @@ class _DateScreenState extends State<DateScreen> {
               ? Text(appBarTitle,
                   style: Theme.of(context)
                       .appBarTheme
-                      .textTheme
-                      .headline6
+                      .textTheme!
+                      .headline6!
                       .copyWith(fontSize: 18))
               : Text(appBarTitle),
           actions: [
@@ -205,12 +204,12 @@ class _DateScreenState extends State<DateScreen> {
                 : EdgeInsets.symmetric(
                     horizontal: _screenwidth / 20, vertical: 0),
             child: NotificationListener(
-              onNotification: (notification) {
+              onNotification: (dynamic notification) {
                 if (notification is ScrollEndNotification) {
                   updateAppBarTitle(
                       itemPositionsListener.itemPositions.value.first.index);
                 }
-                return;
+                return true;
               },
               child: ScrollablePositionedList.builder(
                 itemScrollController: itemScrollController,
