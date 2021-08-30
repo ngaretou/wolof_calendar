@@ -7,13 +7,13 @@ import 'dart:async';
 import 'dart:convert';
 
 class Holiday {
-  final String monthID;
-  final String year;
-  final String westernMonthDate;
-  final String wolofMonthDate; // no longer need this
-  final String holidayFR;
-  final String holidayAS;
-  final String holidayRS;
+  final String /*!*/ monthID;
+  final String /*!*/ year;
+  final String /*!*/ westernMonthDate;
+  final String /*!*/ wolofMonthDate; // no longer need this
+  final String /*!*/ holidayFR;
+  final String /*!*/ holidayAS;
+  final String /*!*/ holidayRS;
 
   Holiday({
     @required this.monthID,
@@ -27,11 +27,11 @@ class Holiday {
 }
 
 class Verses {
-  final String monthID;
-  final String verseAS;
-  final String verseRS;
-  final String verseRefRS;
-  final String verseRefAS;
+  final String /*!*/ monthID;
+  final String /*!*/ verseAS;
+  final String /*!*/ verseRS;
+  final String /*!*/ verseRefRS;
+  final String /*!*/ verseRefAS;
 
   Verses({
     @required this.monthID,
@@ -43,12 +43,12 @@ class Verses {
 }
 
 class Date {
-  final String year;
-  final String month;
-  final String wolofMonthRS;
-  final String wolofMonthAS;
-  final String westernDate;
-  final String wolofDate;
+  final String /*!*/ year;
+  final String /*!*/ month;
+  final String /*!*/ wolofMonthRS;
+  final String /*!*/ wolofMonthAS;
+  final String /*!*/ westernDate;
+  final String /*!*/ wolofDate;
   final List<Holiday> holidays;
 
   Date({
@@ -63,14 +63,14 @@ class Date {
 }
 
 class Month with ChangeNotifier {
-  final String monthID;
-  final String monthFR;
-  final String monthRS;
-  final String monthAS;
-  final String arabicName;
-  final String wolofName;
-  final String wolofalName;
-  final List<Verses> verses;
+  final String /*!*/ monthID;
+  final String /*!*/ monthFR;
+  final String /*!*/ monthRS;
+  final String /*!*/ monthAS;
+  final String /*!*/ arabicName;
+  final String /*!*/ wolofName;
+  final String /*!*/ wolofalName;
+  final List<Verses> /*!*/ verses;
 
   Month({
     @required this.monthID,
