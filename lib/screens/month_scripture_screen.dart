@@ -396,7 +396,7 @@ class HolidayBuilder extends StatelessWidget {
             element.month == monthID && element.year == currentCalendarYear)
         .toList();
 
-    var previousWolofDate;
+    /*late*/ String previousWolofDate;
     // Before we do anything, check if there are holidays in this month. If there are none, just put in a zero sized box below.
     bool hasHolidays = datesData.any((date) => date.holidays.length != 0);
 
@@ -419,6 +419,8 @@ class HolidayBuilder extends StatelessWidget {
           });
         }
       });
+      //After building the list of holidays in the current month, grab the Wolof month date of the first
+      //holiday in the month
       previousWolofDate = holidaysList[0].wolofMonthDate;
     }
 
