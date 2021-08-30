@@ -425,6 +425,7 @@ class HolidayBuilder extends StatelessWidget {
     Widget monthHeaderRow(wolofMonth) {
       return Column(children: [
         // Divider(thickness: 1),
+        //This row is for example "Samwiye    Rakkaati Gammu"
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
