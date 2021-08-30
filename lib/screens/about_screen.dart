@@ -1,4 +1,4 @@
-// @dart=2.9
+
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -28,13 +28,13 @@ class AboutScreen extends StatelessWidget {
     var _screenwidth = MediaQuery.of(context).size.width;
     TextStyle linkTheme = Theme.of(context)
         .textTheme
-        .bodyText2
+        .bodyText2!
         .copyWith(decoration: TextDecoration.underline);
-    TextStyle defaultStyle = Theme.of(context).textTheme.bodyText2;
+    TextStyle defaultStyle = Theme.of(context).textTheme.bodyText2!;
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            AppLocalizations.of(context).settingsAbout,
+            AppLocalizations.of(context)!.settingsAbout,
           ),
         ),
         body: Center(
