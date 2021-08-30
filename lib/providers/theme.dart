@@ -126,10 +126,10 @@ enum ThemeType { Light, Blue, Teal, Dark }
 class ThemeModel extends ChangeNotifier {
   Future<SharedPreferences> prefs = SharedPreferences.getInstance();
   // ignore: unused_field
-  ThemeType _themeType;
-  String userThemeName;
-  ThemeData currentTheme;
-  String userLang;
+  ThemeType? _themeType;
+  String? userThemeName;
+  ThemeData? currentTheme;
+  String? userLang;
 
 //Actually not doing that way anymore but leaving for reference
 //this is the constructor, it runs setup to initialize currentTheme
@@ -161,7 +161,7 @@ class ThemeModel extends ChangeNotifier {
     if (!prefs.containsKey('userThemeName')) {
       setLightTheme();
     } else {
-      userThemeName = json.decode(prefs.getString('userThemeName')) as String;
+      userThemeName = json.decode(prefs.getString('userThemeName')!) as String?;
 
       switch (userThemeName) {
         case 'darkTheme':
@@ -243,7 +243,7 @@ class ThemeModel extends ChangeNotifier {
     if (!prefs.containsKey('userLang')) {
       setLang('wo');
     } else {
-      final savedUserLang = json.decode(prefs.getString('userLang')) as String;
+      final savedUserLang = json.decode(prefs.getString('userLang')!) as String?;
       setLang(savedUserLang);
     }
   }
