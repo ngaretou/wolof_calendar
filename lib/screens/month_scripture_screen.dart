@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:wolof_calendar/screens/date_screen.dart';
@@ -32,15 +30,15 @@ class MonthScriptureScreen extends StatelessWidget {
         (_screenwidth + MediaQuery.of(context).size.height) <= 1400;
 
     final MonthScriptureScreenArgs args =
-        ModalRoute.of(context).settings.arguments;
+        ModalRoute.of(context)!.settings.arguments as MonthScriptureScreenArgs;
 
-    TextStyle asStyle = Theme.of(context).textTheme.headline6.copyWith(
+    TextStyle asStyle = Theme.of(context).textTheme.headline6!.copyWith(
           fontFamily: "Harmattan",
           fontSize: 40,
         );
     TextStyle rsStyle = Theme.of(context)
         .textTheme
-        .headline6
+        .headline6!
         .copyWith(fontFamily: "Charis", fontSize: 30);
 
     TextStyle asRefStyle = asStyle.copyWith(fontSize: 24);
@@ -66,7 +64,7 @@ class MonthScriptureScreen extends StatelessWidget {
 
     void _adaptiveShare(String script, List<Verses> verses) async {
       String versesToShare = '';
-      String lineBreak, yallaMooy, vs, ref, name;
+      late String lineBreak, yallaMooy, vs, ref, name;
 
       kIsWeb ? lineBreak = '%0d%0a' : lineBreak = '\n';
 
@@ -134,10 +132,10 @@ class MonthScriptureScreen extends StatelessWidget {
                       builder: (BuildContext context) {
                         return AlertDialog(
                           title: Text(
-                            AppLocalizations.of(context).sharingTitle,
+                            AppLocalizations.of(context)!.sharingTitle,
                           ),
                           content:
-                              Text(AppLocalizations.of(context).sharingMsg),
+                              Text(AppLocalizations.of(context)!.sharingMsg),
                           actions: [
                             TextButton(
                                 child: Text("Wolof"),
@@ -161,7 +159,7 @@ class MonthScriptureScreen extends StatelessWidget {
                                 }),
                             TextButton(
                                 child: Text(
-                                  AppLocalizations.of(context).cancel,
+                                  AppLocalizations.of(context)!.cancel,
                                 ),
                                 onPressed: () {
                                   Navigator.of(context).pop();
@@ -195,8 +193,8 @@ class MonthScriptureScreen extends StatelessWidget {
                   ? Text(args.data.monthRS + "  |  " + args.data.monthAS,
                       style: Theme.of(context)
                           .appBarTheme
-                          .textTheme
-                          .headline6
+                          .textTheme!
+                          .headline6!
                           .copyWith(fontFamily: 'Charis'))
                   : MainTitle(args.data.arabicName),
               centerTitle: true,
@@ -264,7 +262,7 @@ class MonthScriptureScreen extends StatelessWidget {
 
                           //Verses start here
                           //AS verses
-                          if (userPrefs.wolofalVerseEnabled)
+                          if (userPrefs.wolofalVerseEnabled!)
                             ListView.builder(
                               itemCount: args.data.verses.length,
                               itemBuilder: (ctx, i) => VerseBuilder(
@@ -279,8 +277,8 @@ class MonthScriptureScreen extends StatelessWidget {
                               physics: NeverScrollableScrollPhysics(),
                             ),
 
-                          if (userPrefs.wolofalVerseEnabled &&
-                              userPrefs.wolofVerseEnabled)
+                          if (userPrefs.wolofalVerseEnabled! &&
+                              userPrefs.wolofVerseEnabled!)
                             Divider(
                               height: 60,
                               thickness: 2,
@@ -288,7 +286,7 @@ class MonthScriptureScreen extends StatelessWidget {
                             ),
 
                           //RS verses
-                          if (userPrefs.wolofVerseEnabled)
+                          if (userPrefs.wolofVerseEnabled!)
                             ListView.builder(
                               itemCount: args.data.verses.length,
                               itemBuilder: (ctx, i) => VerseBuilder(
@@ -317,17 +315,17 @@ class MonthScriptureScreen extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                      AppLocalizations.of(context)
+                                      AppLocalizations.of(context)!
                                           .clickHereToReadMore,
                                       style: Theme.of(context)
                                           .appBarTheme
-                                          .textTheme
-                                          .headline6
+                                          .textTheme!
+                                          .headline6!
                                           .copyWith(fontSize: 18)),
                                   Icon(Icons.arrow_forward,
                                       color: Theme.of(context)
                                           .appBarTheme
-                                          .iconTheme
+                                          .iconTheme!
                                           .color),
                                 ],
                               ),
@@ -370,13 +368,13 @@ class HolidayBuilder extends StatelessWidget {
   // ignore: missing_return
   Widget build(BuildContext context) {
 //Set up some styling for use down below
-    TextStyle asStyle = Theme.of(context).textTheme.headline6.copyWith(
+    TextStyle asStyle = Theme.of(context).textTheme.headline6!.copyWith(
           fontFamily: "Harmattan",
           fontSize: 30,
         );
     TextStyle rsStyle = Theme.of(context)
         .textTheme
-        .headline6
+        .headline6!
         .copyWith(fontFamily: "Charis", fontSize: 22);
 
     ui.TextDirection rtlText = ui.TextDirection.rtl;
@@ -396,17 +394,17 @@ class HolidayBuilder extends StatelessWidget {
             element.month == monthID && element.year == currentCalendarYear)
         .toList();
 
-    /*late*/ String previousWolofDate;
+    late String previousWolofDate;
     // Before we do anything, check if there are holidays in this month. If there are none, just put in a zero sized box below.
-    bool hasHolidays = datesData.any((date) => date.holidays.length != 0);
+    bool hasHolidays = datesData.any((date) => date.holidays!.length != 0);
 
     List<Holiday> holidaysList = [];
 
 //only build the holidaysList if you know for sure there are holidays
     if (hasHolidays) {
       datesData.forEach((day) {
-        if (day.holidays.length != 0) {
-          day.holidays.forEach((holiday) {
+        if (day.holidays!.length != 0) {
+          day.holidays!.forEach((holiday) {
             holidaysList.add(Holiday(
               year: day.year,
               monthID: day.month,
@@ -596,7 +594,7 @@ class MainTitle extends StatefulWidget {
 }
 
 class _MainTitleState extends State<MainTitle> {
-  Timer _timer;
+  late Timer _timer;
   //Lazy animation: set opacity at 0
   double _opacity = 0;
 
@@ -619,7 +617,7 @@ class _MainTitleState extends State<MainTitle> {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle asStyle = Theme.of(context).textTheme.headline6.copyWith(
+    TextStyle asStyle = Theme.of(context).textTheme.headline6!.copyWith(
         fontFamily: "Harmattan", fontSize: 40, color: Colors.white, height: 1);
 
     return AnimatedOpacity(
