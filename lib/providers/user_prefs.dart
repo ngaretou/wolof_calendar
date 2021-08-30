@@ -6,12 +6,12 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserPrefs with ChangeNotifier {
-  bool textDirection;
-  bool imageEnabled;
-  bool wolofVerseEnabled;
-  bool wolofalVerseEnabled;
-  bool showFavs;
-  bool showOnboarding;
+  bool? textDirection;
+  bool? imageEnabled;
+  bool? wolofVerseEnabled;
+  bool? wolofalVerseEnabled;
+  bool? showFavs;
+  bool? showOnboarding;
 
   UserPrefs({
     this.textDirection,
@@ -22,7 +22,7 @@ class UserPrefs with ChangeNotifier {
     this.showOnboarding,
   });
 
-  UserPrefs _userPrefs;
+  late UserPrefs _userPrefs;
 
   UserPrefs get userPrefs {
     return _userPrefs;
@@ -58,14 +58,14 @@ class UserPrefs with ChangeNotifier {
       prefs.setString('userPrefs', _defaultUserPrefs);
     } else {
       final jsonResponse =
-          json.decode(prefs.getString('userPrefs')) as Map<String, Object>;
+          json.decode(prefs.getString('userPrefs')!) as Map<String, Object>;
       _userPrefs = UserPrefs(
-        textDirection: jsonResponse['textDirection'],
-        imageEnabled: jsonResponse['imageEnabled'],
-        wolofVerseEnabled: jsonResponse['wolofVerseEnabled'],
-        wolofalVerseEnabled: jsonResponse['wolofalVerseEnabled'],
-        showFavs: jsonResponse['showFavs'],
-        showOnboarding: jsonResponse['showOnboarding'],
+        textDirection: jsonResponse['textDirection'] as bool,
+        imageEnabled: jsonResponse['imageEnabled'] as bool,
+        wolofVerseEnabled: jsonResponse['wolofVerseEnabled'] as bool,
+        wolofalVerseEnabled: jsonResponse['wolofalVerseEnabled'] as bool,
+        showFavs: jsonResponse['showFavs'] as bool,
+        showOnboarding: jsonResponse['showOnboarding'] as bool,
       );
     }
     print('in setup');
@@ -76,14 +76,14 @@ class UserPrefs with ChangeNotifier {
     //get the prefs
     final prefs = await SharedPreferences.getInstance();
     final jsonResponse =
-        json.decode(prefs.getString('userPrefs')) as Map<String, Object>;
+        json.decode(prefs.getString('userPrefs')!) as Map<String, Object>;
     var _tempUserPrefs = UserPrefs(
-      textDirection: jsonResponse['textDirection'],
-      imageEnabled: jsonResponse['imageEnabled'],
-      wolofVerseEnabled: jsonResponse['wolofVerseEnabled'],
-      wolofalVerseEnabled: jsonResponse['wolofalVerseEnabled'],
-      showFavs: jsonResponse['showFavs'],
-      showOnboarding: jsonResponse['showOnboarding'],
+      textDirection: jsonResponse['textDirection'] as bool,
+      imageEnabled: jsonResponse['imageEnabled'] as bool,
+      wolofVerseEnabled: jsonResponse['wolofVerseEnabled'] as bool,
+      wolofalVerseEnabled: jsonResponse['wolofalVerseEnabled'] as bool,
+      showFavs: jsonResponse['showFavs'] as bool,
+      showOnboarding: jsonResponse['showOnboarding'] as bool,
     );
 
     //set the incoming setting

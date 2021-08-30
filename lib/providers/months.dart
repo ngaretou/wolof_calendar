@@ -7,80 +7,80 @@ import 'dart:async';
 import 'dart:convert';
 
 class Holiday {
-  final String /*!*/ monthID;
-  final String /*!*/ year;
-  final String /*!*/ westernMonthDate;
-  final String /*!*/ wolofMonthDate; // no longer need this
-  final String /*!*/ holidayFR;
-  final String /*!*/ holidayAS;
-  final String /*!*/ holidayRS;
+  final String monthID;
+  final String year;
+  final String westernMonthDate;
+  final String wolofMonthDate; // no longer need this
+  final String holidayFR;
+  final String holidayAS;
+  final String holidayRS;
 
   Holiday({
-    @required this.monthID,
-    @required this.year,
-    @required this.westernMonthDate,
-    @required this.wolofMonthDate,
-    @required this.holidayFR,
-    @required this.holidayAS,
-    @required this.holidayRS,
+    required this.monthID,
+    required this.year,
+    required this.westernMonthDate,
+    required this.wolofMonthDate,
+    required this.holidayFR,
+    required this.holidayAS,
+    required this.holidayRS,
   });
 }
 
 class Verses {
-  final String /*!*/ monthID;
-  final String /*!*/ verseAS;
-  final String /*!*/ verseRS;
-  final String /*!*/ verseRefRS;
-  final String /*!*/ verseRefAS;
+  final String monthID;
+  final String verseAS;
+  final String verseRS;
+  final String verseRefRS;
+  final String verseRefAS;
 
   Verses({
-    @required this.monthID,
-    @required this.verseAS,
-    @required this.verseRS,
-    @required this.verseRefRS,
-    @required this.verseRefAS,
+    required this.monthID,
+    required this.verseAS,
+    required this.verseRS,
+    required this.verseRefRS,
+    required this.verseRefAS,
   });
 }
 
 class Date {
-  final String /*!*/ year;
-  final String /*!*/ month;
-  final String /*!*/ wolofMonthRS;
-  final String /*!*/ wolofMonthAS;
-  final String /*!*/ westernDate;
-  final String /*!*/ wolofDate;
-  final List<Holiday> holidays;
+  final String year;
+  final String month;
+  final String wolofMonthRS;
+  final String wolofMonthAS;
+  final String westernDate;
+  final String wolofDate;
+  final List<Holiday>? holidays;
 
   Date({
-    @required this.year,
-    @required this.month,
-    this.wolofMonthRS,
-    this.wolofMonthAS,
-    @required this.westernDate,
-    @required this.wolofDate,
+    required this.year,
+    required this.month,
+    required this.wolofMonthRS,
+    required this.wolofMonthAS,
+    required this.westernDate,
+    required this.wolofDate,
     this.holidays,
   });
 }
 
 class Month with ChangeNotifier {
-  final String /*!*/ monthID;
-  final String /*!*/ monthFR;
-  final String /*!*/ monthRS;
-  final String /*!*/ monthAS;
-  final String /*!*/ arabicName;
-  final String /*!*/ wolofName;
-  final String /*!*/ wolofalName;
-  final List<Verses> /*!*/ verses;
+  final String monthID;
+  final String monthFR;
+  final String monthRS;
+  final String monthAS;
+  final String arabicName;
+  final String wolofName;
+  final String wolofalName;
+  final List<Verses> verses;
 
   Month({
-    @required this.monthID,
-    @required this.monthFR,
-    @required this.monthRS,
-    @required this.monthAS,
-    @required this.arabicName,
-    @required this.wolofName,
-    @required this.wolofalName,
-    @required this.verses,
+    required this.monthID,
+    required this.monthFR,
+    required this.monthRS,
+    required this.monthAS,
+    required this.arabicName,
+    required this.wolofName,
+    required this.wolofalName,
+    required this.verses,
   });
 }
 
@@ -126,10 +126,10 @@ class Months with ChangeNotifier {
     final monthsData = json.decode(monthsJSON) as List<dynamic>;
 
     String holidaysJSON = await rootBundle.loadString("assets/holidays.json");
-    final holidaysData = json.decode(holidaysJSON) as List<dynamic>;
+    final holidaysData = json.decode(holidaysJSON) as List<dynamic>?;
 
     String versesJSON = await rootBundle.loadString("assets/verses.json");
-    final versesData = json.decode(versesJSON) as List<dynamic>;
+    final versesData = json.decode(versesJSON) as List<dynamic>?;
 
     String datesJSON = await rootBundle.loadString("assets/dates.json");
     final datesData = json.decode(datesJSON) as List<dynamic>;
@@ -144,7 +144,7 @@ class Months with ChangeNotifier {
         arabicName: month['arabicName'],
         wolofName: month['wolofName'],
         wolofalName: month['wolofalName'],
-        verses: versesData
+        verses: versesData!
             .map((entry) => Verses(
                   monthID: entry['monthID'],
                   verseAS: entry['verseAS'],
@@ -167,7 +167,7 @@ class Months with ChangeNotifier {
         wolofMonthRS: date['wolofMonthRS'],
         westernDate: date['westernDate'],
         wolofDate: date['wolofDate'],
-        holidays: holidaysData
+        holidays: holidaysData!
             .map((holiday) => Holiday(
                 year: holiday['year'],
                 monthID: holiday['monthID'],
