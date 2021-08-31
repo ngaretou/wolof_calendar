@@ -1,13 +1,12 @@
-
-
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'providers/user_prefs.dart';
-import 'providers/months.dart';
+import './providers/user_prefs.dart';
+import './providers/months.dart';
 import './providers/theme.dart';
 
 import './screens/settings_screen.dart';
@@ -74,7 +73,14 @@ class _MyAppState extends State<MyApp> {
         DateScreen.routeName: (ctx) => DateScreen(),
         MonthScriptureScreen.routeName: (ctx) => MonthScriptureScreen(),
       },
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      //After importing flutter_localizations.dart, we add the localizationsDelegates and supportedLocales props to the MaterialApp constructor.
+      //localizationsDelegates provide localizations to our app. The ones included above provide localizations for Flutter widgets, Material, and Cupertino, which have already been localized by the Flutter team.
+      localizationsDelegates: [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       supportedLocales: [
         const Locale('en', ''),
         const Locale('fr', ''),

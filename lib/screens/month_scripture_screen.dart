@@ -423,6 +423,7 @@ class HolidayBuilder extends StatelessWidget {
     }
 
     Widget monthHeaderRow(wolofMonth) {
+      String? _wolofMonthAS = datesData[wolofMonth].wolofMonthAS;
       return Column(children: [
         // Divider(thickness: 1),
         //This row is for example "Samwiye    Rakkaati Gammu"
@@ -437,8 +438,7 @@ class HolidayBuilder extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(monthData[0].monthAS, style: asStyle, textDirection: rtlText),
-            Text(datesData[wolofMonth].wolofMonthAS,
-                style: asStyle, textDirection: rtlText),
+            Text(_wolofMonthAS ?? '', style: asStyle, textDirection: rtlText),
           ],
         ),
         // Divider(thickness: 2),
