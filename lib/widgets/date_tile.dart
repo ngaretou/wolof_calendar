@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -125,7 +123,7 @@ class _DateTileState extends State<DateTile> {
                         textDirection: ui.TextDirection.rtl,
                       ),
                       Text(
-                        widget.currentDate.wolofMonthAS,
+                        widget.currentDate.wolofMonthAS ?? '',
                         style: headerStyle,
                         textDirection: ui.TextDirection.rtl,
                       ),

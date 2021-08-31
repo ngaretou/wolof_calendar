@@ -46,7 +46,7 @@ class Date {
   final String year;
   final String month;
   final String wolofMonthRS;
-  final String wolofMonthAS;
+  final String? wolofMonthAS;
   final String westernDate;
   final String wolofDate;
   final List<Holiday>? holidays;
@@ -55,7 +55,7 @@ class Date {
     required this.year,
     required this.month,
     required this.wolofMonthRS,
-    required this.wolofMonthAS,
+    this.wolofMonthAS,
     required this.westernDate,
     required this.wolofDate,
     this.holidays,
@@ -164,7 +164,7 @@ class Months with ChangeNotifier {
         year: date['year'],
         month: date['month'],
         wolofMonthAS: date['wolofMonthAS'],
-        wolofMonthRS: date['wolofMonthRS'],
+        wolofMonthRS: date['wolofMonthRS'] ?? '',
         westernDate: date['westernDate'],
         wolofDate: date['wolofDate'],
         holidays: holidaysData!
