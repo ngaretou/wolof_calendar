@@ -30,7 +30,7 @@ class UserPrefs with ChangeNotifier {
 
   Future<void> setupUserPrefs() async {
     //get the prefs
-    final prefs = await SharedPreferences.getInstance();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     //if there's no userTheme, it's the first time they've run the app, so give them lightTheme
     //We're also grabbing other setup info here: language:
 
@@ -57,8 +57,10 @@ class UserPrefs with ChangeNotifier {
       });
       prefs.setString('userPrefs', _defaultUserPrefs);
     } else {
-      final jsonResponse =
-          json.decode(prefs.getString('userPrefs')!) as Map<String, Object>;
+      //Sep 1 error here
+      Map<String, dynamic> jsonResponse =
+          json.decode(prefs.getString('userPrefs')!);
+
       _userPrefs = UserPrefs(
         textDirection: jsonResponse['textDirection'] as bool,
         imageEnabled: jsonResponse['imageEnabled'] as bool,
@@ -75,8 +77,7 @@ class UserPrefs with ChangeNotifier {
   Future<void> savePref(String setting, userPref) async {
     //get the prefs
     final prefs = await SharedPreferences.getInstance();
-    final jsonResponse =
-        json.decode(prefs.getString('userPrefs')!) as Map<String, Object>;
+    final jsonResponse = json.decode(prefs.getString('userPrefs')!);
     var _tempUserPrefs = UserPrefs(
       textDirection: jsonResponse['textDirection'] as bool,
       imageEnabled: jsonResponse['imageEnabled'] as bool,
