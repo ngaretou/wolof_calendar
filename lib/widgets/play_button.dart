@@ -1,23 +1,32 @@
-
-
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/foundation.dart';
 
 class Player extends StatefulWidget {
   final String file;
-
   Player(this.file);
   @override
   _PlayerState createState() => _PlayerState();
 }
 
 class _PlayerState extends State<Player> with WidgetsBindingObserver {
+  AudioCache cache = AudioCache();
+  AudioPlayer player = AudioPlayer();
   //WidgetsBindingObserver helps us see when we close the app and stops the playback.
   @override
   void initState() {
     super.initState();
     //allows you to observe the AppLifecycleState below so you can stop the
     WidgetsBinding.instance!.addObserver(this);
+    if (kIsWeb) {
+      // Calls to Platform.isIOS fails on web
+      return;
+    }
+    if (Platform.isIOS) {
+      cache.fixedPlayer?.notificationService.startHeadlessService();
+      player.notificationService.startHeadlessService();
+    }
   }
 
   @override
@@ -45,9 +54,6 @@ class _PlayerState extends State<Player> with WidgetsBindingObserver {
     }
   }
 
-  static AudioCache cache = AudioCache();
-  late AudioPlayer player;
-
   bool isPlaying = false;
   bool isPaused = false;
 
@@ -55,18 +61,21 @@ class _PlayerState extends State<Player> with WidgetsBindingObserver {
     if (isPlaying) {
       player.stop();
     } else {
+      print("before starting playing");
       player = await cache.play('audio/${widget.file}.mp3');
-      player.onPlayerCompletion.listen((_) {
-        player.stop();
-        setState(() {
-          if (isPaused) {
-            isPlaying = false;
-            isPaused = false;
-          } else {
-            isPlaying = !isPlaying;
-          }
-        });
-      });
+      print("after starting playing");
+      // player.onPlayerCompletion.listen((event) {
+      //   print("done playing");
+      // player.stop();
+      // setState(() {
+      //   if (isPaused) {
+      //     isPlaying = false;
+      //     isPaused = false;
+      //   } else {
+      //     isPlaying = !isPlaying;
+      //   }
+      // });
+      // });
     }
 
     setState(() {
