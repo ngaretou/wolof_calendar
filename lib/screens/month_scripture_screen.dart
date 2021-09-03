@@ -14,7 +14,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'dart:ui' as ui;
 
-import '../widgets/play_button.dart';
+// import '../widgets/play_button.dart';
+import '../widgets/audio_player.dart';
 
 class MonthScriptureScreen extends StatelessWidget {
   static const routeName = '/month-scripture-screen';
@@ -112,7 +113,7 @@ class MonthScriptureScreen extends StatelessWidget {
 
     return Scaffold(
       floatingActionButton: Builder(builder: (context) {
-        return Player(args.data.monthID);
+        return PlayButton(file: args.data.monthID);
       }),
       // appBar: AppBar(floating),
       body: CustomScrollView(
