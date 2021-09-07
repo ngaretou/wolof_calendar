@@ -1,130 +1,124 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter/foundation.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:audio_session/audio_session.dart';
+// import 'package:path_provider/path_provider.dart';
 
-class Player extends StatefulWidget {
+// https://pub.dev/packages/just_audio/example
+
+class PlayButton extends StatefulWidget {
   final String file;
-  Player(this.file);
+  PlayButton({Key? key, required this.file}) : super(key: key);
+
   @override
-  _PlayerState createState() => _PlayerState();
+  PlayButtonState createState() => PlayButtonState();
 }
 
-class _PlayerState extends State<Player> with WidgetsBindingObserver {
-  AudioCache cache = AudioCache();
-  AudioPlayer player = AudioPlayer();
-  //WidgetsBindingObserver helps us see when we close the app and stops the playback.
+class PlayButtonState extends State<PlayButton> with WidgetsBindingObserver {
+  final _player = AudioPlayer();
+  // late bool _playerIsInitialized;
+
   @override
   void initState() {
     super.initState();
-    //allows you to observe the AppLifecycleState below so you can stop the
-    WidgetsBinding.instance!.addObserver(this);
-    if (kIsWeb) {
-      // Calls to Platform.isIOS fails on web
-      return;
+    WidgetsBinding.instance?.addObserver(this);
+    _initializeSession();
+  }
+
+  Future _initializeSession() async {
+    final session = await AudioSession.instance;
+    await session.configure(AudioSessionConfiguration.speech());
+    // Listen to errors during playback.
+    _player.playbackEventStream.listen((event) {},
+        onError: (Object e, StackTrace stackTrace) {
+      print('A stream error occurred: $e');
+    });
+
+    print('loading local audio');
+    await _player.setAudioSource(
+        AudioSource.uri(Uri.parse("asset:///assets/audio/${widget.file}.mp3")));
+    // try {
+    //   print('setting asset uri');
+    //   await _player.setAudioSource(AudioSource.uri(
+    //       Uri.parse("asset:///assets/audio/${widget.file}.mp3")));
+    // } catch (e) {
+    //   print("Error loading audio source: $e");
+    // }
+  }
+
+  void gracefulStop() async {
+    for (var i = 10; i >= 0; i--) {
+      _player.setVolume(i / 10);
+      await Future.delayed(Duration(milliseconds: 100));
     }
-    if (Platform.isIOS) {
-      cache.fixedPlayer?.notificationService.startHeadlessService();
-      player.notificationService.startHeadlessService();
-    }
+    _player.stop();
   }
 
   @override
   void dispose() {
-    //dispose triggers on popping the page, so stops the audio player playing
-    _stopPlayOnExit();
+    WidgetsBinding.instance?.removeObserver(this);
+    _player.dispose();
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
-      _stopPlayOnExit();
-    }
-    if (state == AppLifecycleState.resumed) {
-      //This setState just refreshes the view - if it was playing on pause and exits,
-      //this gets the play button back to pause as isPlaying was put to false in _stopPlayOnExit();
-      //A bit of a strange case though -
-      //in testing found that if you go back (pop the route), come back, play, then minimize,
-      //thus pausing the app as above and then resume it throws a "setState() called after dispose()" error,
-      //so this just quickly checks if the widget is mounted and setState if it is.
-      if (this.mounted) {
-        setState(() {});
-      }
+//If the user presses home then the audio will stop gracefully
+      gracefulStop();
     }
   }
-
-  bool isPlaying = false;
-  bool isPaused = false;
-
-  void playHandler() async {
-    if (isPlaying) {
-      player.stop();
-    } else {
-      print("before starting playing");
-      player = await cache.play('audio/${widget.file}.mp3');
-      print("after starting playing");
-      // player.onPlayerCompletion.listen((event) {
-      //   print("done playing");
-      // player.stop();
-      // setState(() {
-      //   if (isPaused) {
-      //     isPlaying = false;
-      //     isPaused = false;
-      //   } else {
-      //     isPlaying = !isPlaying;
-      //   }
-      // });
-      // });
-    }
-
-    setState(() {
-      if (isPaused) {
-        isPlaying = false;
-        isPaused = false;
-      } else {
-        isPlaying = !isPlaying;
-      }
-    });
-  }
-
-  void _stopPlayOnExit() {
-    if (isPlaying) {
-      player.stop();
-      //here just change isPlaying to false -
-      //it gets reflected on the screen on resume in didChangeAppLifecycleState on setState
-    }
-    isPlaying = false;
-  }
-
-  //pauseHandler not used in this app but here for reference
-  // void pauseHandler() {
-  //   if (isPaused && isPlaying) {
-  //     player.resume();
-  //   } else {
-  //     player.pause();
-  //   }
-  //   setState(() {
-  //     isPaused = !isPaused;
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton(
-      onPressed: playHandler,
-      child: isPlaying ? Icon(Icons.pause) : Icon(Icons.play_arrow),
-    );
+    return ControlButtons(_player);
+  }
+}
 
-    //This is the IconButton version of this widget, not used here but included for reference.
-    // IconButton(
-    //   icon: Icon(
-    //     isPlaying ? Icons.pause : Icons.play_arrow,
-    //     color: Colors.white,
-    //   ),
-    //   onPressed: () {
-    //     playHandler();
-    //   },
-    // );
+/// Displays the play/pause button and volume/speed sliders.
+class ControlButtons extends StatelessWidget {
+  final AudioPlayer player;
+
+  ControlButtons(this.player);
+
+  @override
+  Widget build(BuildContext context) {
+    return
+
+        /// This StreamBuilder rebuilds whenever the player state changes, which
+        /// includes the playing/paused state and also the
+        /// loading/buffering/ready state. Depending on the state we show the
+        /// appropriate button or loading indicator.
+        StreamBuilder<PlayerState>(
+      stream: player.playerStateStream,
+      builder: (context, snapshot) {
+        final playerState = snapshot.data;
+        final processingState = playerState?.processingState;
+        final playing = playerState?.playing;
+        if (processingState == ProcessingState.loading ||
+            processingState == ProcessingState.buffering) {
+          return Container(
+            margin: EdgeInsets.all(8.0),
+            width: 64.0,
+            height: 64.0,
+            child: CircularProgressIndicator(),
+          );
+        } else if (playing != true) {
+          return FloatingActionButton(
+            child: Icon(Icons.play_arrow),
+            onPressed: player.play,
+          );
+        } else if (processingState != ProcessingState.completed) {
+          return FloatingActionButton(
+            child: Icon(Icons.pause),
+            onPressed: player.pause,
+          );
+        } else {
+          return FloatingActionButton(
+            child: Icon(Icons.play_arrow),
+            onPressed: () => player.seek(Duration.zero),
+          );
+        }
+      },
+    );
   }
 }

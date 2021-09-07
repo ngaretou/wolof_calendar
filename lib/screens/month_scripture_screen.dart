@@ -112,7 +112,7 @@ class MonthScriptureScreen extends StatelessWidget {
 
     return Scaffold(
       floatingActionButton: Builder(builder: (context) {
-        return Player(args.data.monthID);
+        return PlayButton(file: args.data.monthID);
       }),
       // appBar: AppBar(floating),
       body: CustomScrollView(
