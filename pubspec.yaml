@@ -29,7 +29,8 @@ dependencies:
   shared_preferences: ^2.0.7
   url_launcher: ^6.0.9
   share: ^2.0.4
-  audioplayers: ^0.19.1
+  # audioplayers: ^0.19.1
+  just_audio: ^0.9.9
   font_awesome_flutter: ^9.1.0
   firebase_core: ^1.6.0
   firebase_analytics: ^8.3.1
