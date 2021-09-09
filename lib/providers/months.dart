@@ -103,6 +103,10 @@ class Months with ChangeNotifier {
     return [..._dates];
   }
 
+  String get isTestingVersion {
+    return 'yes';
+  }
+
   String get currentCalendarYear {
     return '2021';
   }

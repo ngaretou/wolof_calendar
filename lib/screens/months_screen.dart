@@ -1,8 +1,7 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 import './date_screen.dart';
@@ -18,6 +17,7 @@ class MonthsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    initializeDateFormatting('fr', null);
     final monthsData = Provider.of<Months>(context, listen: false).months;
     // final coverData = Provider.of<Months>(context, listen: false).verses;
     var now = new DateTime.now();
