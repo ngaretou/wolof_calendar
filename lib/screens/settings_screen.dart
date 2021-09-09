@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -26,7 +24,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final userThemeName =
         Provider.of<ThemeModel>(context, listen: false).userThemeName;
     final themeProvider = Provider.of<ThemeModel>(context, listen: false);
-    final userLang = Provider.of<ThemeModel>(context, listen: false).userLang;
+    Locale? userLocale =
+        Provider.of<ThemeModel>(context, listen: false).userLocale;
     final userPrefs = Provider.of<UserPrefs>(context, listen: false);
     final _wolof = userPrefs.userPrefs.wolofVerseEnabled;
     final _wolofal = userPrefs.userPrefs.wolofalVerseEnabled;
@@ -104,8 +103,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
 
     Widget languageTitle() {
-      return settingTitle(
-          AppLocalizations.of(context)!.settingsLanguage, Icons.translate, null);
+      return settingTitle(AppLocalizations.of(context)!.settingsLanguage,
+          Icons.translate, null);
     }
 
     Widget themeSettings() {
@@ -252,7 +251,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             children: [
               ChoiceChip(
                 padding: EdgeInsets.symmetric(horizontal: 10),
-                selected: userLang == 'wo' ? true : false,
+                selected: userLocale.toString() == 'fr_CH' ? true : false,
                 label: Text(
                   "Wolof",
                   style: Theme.of(context).textTheme.subtitle1,
@@ -260,15 +259,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 backgroundColor: Theme.of(context).primaryColor,
                 selectedColor: Theme.of(context).accentColor,
                 onSelected: (bool selected) {
-                  setState(() {
-                    Provider.of<ThemeModel>(context, listen: false)
-                        .setLang('wo');
-                  });
+                  themeProvider.setLocale('fr_CH');
                 },
               ),
               ChoiceChip(
                 padding: EdgeInsets.symmetric(horizontal: 10),
-                selected: userLang == 'fr' ? true : false,
+                selected: userLocale.toString() == 'fr' ? true : false,
                 label: Text(
                   "Français",
                   style: Theme.of(context).textTheme.subtitle1,
@@ -276,15 +272,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 backgroundColor: Theme.of(context).primaryColor,
                 selectedColor: Theme.of(context).accentColor,
                 onSelected: (bool selected) {
-                  setState(() {
-                    Provider.of<ThemeModel>(context, listen: false)
-                        .setLang('fr');
-                  });
+                  themeProvider.setLocale('fr');
+                  print(AppLocalizations.of(context)!.addHolidays);
                 },
               ),
               ChoiceChip(
                 padding: EdgeInsets.symmetric(horizontal: 10),
-                selected: userLang == 'en' ? true : false,
+                selected: userLocale.toString() == 'en' ? true : false,
                 label: Text(
                   "English",
                   style: Theme.of(context).textTheme.subtitle1,
@@ -292,10 +286,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 backgroundColor: Theme.of(context).primaryColor,
                 selectedColor: Theme.of(context).accentColor,
                 onSelected: (bool selected) {
-                  setState(() {
-                    Provider.of<ThemeModel>(context, listen: false)
-                        .setLang('en');
-                  });
+                  themeProvider.setLocale('en');
                 },
               ),
             ],

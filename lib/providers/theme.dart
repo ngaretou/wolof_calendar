@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 
-// import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 import './months.dart';
 import './user_prefs.dart';
 
@@ -129,22 +127,38 @@ class ThemeModel extends ChangeNotifier {
   ThemeType? _themeType;
   String? userThemeName;
   ThemeData? currentTheme;
-  String? userLang;
 
-//Actually not doing that way anymore but leaving for reference
-//this is the constructor, it runs setup to initialize currentTheme
-//https://stackoverflow.com/questions/57662372/flutter-sharedpreferences-value-to-provider-on-applcation-start
-  // ThemeModel() {
-  //   print('ThemeModel setup');
-  //   setupTheme();
-  //   setupLang();
-  // }
+  Locale? userLocale;
+
+  Future<void> setLocale(String incomingLocale) async {
+    switch (incomingLocale) {
+      case 'en':
+        userLocale = Locale('en', '');
+        notifyListeners();
+        break;
+      case 'fr':
+        userLocale = Locale('fr', '');
+        notifyListeners();
+        break;
+      case 'fr_CH':
+        userLocale = Locale('fr', 'CH');
+        notifyListeners();
+        break;
+      default:
+    }
+
+    //get prefs from disk
+    final prefs = await SharedPreferences.getInstance();
+    //save userLang to disk
+    String _userLang = json.encode(incomingLocale);
+    prefs.setString('userLang', _userLang);
+  }
 
   Future<void> initialSetupAsync(context) async {
     await Provider.of<Months>(context, listen: false).getData();
     await Provider.of<UserPrefs>(context, listen: false).setupUserPrefs();
     await setupTheme();
-    await setupLang();
+
     return;
   }
 
@@ -156,7 +170,6 @@ class ThemeModel extends ChangeNotifier {
     //get the prefs
     final prefs = await SharedPreferences.getInstance();
     //if there's no userTheme, it's the first time they've run the app, so give them lightTheme
-    //We're also grabbing other setup info here: language:
 
     if (!prefs.containsKey('userThemeName')) {
       setLightTheme();
@@ -235,30 +248,5 @@ class ThemeModel extends ChangeNotifier {
     //save _themeName to disk
     final _userThemeName = json.encode(userThemeName);
     prefs.setString('userThemeName', _userThemeName);
-  }
-
-  //Language code:
-  Future<void> setupLang() async {
-    final prefs = await SharedPreferences.getInstance();
-    if (!prefs.containsKey('userLang')) {
-      setLang('wo');
-    } else {
-      final savedUserLang = json.decode(prefs.getString('userLang')!) as String?;
-      setLang(savedUserLang);
-    }
-  }
-
-  Future<void> setLang(incomingLang) async {
-    // if (incomingLang == null) {
-    //   return;
-    // } else {
-    //   userLang = incomingLang;
-    //   AppLocalizations.load(Locale(userLang, ''));
-    //   //get prefs from disk
-    //   final prefs = await SharedPreferences.getInstance();
-    //   //save userLang to disk
-    //   final _userLang = json.encode(userLang);
-    //   prefs.setString('userLang', _userLang);
-    // }
   }
 }
