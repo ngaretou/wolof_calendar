@@ -119,6 +119,7 @@ ThemeData tealTheme = ThemeData.light().copyWith(
       minWidth: 80,
     ));
 
+//////////////////////
 enum ThemeType { Light, Blue, Teal, Dark }
 
 class ThemeModel extends ChangeNotifier {
@@ -127,7 +128,6 @@ class ThemeModel extends ChangeNotifier {
   ThemeType? _themeType;
   String? userThemeName;
   ThemeData? currentTheme;
-
   Locale? userLocale;
 
   Future<void> setLocale(String incomingLocale) async {

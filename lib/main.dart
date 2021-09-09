@@ -1,11 +1,10 @@
-import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import './providers/user_prefs.dart';
 import './providers/months.dart';
@@ -16,7 +15,6 @@ import './screens/about_screen.dart';
 import './screens/months_screen.dart';
 import './screens/date_screen.dart';
 import './screens/month_scripture_screen.dart';
-// import 'package:intl/date_symbol_data_local.dart';
 
 void main() {
   runApp(
@@ -53,7 +51,7 @@ class _MyAppState extends State<MyApp> {
 
     //If there is no lang pref (i.e. first run), set lang to Wolof
     if (!prefs.containsKey('userLang')) {
-      // fr_CH is our Flutter 2.x standin for Wolof
+      // fr_CH is our Flutter 2.x stand-in for Wolof
       setLocale('fr_CH');
     } else {
       //otherwise grab the saved setting
@@ -64,11 +62,12 @@ class _MyAppState extends State<MyApp> {
       }
     }
   }
-
   //end language code
+
   @override
   void initState() {
     super.initState();
+    // Call the intitialization of the locale
     setupLang();
   }
 
@@ -99,16 +98,12 @@ class _MyAppState extends State<MyApp> {
         DateScreen.routeName: (ctx) => DateScreen(),
         MonthScriptureScreen.routeName: (ctx) => MonthScriptureScreen(),
       },
-      //After importing flutter_localizations.dart, we add the localizationsDelegates and supportedLocales props to the MaterialApp constructor.
-      //localizationsDelegates provide localizations to our app. The ones included above provide localizations for Flutter widgets, Material, and Cupertino, which have already been localized by the Flutter team.
       localizationsDelegates: [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
-        // WoMaterialLocalizations.delegate,
       ],
-
       supportedLocales: [
         const Locale('en', ''),
         const Locale('fr', 'FR'),
