@@ -1,123 +1,61 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+// import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 
 import './months.dart';
 import './user_prefs.dart';
 
-ThemeData darkTheme = ThemeData.dark().copyWith(
-    primaryColor: Color(0xff1f655d),
-    accentColor: Color(0xff40bf7a),
-    floatingActionButtonTheme: FloatingActionButtonThemeData(
-        foregroundColor: Colors.white, backgroundColor: Colors.teal),
-    iconTheme: IconThemeData(color: Colors.white70),
-    textTheme: TextTheme(
-        headline5:
-            TextStyle(color: Colors.white, fontFamily: 'Lato', fontSize: 20),
-        headline6:
-            TextStyle(color: Colors.white, fontFamily: 'Lato', fontSize: 20),
-        subtitle2: TextStyle(color: Colors.white),
-        subtitle1: TextStyle(color: Colors.white),
-        bodyText2: TextStyle(color: Colors.white)),
-    appBarTheme: AppBarTheme(
-      textTheme: TextTheme(
-          headline6:
-              TextStyle(color: Colors.white, fontFamily: 'Lato', fontSize: 20)),
-      color: Color(0xff1f655d),
-      iconTheme: IconThemeData(color: Colors.white),
-    ),
-    buttonTheme: ButtonThemeData(
-      minWidth: 80,
-    ));
+// Primary is all of the raised text and buttons: Button color,
+//text of OK/Cancel buttons, highlights in calendar picker.
+//Secondary ends up being only the color of holidays
+ThemeData darkTheme = ThemeData(
+  fontFamily: 'Lato',
+  colorScheme: ColorScheme.dark()
+      .copyWith(primary: Colors.teal[300], secondary: Colors.teal[850]),
+  appBarTheme: AppBarTheme(
+      backgroundColor: Colors.teal[800],
+      iconTheme: IconThemeData(color: Colors.white)),
+  buttonTheme: ButtonThemeData(buttonColor: Colors.teal),
+);
 
-ThemeData lightTheme = ThemeData.light().copyWith(
-    // primaryColor: Color(0xfff5f5f5),
-    // accentColor: Color(0xff40bf7a),
-    primaryColor: Colors.teal,
-    accentColor: Colors.teal[200],
-    floatingActionButtonTheme: FloatingActionButtonThemeData(
-        // foregroundColor: Colors.white, backgroundColor: Colors.black54),
-        foregroundColor: Colors.white,
-        backgroundColor: Colors.teal),
-    iconTheme: IconThemeData(color: Colors.black54),
-    textTheme: TextTheme(
-      headline5:
-          TextStyle(color: Colors.black54, fontFamily: 'Lato', fontSize: 20),
-      headline6: TextStyle(color: Colors.black54, fontFamily: 'Lato'),
-      subtitle2: TextStyle(color: Colors.black54),
-      subtitle1: TextStyle(color: Colors.black54),
-      bodyText2: TextStyle(color: Colors.black87),
-    ),
-    appBarTheme: AppBarTheme(
-        iconTheme: IconThemeData(color: Colors.white),
-        textTheme: TextTheme(
-          headline6:
-              TextStyle(color: Colors.white, fontFamily: 'Lato', fontSize: 20),
-        ),
-        //     subtitle2: TextStyle(color: Colors.white),
-        //     subtitle1: TextStyle(color: Colors.white)),
-        color: Colors.teal,
-        actionsIconTheme: IconThemeData(color: Colors.white)),
-    buttonTheme: ButtonThemeData(minWidth: 80));
+ThemeData lightTheme = ThemeData(
+  fontFamily: 'Lato',
+  primarySwatch: Colors.teal,
+  colorScheme: ColorScheme.light()
+      .copyWith(primary: Colors.teal[300], secondary: Colors.teal[100]),
+  appBarTheme: AppBarTheme(
+      backgroundColor: Colors.teal[800],
+      iconTheme: IconThemeData(color: Colors.white)),
+  buttonTheme: ButtonThemeData(buttonColor: Colors.teal),
+);
 
-ThemeData blueTheme = ThemeData.light().copyWith(
-    primaryColor: Colors.blue,
-    accentColor: Colors.lightBlue[200],
-    cardColor: Colors.blue[200],
-    backgroundColor: Colors.blue,
-    scaffoldBackgroundColor: Colors.blue[100],
-    floatingActionButtonTheme: FloatingActionButtonThemeData(
-        foregroundColor: Colors.white, backgroundColor: Colors.blue[700]),
-    iconTheme: IconThemeData(color: Colors.white70),
-    textTheme: TextTheme(
-        headline5:
-            TextStyle(color: Colors.white, fontFamily: 'Lato', fontSize: 20),
-        headline6: TextStyle(color: Colors.black54, fontFamily: 'Lato'),
-        subtitle2: TextStyle(color: Colors.black54),
-        subtitle1: TextStyle(color: Colors.black54),
-        bodyText2: TextStyle(color: Colors.black87)),
-    appBarTheme: AppBarTheme(
-        iconTheme: IconThemeData(color: Colors.white),
-        textTheme: TextTheme(
-            headline6: TextStyle(
-                color: Colors.white, fontFamily: 'Lato', fontSize: 20)),
-        color: Colors.blueAccent,
-        actionsIconTheme: IconThemeData(color: Colors.white)),
-    buttonTheme: ButtonThemeData(minWidth: 80),
-    dialogTheme: DialogTheme(
-        contentTextStyle: TextStyle(color: Colors.black54),
-        titleTextStyle: TextStyle(
-            color: Colors.black54, fontFamily: 'Lato', fontSize: 20)));
+ThemeData blueTheme = ThemeData(
+  fontFamily: 'Lato',
+  primarySwatch: Colors.blue,
+  backgroundColor: Colors.teal,
+  colorScheme: ColorScheme.light()
+      .copyWith(primary: Colors.blue, secondary: Colors.blue[100]),
+  scaffoldBackgroundColor: Colors.blue[100],
+  appBarTheme: AppBarTheme(
+      backgroundColor: Colors.blue[800],
+      iconTheme: IconThemeData(color: Colors.white)),
+  buttonTheme: ButtonThemeData(buttonColor: Colors.blue),
+);
 
-ThemeData tealTheme = ThemeData.light().copyWith(
-    primaryColor: Colors.teal,
-    accentColor: Colors.teal[300],
-    cardColor: Colors.teal[100],
-    backgroundColor: Colors.teal,
-    scaffoldBackgroundColor: Colors.teal[200],
-    floatingActionButtonTheme: FloatingActionButtonThemeData(
-        foregroundColor: Colors.white70, backgroundColor: Colors.teal[800]),
-    iconTheme: IconThemeData(color: Colors.white70),
-    textTheme: TextTheme(
-      headline5:
-          TextStyle(color: Colors.white, fontFamily: 'Lato', fontSize: 20),
-      headline6: TextStyle(color: Colors.black54, fontFamily: 'Lato'),
-      subtitle2: TextStyle(color: Colors.black54),
-      subtitle1: TextStyle(color: Colors.black54),
-      bodyText2: TextStyle(color: Colors.black87),
-    ),
-    appBarTheme: AppBarTheme(
-        iconTheme: IconThemeData(color: Colors.white),
-        textTheme: TextTheme(
-            headline6: TextStyle(
-                color: Colors.white, fontFamily: 'Lato', fontSize: 20)),
-        color: Color(0xff1f655d),
-        actionsIconTheme: IconThemeData(color: Colors.white)),
-    buttonTheme: ButtonThemeData(
-      minWidth: 80,
-    ));
+ThemeData tealTheme = ThemeData(
+  fontFamily: 'Lato',
+  primarySwatch: Colors.teal,
+  colorScheme: ColorScheme.light()
+      .copyWith(primary: Colors.teal, secondary: Colors.teal[100]),
+  scaffoldBackgroundColor: Colors.teal[100],
+  appBarTheme: AppBarTheme(
+      backgroundColor: Colors.teal[800],
+      iconTheme: IconThemeData(color: Colors.white)),
+  buttonTheme: ButtonThemeData(buttonColor: Colors.teal),
+);
 
 //////////////////////
 enum ThemeType { Light, Blue, Teal, Dark }
@@ -250,3 +188,116 @@ class ThemeModel extends ChangeNotifier {
     prefs.setString('userThemeName', _userThemeName);
   }
 }
+
+//Original theme definitions, pre Flutter 2.5
+// ThemeData darkTheme = ThemeData.dark().copyWith(
+//     primaryColor: Color(0xff1f655d),
+//     accentColor: Color(0xff40bf7a),
+//     floatingActionButtonTheme: FloatingActionButtonThemeData(
+//         foregroundColor: Colors.white, backgroundColor: Colors.teal),
+//     iconTheme: IconThemeData(color: Colors.white70),
+//     textTheme: TextTheme(
+//         headline5:
+//             TextStyle(color: Colors.white, fontFamily: 'Lato', fontSize: 20),
+//         headline6:
+//             TextStyle(color: Colors.white, fontFamily: 'Lato', fontSize: 20),
+//         subtitle2: TextStyle(color: Colors.white),
+//         subtitle1: TextStyle(color: Colors.white),
+//         bodyText2: TextStyle(color: Colors.white)),
+//     appBarTheme: AppBarTheme(
+//       textTheme: TextTheme(
+//           headline6:
+//               TextStyle(color: Colors.white, fontFamily: 'Lato', fontSize: 20)),
+//       color: Color(0xff1f655d),
+//       iconTheme: IconThemeData(color: Colors.white),
+//     ),
+//     buttonTheme: ButtonThemeData(
+//       minWidth: 80,
+//     ));
+
+// ThemeData lightTheme = ThemeData.light().copyWith(
+//     // primaryColor: Color(0xfff5f5f5),
+//     // accentColor: Color(0xff40bf7a),
+//     primaryColor: Colors.teal,
+//     accentColor: Colors.teal[200],
+//     floatingActionButtonTheme: FloatingActionButtonThemeData(
+//         // foregroundColor: Colors.white, backgroundColor: Colors.black54),
+//         foregroundColor: Colors.white,
+//         backgroundColor: Colors.teal),
+//     iconTheme: IconThemeData(color: Colors.black54),
+//     textTheme: TextTheme(
+//       headline5:
+//           TextStyle(color: Colors.black54, fontFamily: 'Lato', fontSize: 20),
+//       headline6: TextStyle(color: Colors.black54, fontFamily: 'Lato'),
+//       subtitle2: TextStyle(color: Colors.black54),
+//       subtitle1: TextStyle(color: Colors.black54),
+//       bodyText2: TextStyle(color: Colors.black87),
+//     ),
+//     appBarTheme: AppBarTheme(
+//         iconTheme: IconThemeData(color: Colors.white),
+//         textTheme: TextTheme(
+//           headline6:
+//               TextStyle(color: Colors.white, fontFamily: 'Lato', fontSize: 20),
+//         ),
+//         //     subtitle2: TextStyle(color: Colors.white),
+//         //     subtitle1: TextStyle(color: Colors.white)),
+//         color: Colors.teal,
+//         actionsIconTheme: IconThemeData(color: Colors.white)),
+//     buttonTheme: ButtonThemeData(minWidth: 80));
+
+// ThemeData blueTheme = ThemeData.light().copyWith(
+//     primaryColor: Colors.blue,
+//     accentColor: Colors.lightBlue[200],
+//     cardColor: Colors.blue[200],
+//     backgroundColor: Colors.blue,
+//     scaffoldBackgroundColor: Colors.blue[100],
+//     floatingActionButtonTheme: FloatingActionButtonThemeData(
+//         foregroundColor: Colors.white, backgroundColor: Colors.blue[700]),
+//     iconTheme: IconThemeData(color: Colors.white70),
+//     textTheme: TextTheme(
+//         headline5:
+//             TextStyle(color: Colors.white, fontFamily: 'Lato', fontSize: 20),
+//         headline6: TextStyle(color: Colors.black54, fontFamily: 'Lato'),
+//         subtitle2: TextStyle(color: Colors.black54),
+//         subtitle1: TextStyle(color: Colors.black54),
+//         bodyText2: TextStyle(color: Colors.black87)),
+//     appBarTheme: AppBarTheme(
+//         iconTheme: IconThemeData(color: Colors.white),
+//         textTheme: TextTheme(
+//             headline6: TextStyle(
+//                 color: Colors.white, fontFamily: 'Lato', fontSize: 20)),
+//         color: Colors.blueAccent,
+//         actionsIconTheme: IconThemeData(color: Colors.white)),
+//     buttonTheme: ButtonThemeData(minWidth: 80),
+//     dialogTheme: DialogTheme(
+//         contentTextStyle: TextStyle(color: Colors.black54),
+//         titleTextStyle: TextStyle(
+//             color: Colors.black54, fontFamily: 'Lato', fontSize: 20)));
+
+// ThemeData tealTheme = ThemeData.light().copyWith(
+//     primaryColor: Colors.teal,
+//     accentColor: Colors.teal[300],
+//     cardColor: Colors.teal[100],
+//     backgroundColor: Colors.teal,
+//     scaffoldBackgroundColor: Colors.teal[200],
+//     floatingActionButtonTheme: FloatingActionButtonThemeData(
+//         foregroundColor: Colors.white70, backgroundColor: Colors.teal[800]),
+//     iconTheme: IconThemeData(color: Colors.white70),
+//     textTheme: TextTheme(
+//       headline5:
+//           TextStyle(color: Colors.white, fontFamily: 'Lato', fontSize: 20),
+//       headline6: TextStyle(color: Colors.black54, fontFamily: 'Lato'),
+//       subtitle2: TextStyle(color: Colors.black54),
+//       subtitle1: TextStyle(color: Colors.black54),
+//       bodyText2: TextStyle(color: Colors.black87),
+//     ),
+//     appBarTheme: AppBarTheme(
+//         iconTheme: IconThemeData(color: Colors.white),
+//         textTheme: TextTheme(
+//             headline6: TextStyle(
+//                 color: Colors.white, fontFamily: 'Lato', fontSize: 20)),
+//         color: Color(0xff1f655d),
+//         actionsIconTheme: IconThemeData(color: Colors.white)),
+//     buttonTheme: ButtonThemeData(
+//       minWidth: 80,
+//     ));

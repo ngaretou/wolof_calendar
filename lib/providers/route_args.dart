@@ -1,11 +1,11 @@
 import '../providers/months.dart';
 
 class DateScreenArgs {
-  final String year;
-  final String month;
-  final String date;
+  String? year;
+  String? month;
+  String? date;
 
-  DateScreenArgs({required this.year, required this.month, required this.date});
+  DateScreenArgs({this.year, this.month, this.date});
 }
 
 class MonthScriptureScreenArgs {

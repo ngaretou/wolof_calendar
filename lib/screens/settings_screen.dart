@@ -157,7 +157,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             style: raisedButtonStyle.copyWith(
               backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
             ),
-            child: userThemeName == 'darkTheme' ? Icon(Icons.check) : null,
+            child: userThemeName == 'darkTheme'
+                ? Icon(Icons.check, color: Colors.white)
+                : null,
             //must be black
             // color: Colors.black,
             onPressed: () {
@@ -256,8 +258,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   "Wolof",
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
-                backgroundColor: Theme.of(context).primaryColor,
-                selectedColor: Theme.of(context).accentColor,
+                // backgroundColor: Theme.of(context).primaryColor,
+
                 onSelected: (bool selected) {
                   themeProvider.setLocale('fr_CH');
                 },
@@ -265,12 +267,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ChoiceChip(
                 padding: EdgeInsets.symmetric(horizontal: 10),
                 selected: userLocale.toString() == 'fr' ? true : false,
+
                 label: Text(
                   "Français",
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
-                backgroundColor: Theme.of(context).primaryColor,
-                selectedColor: Theme.of(context).accentColor,
+                // backgroundColor: Theme.of(context).primaryColor,
+                // selectedColor: Theme.of(context).accentColor,
                 onSelected: (bool selected) {
                   themeProvider.setLocale('fr');
                   print(AppLocalizations.of(context)!.addHolidays);
@@ -278,13 +281,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               ChoiceChip(
                 padding: EdgeInsets.symmetric(horizontal: 10),
+
                 selected: userLocale.toString() == 'en' ? true : false,
                 label: Text(
                   "English",
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
-                backgroundColor: Theme.of(context).primaryColor,
-                selectedColor: Theme.of(context).accentColor,
+                // backgroundColor: Theme.of(context).primaryColor,
+                // selectedColor: Theme.of(context).accentColor,
                 onSelected: (bool selected) {
                   themeProvider.setLocale('en');
                 },
@@ -295,12 +299,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
       );
     }
 
+    final mycolor = (Color(0xff90caf9));
+    ThemeData currentTheme = Theme.of(context);
 ///////////////////////////////
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          AppLocalizations.of(context)!.settingsTitle,
-        ),
+        title: Text(AppLocalizations.of(context)!.settingsTitle,
+            style: Theme.of(context)
+                .textTheme
+                .headline6!
+                .copyWith(color: Colors.white)),
       ),
       //If the width of the screen is greater or equal to 730 (whether or not _isPhone is true)
       //show the wide view

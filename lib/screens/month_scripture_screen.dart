@@ -1,18 +1,18 @@
 import 'dart:async';
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:wolof_calendar/screens/date_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../providers/months.dart';
 import '../providers/route_args.dart';
 import '../providers/user_prefs.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import 'dart:ui' as ui;
 
 import '../widgets/play_button.dart';
 
@@ -190,12 +190,14 @@ class MonthScriptureScreen extends StatelessWidget {
             flexibleSpace: FlexibleSpaceBar(
               stretchModes: [StretchMode.zoomBackground],
               title: args.data.monthID == "cover"
-                  ? Text(args.data.monthRS + "  |  " + args.data.monthAS,
-                      style: Theme.of(context)
-                          .appBarTheme
-                          .textTheme!
-                          .headline6!
-                          .copyWith(fontFamily: 'Charis'))
+                  ? Text(
+                      args.data.monthRS + "  |  " + args.data.monthAS,
+                      // style: Theme.of(context)
+                      //     .appBarTheme
+                      //     .textTheme!
+                      //     .headline6!
+                      //     .copyWith(fontFamily: 'Charis')
+                    )
                   : MainTitle(args.data.arabicName),
               centerTitle: true,
               background: Hero(
@@ -257,7 +259,7 @@ class MonthScriptureScreen extends StatelessWidget {
                             Divider(
                               thickness: 2,
                               height: 40,
-                              color: Theme.of(context).accentColor,
+                              // color: Theme.of(context).accentColor,
                             ),
 
                           //Verses start here
@@ -282,7 +284,7 @@ class MonthScriptureScreen extends StatelessWidget {
                             Divider(
                               height: 60,
                               thickness: 2,
-                              color: Theme.of(context).accentColor,
+                              // color: Theme.of(context).accentColor,
                             ),
 
                           //RS verses
@@ -315,18 +317,21 @@ class MonthScriptureScreen extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                      AppLocalizations.of(context)!
-                                          .clickHereToReadMore,
-                                      style: Theme.of(context)
-                                          .appBarTheme
-                                          .textTheme!
-                                          .headline6!
-                                          .copyWith(fontSize: 18)),
-                                  Icon(Icons.arrow_forward,
-                                      color: Theme.of(context)
-                                          .appBarTheme
-                                          .iconTheme!
-                                          .color),
+                                    AppLocalizations.of(context)!
+                                        .clickHereToReadMore,
+                                    // style: Theme.of(context)
+                                    //     .appBarTheme
+                                    //     .textTheme!
+                                    //     .headline6!
+                                    //     .copyWith(fontSize: 18)
+                                  ),
+                                  Icon(
+                                    Icons.arrow_forward,
+                                    // color: Theme.of(context)
+                                    //     .appBarTheme
+                                    //     .iconTheme!
+                                    //     .color
+                                  ),
                                 ],
                               ),
                               onPressed: () async {
@@ -499,8 +504,9 @@ class HolidayBuilder extends StatelessWidget {
                               padding: EdgeInsets.symmetric(
                                   horizontal: 10, vertical: 10),
                               decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5.0),
-                                  color: Theme.of(context).accentColor),
+                                borderRadius: BorderRadius.circular(5.0),
+                                // color: Theme.of(context).accentColor,
+                              ),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -579,7 +585,9 @@ class VerseBuilder extends StatelessWidget {
         ),
         if (numItems - i != 1)
           Divider(
-              thickness: 1, height: 60, color: Theme.of(context).accentColor)
+            thickness: 1, height: 60,
+            // color: Theme.of(context).accentColor
+          )
       ],
     );
   }
