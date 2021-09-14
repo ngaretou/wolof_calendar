@@ -74,8 +74,8 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     //Don't show top status bar
-    SystemChrome.setEnabledSystemUIOverlays(
-        [SystemUiOverlay.top, SystemUiOverlay.bottom]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
 
     print('main.dart build');
 
@@ -88,7 +88,7 @@ class _MyAppState extends State<MyApp> {
         builder: (ctx, snapshot) =>
             snapshot.connectionState == ConnectionState.waiting
                 ? Center(child: CircularProgressIndicator())
-                : MonthsScreen(),
+                : DateScreen(),
       ),
       theme: Provider.of<ThemeModel>(context).currentTheme,
       routes: {

@@ -9,6 +9,7 @@ import '../providers/months.dart';
 import '../providers/route_args.dart';
 
 import '../widgets/date_tile.dart';
+import '../widgets/drawer.dart';
 
 class DateScreen extends StatefulWidget {
   static const routeName = '/date-screen';
@@ -19,26 +20,56 @@ class DateScreen extends StatefulWidget {
 
 class _DateScreenState extends State<DateScreen> {
   //For the ScrollablePositionedList
-  final ItemPositionsListener itemPositionsListener =
-      ItemPositionsListener.create();
-  final ItemScrollController itemScrollController = ItemScrollController();
+  ItemPositionsListener itemPositionsListener = ItemPositionsListener.create();
+  ItemScrollController itemScrollController = ItemScrollController();
 
-  //Things we declare here to get values in didChangeDependencies that we can then use in the first build
+  // Things we declare here to get values in didChangeDependencies
+  // that we can then use in the first build
   late List<Date> _datesToDisplay;
   late int initialDateIndex;
   late int scrollToIndex;
   late String appBarTitle;
-  late String currentMonthAppBarTitle;
+  String? currentMonthAppBarTitle;
   late DateTime initialDateTime;
+  Object? routeArgumentsObject;
+  late DateScreenArgs args;
 
   @override
   void didChangeDependencies() {
-    //Incoming args from the Navigator.of command from wherever we've arrived from
-    final DateScreenArgs args =
-        ModalRoute.of(context)!.settings.arguments as DateScreenArgs;
+    //We need context several places here so using this method rather than initState
 
-    //The data - display 'infinite' list, all dates in the data
-    _datesToDisplay = Provider.of<Months>(context, listen: false).dates;
+    //Incoming args from the Navigator.of command from wherever we've arrived from
+    routeArgumentsObject = ModalRoute.of(context)?.settings.arguments;
+    // When first opening, there are no arguments, so go to current date using the argument format
+    if (routeArgumentsObject == null) {
+      DateTime now = new DateTime.now();
+      String currentDate = DateFormat('d', 'fr_FR').format(now);
+      String currentMonth = DateFormat('M', 'fr_FR').format(now);
+      String currentYear = DateFormat('yyyy', 'fr_FR').format(now);
+
+      //The data - display 'infinite' list; here infinite being all dates in the data
+      _datesToDisplay = Provider.of<Months>(context, listen: false).dates;
+
+      //Before we open to today's date, check if today's date is in the data
+      if (_datesToDisplay.any((element) =>
+          currentYear == element.year &&
+          currentMonth == element.month &&
+          currentDate == element.westernDate)) {
+        //Now that we know current date, today, is in the data, open to today's date
+        args = DateScreenArgs(
+            date: currentDate, month: currentMonth, year: currentYear);
+      } else {
+        print('today not in the data, going to last entry');
+        //Get the last entry in the list
+        Date lastDateInData = _datesToDisplay.last;
+        //and set our routargs to that date.
+        //It gives a little bounce and you can't scroll any further down.
+        args = DateScreenArgs(
+            date: lastDateInData.westernDate,
+            month: lastDateInData.month,
+            year: lastDateInData.year);
+      }
+    }
 
     //This is the index of the initial date to show in that infinite list
     initialDateIndex = (_datesToDisplay.indexWhere((element) =>
@@ -57,7 +88,7 @@ class _DateScreenState extends State<DateScreen> {
 
     //get a ref to the currentMonth displayed in the app bar for comparison later on
     currentMonthAppBarTitle =
-        DateFormat('M', "fr_FR").parse(args.month).toString();
+        DateFormat('M', "fr_FR").parse(args.month!).toString();
 
     super.didChangeDependencies();
   }
@@ -65,8 +96,6 @@ class _DateScreenState extends State<DateScreen> {
   @override
   Widget build(BuildContext context) {
     final _screenwidth = MediaQuery.of(context).size.width;
-    final bool _isPhone =
-        (_screenwidth + MediaQuery.of(context).size.height) <= 1400;
 
     late var navigateToDateIndex; //this is for later on when the user navigates
     var lastIndex = _datesToDisplay.length - 1;
@@ -95,7 +124,8 @@ class _DateScreenState extends State<DateScreen> {
     }
 
     void moveMonths(String direction) {
-      //We use this to move one month forward or backward to the first of the month.
+      //We use this to move one month forward or backward to the first of the month
+      //wiht the arrow buttons in the app title bar.
       //Just feed in the direction forward or backward as a string.
 
       //This gets the current index of the topmost date visible.
@@ -172,16 +202,19 @@ class _DateScreenState extends State<DateScreen> {
       updateAppBarTitle(navigateToDateIndex);
     }
 
+// Theme.of(context).appBarTheme.backgroundColor
+
     return Scaffold(
+        drawer: MainDrawer(),
         appBar: AppBar(
+          backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
           title: _screenwidth < 330
-              ? Text(appBarTitle,
-                  style: Theme.of(context)
-                      .appBarTheme
-                      .textTheme!
-                      .headline6!
-                      .copyWith(fontSize: 18))
-              : Text(appBarTitle),
+              ? Text(
+                  appBarTitle,
+                )
+              : Text(
+                  appBarTitle,
+                ),
           actions: [
             IconButton(
                 icon: Icon(Icons.arrow_back_ios),
@@ -196,13 +229,8 @@ class _DateScreenState extends State<DateScreen> {
           ],
         ),
         body: Center(
-            child: Container(
-          width: (kIsWeb && _screenwidth > 1000) ? 800 : double.infinity,
-          child: Padding(
-            padding: _isPhone
-                ? EdgeInsets.symmetric(horizontal: 10, vertical: 0)
-                : EdgeInsets.symmetric(
-                    horizontal: _screenwidth / 20, vertical: 0),
+          child: Container(
+            width: (kIsWeb && _screenwidth > 1000) ? 800 : double.infinity,
             child: NotificationListener(
               onNotification: (dynamic notification) {
                 if (notification is ScrollEndNotification) {
@@ -221,6 +249,6 @@ class _DateScreenState extends State<DateScreen> {
               ),
             ),
           ),
-        )));
+        ));
   }
 }

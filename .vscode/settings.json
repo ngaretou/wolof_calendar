@@ -6,5 +6,5 @@
   "files.watcherExclude": {
     "**/.fvm": true
   },
-  "dart.flutterSdkPath": "/Users/corey/myflutter/wolof_calendar/.fvm/flutter_sdk"
+  "dart.flutterSdkPath": "/Users/corey/fvm/versions/stable"
 }

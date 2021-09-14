@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:share/share.dart';
@@ -14,6 +12,9 @@ import '../screens/settings_screen.dart';
 class MainDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    TextStyle whiteHeadline6 =
+        Theme.of(context).textTheme.headline6!.copyWith(color: Colors.white);
+
     //Main template for all titles
     Widget drawerTitle(String title, IconData icon, Function tapHandler) {
       return InkWell(
@@ -36,9 +37,7 @@ class MainDrawer extends StatelessWidget {
                                 Theme.of(context).appBarTheme.iconTheme!.color,
                           ),
                     SizedBox(width: 25),
-                    Text(title,
-                        style:
-                            Theme.of(context).appBarTheme.textTheme!.headline6),
+                    Text(title, style: whiteHeadline6),
                   ],
                 ))),
       );
@@ -48,7 +47,8 @@ class MainDrawer extends StatelessWidget {
       elevation: 5.0,
       child: Container(
         width: MediaQuery.of(context).size.width * .8,
-        color: Theme.of(context).appBarTheme.color,
+        //The color of the Drawer
+        color: Theme.of(context).appBarTheme.backgroundColor,
         child: ListView(
           children: [
             //Main title
@@ -66,15 +66,9 @@ class MainDrawer extends StatelessWidget {
                         SizedBox(width: 25),
                         Text("Arminaatu wolof",
                             style: Theme.of(context)
-                                .appBarTheme
-                                .textTheme!
-                                .headline6!
-                                .copyWith(
-                                  fontSize: 24,
-                                  fontFamily: 'Lato',
-                                  fontWeight: FontWeight.w300,
-                                  letterSpacing: -0.5,
-                                ))
+                                .textTheme
+                                .headline5!
+                                .copyWith(color: Colors.white)),
                       ],
                     ))),
             Divider(
@@ -157,10 +151,7 @@ class MainDrawer extends StatelessWidget {
                     child: Row(
                       children: [
                         Text(AppLocalizations.of(context)!.settingsContactUs,
-                            style: Theme.of(context)
-                                .appBarTheme
-                                .textTheme!
-                                .headline6),
+                            style: whiteHeadline6.copyWith(fontSize: 24)),
                       ],
                     ))),
 
