@@ -10,6 +10,7 @@ import '../providers/route_args.dart';
 
 import '../widgets/date_tile.dart';
 import '../widgets/drawer.dart';
+import '../widgets/play_button.dart';
 
 class DateScreen extends StatefulWidget {
   static const routeName = '/date-screen';
@@ -33,6 +34,7 @@ class _DateScreenState extends State<DateScreen> {
   late DateTime initialDateTime;
   Object? routeArgumentsObject;
   late DateScreenArgs args;
+  bool showFloatingActionButton = false;
 
   @override
   void didChangeDependencies() {
@@ -101,16 +103,25 @@ class _DateScreenState extends State<DateScreen> {
     var lastIndex = _datesToDisplay.length - 1;
 
     void updateAppBarTitle(index) {
-      var scrolledMonth = (_datesToDisplay[index].month);
-      var scrolledYear = (_datesToDisplay[index].year);
-      var scrolledDateTime =
+      String scrolledDay = (_datesToDisplay[index].westernDate);
+      String scrolledWolofDay = (_datesToDisplay[index].wolofDate);
+      String scrolledMonth = (_datesToDisplay[index].month);
+      String scrolledYear = (_datesToDisplay[index].year);
+      DateTime scrolledDateTime =
           DateFormat('M/yyyy', "fr_FR").parse('$scrolledMonth/$scrolledYear');
       //To change format of title bar change both in didChangeDependencies & in main build
-      var scrolledDateTimeString =
+      String scrolledDateTimeString =
           DateFormat('yMMM', 'fr_FR').format(scrolledDateTime);
 
       setState(() {
         appBarTitle = scrolledDateTimeString;
+        if (scrolledDay == '1' || scrolledWolofDay == '1') {
+          showFloatingActionButton = true;
+          print('showFloatingActionButton = true;');
+        } else {
+          showFloatingActionButton = false;
+          print('showFloatingActionButton = false');
+        }
       });
       // }
     }
@@ -206,6 +217,8 @@ class _DateScreenState extends State<DateScreen> {
 
     return Scaffold(
         drawer: MainDrawer(),
+        floatingActionButton:
+            showFloatingActionButton ? PlayButton(file: '1') : SizedBox(),
         appBar: AppBar(
           backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
           title: _screenwidth < 330

@@ -170,17 +170,18 @@ class _MonthHeaderState extends State<MonthHeader> {
         ),
 
         ExpansionTile(
-            leading: Icon(
-              Icons.fingerprint,
-              size: 40,
-            ),
-            title: verseIsExpanded!
-                ? Text('')
-                : Text(AppLocalizations.of(context)!.clickHereToReadMore,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline5
-                        ?.copyWith(fontStyle: FontStyle.italic)),
+            // leading: Icon(
+            //   Icons.fingerprint,
+            //   size: 40,
+            // ),
+            // title: verseIsExpanded!
+            //     ? Text('')
+            //     : Text(AppLocalizations.of(context)!.clickHereToReadMore,
+            //         style: Theme.of(context)
+            //             .textTheme
+            //             .headline5
+            //             ?.copyWith(fontStyle: FontStyle.italic)),
+            title: Text(''),
             initiallyExpanded: true,
             onExpansionChanged: (bool) {
               setState(() {

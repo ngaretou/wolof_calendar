@@ -18,7 +18,7 @@ ThemeData darkTheme = ThemeData(
   appBarTheme: AppBarTheme(
       backgroundColor: Colors.teal[800],
       iconTheme: IconThemeData(color: Colors.white)),
-  buttonTheme: ButtonThemeData(buttonColor: Colors.teal),
+  // buttonTheme: ButtonThemeData(buttonColor: Colors.teal),
 );
 
 ThemeData lightTheme = ThemeData(
@@ -29,7 +29,7 @@ ThemeData lightTheme = ThemeData(
   appBarTheme: AppBarTheme(
       backgroundColor: Colors.teal[800],
       iconTheme: IconThemeData(color: Colors.white)),
-  buttonTheme: ButtonThemeData(buttonColor: Colors.teal),
+  // buttonTheme: ButtonThemeData(buttonColor: Colors.teal),
 );
 
 ThemeData blueTheme = ThemeData(
@@ -38,11 +38,11 @@ ThemeData blueTheme = ThemeData(
   backgroundColor: Colors.teal,
   colorScheme: ColorScheme.light()
       .copyWith(primary: Colors.blue, secondary: Colors.blue[100]),
-  scaffoldBackgroundColor: Colors.blue[100],
+  scaffoldBackgroundColor: Colors.blue[50],
   appBarTheme: AppBarTheme(
       backgroundColor: Colors.blue[800],
       iconTheme: IconThemeData(color: Colors.white)),
-  buttonTheme: ButtonThemeData(buttonColor: Colors.blue),
+  // buttonTheme: ButtonThemeData(buttonColor: Colors.blue),
 );
 
 ThemeData tealTheme = ThemeData(
@@ -50,11 +50,11 @@ ThemeData tealTheme = ThemeData(
   primarySwatch: Colors.teal,
   colorScheme: ColorScheme.light()
       .copyWith(primary: Colors.teal, secondary: Colors.teal[100]),
-  scaffoldBackgroundColor: Colors.teal[100],
+  scaffoldBackgroundColor: Colors.teal[50],
   appBarTheme: AppBarTheme(
       backgroundColor: Colors.teal[800],
       iconTheme: IconThemeData(color: Colors.white)),
-  buttonTheme: ButtonThemeData(buttonColor: Colors.teal),
+  // buttonTheme: ButtonThemeData(buttonColor: Colors.teal),
 );
 
 //////////////////////
