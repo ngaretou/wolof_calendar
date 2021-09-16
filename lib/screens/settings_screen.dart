@@ -299,8 +299,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
       );
     }
 
-    final mycolor = (Color(0xff90caf9));
-    ThemeData currentTheme = Theme.of(context);
 ///////////////////////////////
     return Scaffold(
       appBar: AppBar(
