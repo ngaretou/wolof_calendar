@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import './providers/user_prefs.dart';
 import './providers/months.dart';
 import './providers/theme.dart';
+import './providers/play_action.dart';
 
 import './screens/settings_screen.dart';
 import './screens/about_screen.dart';
@@ -28,6 +29,9 @@ void main() {
         ),
         ChangeNotifierProvider(
           create: (ctx) => Months(),
+        ),
+        ChangeNotifierProvider(
+          create: (ctx) => PlayAction(),
         ),
       ],
       child: MyApp(),

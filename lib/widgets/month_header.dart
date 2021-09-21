@@ -170,17 +170,6 @@ class _MonthHeaderState extends State<MonthHeader> {
         ),
 
         ExpansionTile(
-            // leading: Icon(
-            //   Icons.fingerprint,
-            //   size: 40,
-            // ),
-            // title: verseIsExpanded!
-            //     ? Text('')
-            //     : Text(AppLocalizations.of(context)!.clickHereToReadMore,
-            //         style: Theme.of(context)
-            //             .textTheme
-            //             .headline5
-            //             ?.copyWith(fontStyle: FontStyle.italic)),
             title: Text(''),
             initiallyExpanded: true,
             onExpansionChanged: (bool) {
@@ -190,8 +179,6 @@ class _MonthHeaderState extends State<MonthHeader> {
             },
             backgroundColor: Theme.of(context).cardColor,
             collapsedBackgroundColor: Theme.of(context).cardColor,
-            // iconColor: Theme.of(context).accentColor,
-            // collapsedIconColor: Theme.of(context).accentColor,
             children: [
               //Begin verses: Wolofal first, then Roman
               if (userPrefs.wolofalVerseEnabled!)
@@ -215,7 +202,6 @@ class _MonthHeaderState extends State<MonthHeader> {
                 Divider(
                   height: 60,
                   thickness: 2,
-                  // color: Theme.of(context).accentColor,
                 ),
 
               //RS verses
@@ -248,16 +234,9 @@ class _MonthHeaderState extends State<MonthHeader> {
                     children: [
                       Text(
                         AppLocalizations.of(context)!.clickHereToReadMore,
-                        // style: Theme.of(context)
-                        //     .appBarTheme
-                        //     .textTheme!
-                        //     .headline6!
-                        //     .copyWith(fontSize: 18)
                       ),
                       Icon(
                         Icons.arrow_forward,
-                        // color:
-                        //     Theme.of(context).appBarTheme.iconTheme!.color
                       ),
                     ],
                   ),
@@ -343,8 +322,8 @@ class VerseBuilder extends StatelessWidget {
           ),
           if (numItems - i != 1)
             Divider(
-              thickness: 1, height: 60,
-              // color: Theme.of(context).accentColor
+              thickness: 1,
+              height: 60,
             )
         ],
       ),
