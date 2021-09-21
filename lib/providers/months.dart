@@ -62,7 +62,7 @@ class Date {
   });
 }
 
-class Month with ChangeNotifier {
+class Month {
   final String monthID;
   final String monthFR;
   final String monthRS;

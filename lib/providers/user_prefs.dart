@@ -71,7 +71,6 @@ class UserPrefs with ChangeNotifier {
       );
     }
     print('in setup');
-    print(_userPrefs.wolofalVerseEnabled);
   }
 
   Future<void> savePref(String setting, userPref) async {
