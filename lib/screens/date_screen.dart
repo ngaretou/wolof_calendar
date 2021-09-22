@@ -125,8 +125,6 @@ class _DateScreenState extends State<DateScreen> {
 
     // Updates the appbar title with the month and shows or hides the play and share buttons
     Future<void> updateAfterNavigation({int? navigatedIndex}) async {
-      //TODO: if the user scrolls while playing as if to get out of it, keep showing hte play button so they can at least pause it.
-
       late int _topIndex;
       int? _bottomIndex;
 
@@ -185,12 +183,29 @@ class _DateScreenState extends State<DateScreen> {
         _showHeaders = false;
         _monthToPlayAndShare = monthToPlayAndShare;
       }
-
-      //setState in one expression to finish
+      //If we got here by direct navigation and we are going to show the headers,
+      //we have to reset the FAB.
+      if (_showHeaders == true) {
+        setState(() {
+          showMonthHeaderButtons = false;
+        });
+      }
+      //Then do the real set up for our view
+      /*This is a bit of a hack that I don't like but it's the easiest way to get around the problem. 
+        When on a header screen with the play button playing, you can be playing when teh user presses
+        next month. If that happens without the setState showMonthHeaderButtons = false; then the 
+        button keeps playing and does not reset with the current month. This kills the button by setting
+        showMonthHeaderButtons = false for .3 seconds, and doesn't slow down the UI too much. 
+      */
       setState(() {
-        appBarTitle = appBarTitleFormat(_scrolledDateTime);
-        showMonthHeaderButtons = _showHeaders;
-        monthToPlayAndShare = _monthToPlayAndShare;
+        showMonthHeaderButtons = false;
+      });
+      Timer(Duration(milliseconds: 300), () {
+        setState(() {
+          appBarTitle = appBarTitleFormat(_scrolledDateTime);
+          showMonthHeaderButtons = _showHeaders;
+          monthToPlayAndShare = _monthToPlayAndShare;
+        });
       });
     }
 
@@ -342,9 +357,7 @@ class _DateScreenState extends State<DateScreen> {
         drawer: MainDrawer(),
         floatingActionButton: showMonthHeaderButtons
             ? PlayButton(file: monthToPlayAndShare)
-            : SizedBox(
-                height: 0,
-              ),
+            : null,
         appBar: AppBar(
           backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
           title: _screenwidth < 330

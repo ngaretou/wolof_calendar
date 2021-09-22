@@ -177,7 +177,7 @@ class _MonthHeaderState extends State<MonthHeader> {
                 verseIsExpanded = !verseIsExpanded!;
               });
             },
-            backgroundColor: Theme.of(context).cardColor,
+            // backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             collapsedBackgroundColor: Theme.of(context).cardColor,
             children: [
               //Begin verses: Wolofal first, then Roman
