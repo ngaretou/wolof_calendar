@@ -119,7 +119,7 @@ class _DateTileState extends State<DateTile> {
               : EdgeInsets.symmetric(
                   horizontal: _screenwidth / 20, vertical: 0),
           child: Card(
-            elevation: 5,
+            elevation: 1,
             color: widget.currentDate.holidays!.length >= 1
                 ? Theme.of(context).colorScheme.secondary
                 : Theme.of(context).cardColor,
