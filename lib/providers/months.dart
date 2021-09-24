@@ -45,7 +45,7 @@ class Verses {
 class Date {
   final String year;
   final String month;
-  final String wolofMonthRS;
+  final String? wolofMonthRS;
   final String? wolofMonthAS;
   final String westernDate;
   final String wolofDate;
@@ -54,7 +54,7 @@ class Date {
   Date({
     required this.year,
     required this.month,
-    required this.wolofMonthRS,
+    this.wolofMonthRS,
     this.wolofMonthAS,
     required this.westernDate,
     required this.wolofDate,
@@ -67,9 +67,9 @@ class Month {
   final String monthFR;
   final String monthRS;
   final String monthAS;
-  final String arabicName;
-  final String wolofName;
-  final String wolofalName;
+  final String? arabicName;
+  final String? wolofName;
+  final String? wolofalName;
   final List<Verses> verses;
 
   Month({
@@ -77,9 +77,9 @@ class Month {
     required this.monthFR,
     required this.monthRS,
     required this.monthAS,
-    required this.arabicName,
-    required this.wolofName,
-    required this.wolofalName,
+    this.arabicName,
+    this.wolofName,
+    this.wolofalName,
     required this.verses,
   });
 }

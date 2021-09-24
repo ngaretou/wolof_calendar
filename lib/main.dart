@@ -13,9 +13,8 @@ import './providers/play_action.dart';
 
 import './screens/settings_screen.dart';
 import './screens/about_screen.dart';
-import './screens/months_screen.dart';
+
 import './screens/date_screen.dart';
-import './screens/month_scripture_screen.dart';
 
 void main() {
   runApp(
@@ -96,11 +95,9 @@ class _MyAppState extends State<MyApp> {
       ),
       theme: Provider.of<ThemeModel>(context).currentTheme,
       routes: {
-        MonthsScreen.routeName: (ctx) => MonthsScreen(),
         SettingsScreen.routeName: (ctx) => SettingsScreen(),
         AboutScreen.routeName: (ctx) => AboutScreen(),
         DateScreen.routeName: (ctx) => DateScreen(),
-        MonthScriptureScreen.routeName: (ctx) => MonthScriptureScreen(),
       },
       localizationsDelegates: [
         AppLocalizations.delegate,
