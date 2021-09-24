@@ -9,7 +9,6 @@ import './date_screen.dart';
 import '../providers/months.dart';
 import '../providers/route_args.dart';
 
-import '../widgets/month_tile.dart';
 import '../widgets/drawer.dart';
 
 class MonthsScreen extends StatelessWidget {

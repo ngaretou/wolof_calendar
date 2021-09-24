@@ -74,12 +74,16 @@ class MonthScriptureScreen extends StatelessWidget {
           yallaMooy = 'Yàlla mooy ';
           vs = element.verseRS;
           ref = element.verseRefRS;
-          name = args.data.wolofName;
+          args.data.wolofName != null
+              ? name = args.data.wolofName.toString()
+              : null;
         } else if (script == 'arabic') {
           yallaMooy = 'يࣵلَّ مࣷويْ ';
           vs = element.verseAS;
           ref = element.verseRefAS;
-          name = args.data.wolofalName;
+          args.data.wolofalName != null
+              ? name = args.data.wolofalName.toString()
+              : null;
         }
 
         versesToShare =

@@ -45,8 +45,13 @@ class _DateScreenState extends State<DateScreen> {
   late String monthToPlayAndShare;
 
   //Normally we'd just set this inline but we have to use this a couple of times so putting it in code for uniformity
-  String appBarTitleFormat(DateTime incomingDateTime) {
-    return DateFormat('yMMM', 'fr_FR').format(incomingDateTime);
+  String appBarTitleFormat(DateTime incomingDateTime, BuildContext context) {
+    final _screenwidth = MediaQuery.of(context).size.width;
+    if (_screenwidth > 500) {
+      return DateFormat('yMMMM', 'fr_FR').format(incomingDateTime);
+    } else {
+      return DateFormat('yMMM', 'fr_FR').format(incomingDateTime);
+    }
   }
 
   @override
@@ -110,7 +115,7 @@ class _DateScreenState extends State<DateScreen> {
         .parse('${_args.year} ${_args.month} ${_args.date}');
     //Then make it nice for the initial appBarTitle
     //To change format of title bar change both in didChangeDependencies & in main build
-    appBarTitle = appBarTitleFormat(initialDateTime);
+    appBarTitle = appBarTitleFormat(initialDateTime, context);
     //This initializes with a value the month we initially open to.
     //If it's a 1, it will display the buttons, but if not, it will not show anyway
     monthToPlayAndShare = _args.month!;
@@ -119,7 +124,6 @@ class _DateScreenState extends State<DateScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final _screenwidth = MediaQuery.of(context).size.width;
     late var navigateToDateIndex; //this is for later on when the user navigates
     var lastIndex = datesToDisplay.length - 1;
 
@@ -200,9 +204,9 @@ class _DateScreenState extends State<DateScreen> {
       setState(() {
         showMonthHeaderButtons = false;
       });
-      Timer(Duration(milliseconds: 300), () {
+      Timer(Duration(milliseconds: fadeInSpeed), () {
         setState(() {
-          appBarTitle = appBarTitleFormat(_scrolledDateTime);
+          appBarTitle = appBarTitleFormat(_scrolledDateTime, context);
           showMonthHeaderButtons = _showHeaders;
           monthToPlayAndShare = _monthToPlayAndShare;
         });
@@ -307,22 +311,28 @@ class _DateScreenState extends State<DateScreen> {
       //the [0] grabs the first in the list, which will be the only one
 
       String versesToShare = '';
-      late String lineBreak, yallaMooy, vs, ref, name;
+      late String lineBreak, vs, ref, name;
 
       kIsWeb ? lineBreak = '%0d%0a' : lineBreak = '\n';
 
       //Put together the verses to share. Do with forEach to take into account the multiple verse months.
       monthData.verses.forEach((element) {
         if (script == 'roman') {
-          yallaMooy = 'Yàlla mooy ';
+          // yallaMooy = 'Yàlla mooy ';
           vs = element.verseRS;
           ref = element.verseRefRS;
-          name = monthData.wolofName;
+          monthData.wolofName != null
+              ? name = monthData.wolofName.toString()
+              // ignore: unnecessary_statements
+              : null;
         } else if (script == 'arabic') {
-          yallaMooy = 'يࣵلَّ مࣷويْ ';
+          // yallaMooy = 'يࣵلَّ مࣷويْ ';
           vs = element.verseAS;
           ref = element.verseRefAS;
-          name = monthData.wolofalName;
+          monthData.wolofalName != null
+              ? name = monthData.wolofalName.toString()
+              // ignore: unnecessary_statements
+              : null;
         }
 
         versesToShare =
@@ -330,8 +340,7 @@ class _DateScreenState extends State<DateScreen> {
       });
 
       //Put together the whole sharing string
-      final String textToShare = yallaMooy +
-          name +
+      final String textToShare = name +
           ": " +
           lineBreak +
           lineBreak +
@@ -360,13 +369,9 @@ class _DateScreenState extends State<DateScreen> {
             : null,
         appBar: AppBar(
           backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-          title: _screenwidth < 330
-              ? Text(
-                  appBarTitle,
-                )
-              : Text(
-                  appBarTitle,
-                ),
+          title: Text(
+            appBarTitle,
+          ),
           actions: [
             AnimatedOpacity(
               child: IconButton(
@@ -425,7 +430,6 @@ class _DateScreenState extends State<DateScreen> {
         ),
         body: Center(
           child: Container(
-            width: (kIsWeb && _screenwidth > 1000) ? 800 : double.infinity,
             child: NotificationListener(
               onNotification: (dynamic notification) {
                 if (notification is ScrollEndNotification) {
@@ -438,7 +442,8 @@ class _DateScreenState extends State<DateScreen> {
                 itemPositionsListener: itemPositionsListener,
                 physics: BouncingScrollPhysics(),
                 initialScrollIndex: initialScrollIndex,
-                itemBuilder: (ctx, i) => DateTile(datesToDisplay[i]),
+                itemBuilder: (ctx, i) =>
+                    DateTile(currentDate: datesToDisplay[i]),
                 itemCount: datesToDisplay.length,
               ),
             ),
