@@ -50,7 +50,7 @@ class DateTile extends StatelessWidget {
         DateFormat('EEEE', 'fr_FR').format(currentDateTime);
 
     switch (currentDateTime.weekday) {
-      //1 = Monday
+      //1 = Monday, etc
       case 1:
         {
           _wolofWeekday = "altine";
@@ -98,7 +98,7 @@ class DateTile extends StatelessWidget {
     //Set up whether or not to show the month header or not
     bool showMonth;
 
-    if (currentDate.westernDate == "1" || currentDate.wolofDate == "1") {
+    if (currentDate.westernDate == "1") {
       showMonth = true;
     } else {
       showMonth = false;
