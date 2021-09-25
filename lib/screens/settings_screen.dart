@@ -178,7 +178,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-              width: 300,
+              // width: 300,
               child: Padding(
                   padding: EdgeInsets.only(left: 80),
                   child: Row(children: [
@@ -210,11 +210,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     Widget rsScriptPicker() {
       return Row(
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-              width: 300,
+              // width: 300,
               child: Padding(
                   padding: EdgeInsets.only(left: 80),
                   child: Row(children: [

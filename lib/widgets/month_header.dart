@@ -6,7 +6,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../providers/months.dart';
 import '../providers/user_prefs.dart';
-// import 'package:intl/intl.dart';
 
 //We're feeding in all this info so that the widget tree doesn't have to rebuild
 ////and the code is a bit more efficient, although makes for a messy constructor
@@ -69,11 +68,9 @@ class _MonthHeaderState extends State<MonthHeader> {
     ui.TextDirection rtlText = ui.TextDirection.rtl;
     ui.TextDirection ltrText = ui.TextDirection.ltr;
     //End text styles
-    // EdgeInsets _headerMargin =
-    //     EdgeInsets.symmetric(horizontal: widget.adaptiveMargin.horizontal + 1);
+
     final double _nameColWidth = (widget.contentColWidth / 2);
 
-    //end viewing setup
     var userPrefs = Provider.of<UserPrefs>(context, listen: false).userPrefs;
 
     /* Fall 2021 Flutter 2.5.1, the AS text boxes get squished by Flutter on on web. 
@@ -263,6 +260,16 @@ class _MonthHeaderState extends State<MonthHeader> {
               rtlTextFixer(widget.currentDate.wolofMonthAS.toString()),
               style: headerStyle,
               textDirection: ui.TextDirection.rtl,
+            ),
+          ]),
+        ),
+        Container(
+          padding: EdgeInsets.symmetric(
+              horizontal: (widget.adaptiveMargin.horizontal / 2) + 5.0),
+          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Text(
+              widget.currentDate.year,
+              style: headerStyle,
             ),
           ]),
         )

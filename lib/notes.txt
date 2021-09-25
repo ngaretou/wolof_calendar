@@ -8,6 +8,7 @@ To precache animation: (https://flutter.dev/docs/perf/rendering/shader)
 Building: 
 >>flutter build appbundle
 >>flutter build apk --split-per-abi
+fvm flutter build appbundle
 
 add in then this to include the sksl data: --bundle-sksl-path flutter_01.sksl.json
 

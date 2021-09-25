@@ -186,7 +186,7 @@ class MainDrawer extends StatelessWidget {
               AppLocalizations.of(context)!.contactFBMessenger,
               FontAwesomeIcons.facebookMessenger,
               () async {
-                const url = 'https://m.me/kaddugyallagi/';
+                const url = 'https://m.me/buleenragal/';
                 if (await canLaunch(url)) {
                   await launch(url);
                 } else {

@@ -34,24 +34,37 @@ class _DateScreenState extends State<DateScreen> {
   //This is used just for the initial navigation on open
   late int initialScrollIndex;
   //Holder for the app bar title that gets refreshed as the user navigates
-  late String appBarTitle;
+  late Text formattedAppBarTitle;
   //used both for that initial navigation on open AND for the starting date for the date picker
   late DateTime initialDateTime;
   //this gets initialized so it can never be null but is really set below
   bool showMonthHeaderButtons = false;
-  // the fade-in speed for the button animations
-  final int fadeInSpeed = 500;
+  // the fade-in speed for the button animations in milliseconds
+  final int fadeInSpeed = 300;
   //store the month that we'll grab the verses to play and share
   late String monthToPlayAndShare;
 
   //Normally we'd just set this inline but we have to use this a couple of times so putting it in code for uniformity
-  String appBarTitleFormat(DateTime incomingDateTime, BuildContext context) {
+  Text appBarTitleFormat(DateTime incomingDateTime, BuildContext context) {
     final _screenwidth = MediaQuery.of(context).size.width;
-    if (_screenwidth > 500) {
-      return DateFormat('yMMMM', 'fr_FR').format(incomingDateTime);
-    } else {
-      return DateFormat('yMMM', 'fr_FR').format(incomingDateTime);
+    print(_screenwidth);
+
+    if (_screenwidth > 399) {
+      return Text(DateFormat('yMMMM', 'fr_FR').format(incomingDateTime),
+          style: Theme.of(context).appBarTheme.titleTextStyle);
+    } else if (_screenwidth <= 399 && _screenwidth > 344) {
+      return Text(DateFormat('yMMM', 'fr_FR').format(incomingDateTime),
+          style: Theme.of(context).appBarTheme.titleTextStyle);
+    } else if (_screenwidth <= 344) {
+      return Text(DateFormat('M/yy', 'fr_FR').format(incomingDateTime),
+          style: Theme.of(context)
+              .appBarTheme
+              .titleTextStyle
+              ?.copyWith(fontSize: 10));
     }
+    throw (error) {
+      print('error in appBarTitle formatting');
+    };
   }
 
   @override
@@ -115,7 +128,7 @@ class _DateScreenState extends State<DateScreen> {
         .parse('${_args.year} ${_args.month} ${_args.date}');
     //Then make it nice for the initial appBarTitle
     //To change format of title bar change both in didChangeDependencies & in main build
-    appBarTitle = appBarTitleFormat(initialDateTime, context);
+    formattedAppBarTitle = appBarTitleFormat(initialDateTime, context);
     //This initializes with a value the month we initially open to.
     //If it's a 1, it will display the buttons, but if not, it will not show anyway
     monthToPlayAndShare = _args.month!;
@@ -170,15 +183,15 @@ class _DateScreenState extends State<DateScreen> {
       late bool _showHeaders;
       late String _monthToPlayAndShare;
       //Handle the first two cases in one expression:
-      if (_topDate.westernDate == '1' || _topDate.wolofDate == '1') {
+      if (_topDate.westernDate == '1') {
         _showHeaders = true;
         _monthToPlayAndShare = _topDate.month;
       }
+
       //Here unfortunately we have a complicated if, but we are checking if there is a bottom index in play
       else if (_bottomIndex != null &&
           //and then now we know it's not null we test if either is a 1
-          (datesToDisplay[_bottomIndex].westernDate == '1' ||
-              datesToDisplay[_bottomIndex].wolofDate == '1')) {
+          (datesToDisplay[_bottomIndex].westernDate == '1')) {
         _showHeaders = true;
         _monthToPlayAndShare = datesToDisplay[_bottomIndex]
             .month; //_topDate.month is the western month
@@ -189,11 +202,7 @@ class _DateScreenState extends State<DateScreen> {
       }
       //If we got here by direct navigation and we are going to show the headers,
       //we have to reset the FAB.
-      if (_showHeaders == true) {
-        setState(() {
-          showMonthHeaderButtons = false;
-        });
-      }
+
       //Then do the real set up for our view
       /*This is a bit of a hack that I don't like but it's the easiest way to get around the problem. 
         When on a header screen with the play button playing, you can be playing when teh user presses
@@ -201,12 +210,15 @@ class _DateScreenState extends State<DateScreen> {
         button keeps playing and does not reset with the current month. This kills the button by setting
         showMonthHeaderButtons = false for .3 seconds, and doesn't slow down the UI too much. 
       */
-      setState(() {
-        showMonthHeaderButtons = false;
-      });
+      if (_showHeaders == true && navigatedIndex != null) {
+        setState(() {
+          showMonthHeaderButtons = false;
+        });
+      }
+
       Timer(Duration(milliseconds: fadeInSpeed), () {
         setState(() {
-          appBarTitle = appBarTitleFormat(_scrolledDateTime, context);
+          formattedAppBarTitle = appBarTitleFormat(_scrolledDateTime, context);
           showMonthHeaderButtons = _showHeaders;
           monthToPlayAndShare = _monthToPlayAndShare;
         });
@@ -369,50 +381,51 @@ class _DateScreenState extends State<DateScreen> {
             : null,
         appBar: AppBar(
           backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-          title: Text(
-            appBarTitle,
-          ),
+          title: formattedAppBarTitle,
           actions: [
             AnimatedOpacity(
               child: IconButton(
                   icon: Icon(Icons.share),
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Text(
-                            AppLocalizations.of(context)!.sharingTitle,
-                          ),
-                          content:
-                              Text(AppLocalizations.of(context)!.sharingMsg),
-                          actions: [
-                            TextButton(
-                                child: Text("Wolof"),
-                                onPressed: () async {
-                                  Navigator.of(context).pop();
-                                  _adaptiveShare('roman');
-                                }),
-                            TextButton(
-                                child: Text("وࣷلࣷفَلْ",
-                                    style: TextStyle(
-                                        fontFamily: "Harmattan", fontSize: 22)),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                  _adaptiveShare('arabic');
-                                }),
-                            TextButton(
-                                child: Text(
-                                  AppLocalizations.of(context)!.cancel,
+                  onPressed: showMonthHeaderButtons
+                      ? () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text(
+                                  AppLocalizations.of(context)!.sharingTitle,
                                 ),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                }),
-                          ],
-                        );
-                      },
-                    );
-                  }),
+                                content: Text(
+                                    AppLocalizations.of(context)!.sharingMsg),
+                                actions: [
+                                  TextButton(
+                                      child: Text("Wolof"),
+                                      onPressed: () async {
+                                        Navigator.of(context).pop();
+                                        _adaptiveShare('roman');
+                                      }),
+                                  TextButton(
+                                      child: Text("وࣷلࣷفَلْ",
+                                          style: TextStyle(
+                                              fontFamily: "Harmattan",
+                                              fontSize: 22)),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                        _adaptiveShare('arabic');
+                                      }),
+                                  TextButton(
+                                      child: Text(
+                                        AppLocalizations.of(context)!.cancel,
+                                      ),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      }),
+                                ],
+                              );
+                            },
+                          );
+                        }
+                      : () {}),
               opacity: showMonthHeaderButtons ? 1.0 : 0.0,
               duration: Duration(milliseconds: fadeInSpeed),
             ),
