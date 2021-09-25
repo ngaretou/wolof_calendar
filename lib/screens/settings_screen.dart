@@ -18,9 +18,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   //Main Settings screen construction:
   @override
   Widget build(BuildContext context) {
-    final bool _isPhone = (MediaQuery.of(context).size.width +
-            MediaQuery.of(context).size.height) <=
-        1400;
     final userThemeName =
         Provider.of<ThemeModel>(context, listen: false).userThemeName;
     final themeProvider = Provider.of<ThemeModel>(context, listen: false);
@@ -172,71 +169,49 @@ class _SettingsScreenState extends State<SettingsScreen> {
       );
     }
 
-    Widget asScriptPicker() {
+    Widget scriptPicker(String script) {
+      late Text labelText;
+      late bool switchValue;
+
+      if (script == 'roman') {
+        labelText = Text(AppLocalizations.of(context)!.settingsVerseinWolof,
+            style: Theme.of(context).textTheme.subtitle1);
+        switchValue = _wolof!;
+      } else if (script == 'arabic') {
+        labelText = Text(AppLocalizations.of(context)!.settingsVerseinWolofal,
+            style: Theme.of(context).textTheme.subtitle1);
+        switchValue = _wolofal!;
+      }
+
       return Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-              // width: 300,
-              child: Padding(
-                  padding: EdgeInsets.only(left: 80),
-                  child: Row(children: [
-                    // Expanded(child:
-                    Text(AppLocalizations.of(context)!.settingsVerseinWolofal,
-                        style: Theme.of(context).textTheme.subtitle1),
-                  ]))),
-          Expanded(
-            child: Row(
-              mainAxisAlignment: _isPhone
-                  ? MainAxisAlignment.end
-                  : MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Switch(
-                  value: _wolofal!,
-                  onChanged: (_) {
-                    setState(() {
-                      userPrefs.savePref('wolofalVerseEnabled', !_wolofal);
-                    });
-                  },
-                ),
-              ],
+            width: 210,
+            child: Padding(
+              padding: EdgeInsetsDirectional.only(start: 80),
+              child: Row(
+                children: [
+                  labelText,
+                ],
+              ),
             ),
           ),
-        ],
-      );
-    }
-
-    Widget rsScriptPicker() {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-              // width: 300,
-              child: Padding(
-                  padding: EdgeInsets.only(left: 80),
-                  child: Row(children: [
-                    // Expanded(child:
-                    Text(AppLocalizations.of(context)!.settingsVerseinWolof,
-                        style: Theme.of(context).textTheme.subtitle1),
-                  ]))),
           Expanded(
-            child: Row(
-              mainAxisAlignment:
-                  _isPhone ? MainAxisAlignment.end : MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Switch(
-                  value: _wolof!,
-                  onChanged: (_) {
-                    setState(() {
-                      userPrefs.savePref('wolofVerseEnabled', !_wolof);
-                    });
-                  },
-                ),
-              ],
+            child: Switch(
+              value: switchValue,
+              onChanged: (_) {
+                if (script == 'arabic') {
+                  setState(() {
+                    userPrefs.savePref('wolofalVerseEnabled', !_wolofal!);
+                  });
+                } else if (script == 'roman') {
+                  setState(() {
+                    userPrefs.savePref('wolofVerseEnabled', !_wolof!);
+                  });
+                }
+              },
             ),
           ),
         ],
@@ -322,8 +297,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   // settingRow(directionTitle(), directionSettings()),
                   // Divider(),
                   scriptPickerTitle(),
-                  asScriptPicker(),
-                  rsScriptPicker(),
+                  scriptPicker('arabic'),
+                  scriptPicker('roman'),
                   Divider(),
                   settingRow(languageTitle(), languageSetting()),
                 ],
@@ -335,8 +310,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 // settingColumn(backgroundTitle(), backgroundSettings()),
                 // settingColumn(directionTitle(), directionSettings()),
                 scriptPickerTitle(),
-                asScriptPicker(),
-                rsScriptPicker(),
+                scriptPicker('arabic'),
+                scriptPicker('roman'),
                 Divider(),
                 settingColumn(languageTitle(), languageSetting()),
               ],
