@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:audio_session/audio_session.dart';
+// import 'package:audio_session/audio_session.dart';
 
 class PlayButton extends StatefulWidget {
   final String file;
@@ -13,7 +13,6 @@ class PlayButton extends StatefulWidget {
 
 class PlayButtonState extends State<PlayButton> with WidgetsBindingObserver {
   final _player = AudioPlayer();
-  // late bool _playerIsInitialized;
 
   @override
   void initState() {
@@ -23,11 +22,12 @@ class PlayButtonState extends State<PlayButton> with WidgetsBindingObserver {
   }
 
   Future _initializeSession() async {
-    final session = await AudioSession.instance;
-    await session.configure(AudioSessionConfiguration.speech());
+    // final session = await AudioSession.instance;
+    // await session.configure(AudioSessionConfiguration.speech());
 
     //**This only rebuilds on setState from the parent if the setAudioSource is in the build method rather than the initState
-    print('loading local audio');
+    print('loading local audio ' + widget.file.toString());
+
     _player.setAudioSource(
         AudioSource.uri(Uri.parse("asset:///assets/audio/${widget.file}.mp3")));
 
@@ -55,13 +55,13 @@ class PlayButtonState extends State<PlayButton> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused) {
-//If the user presses home then the audio will stop gracefully
-      // gracefulStop();
-    }
-  }
+//   @override
+//   void didChangeAppLifecycleState(AppLifecycleState state) {
+//     if (state == AppLifecycleState.paused) {
+// //If the user presses home then the audio will stop gracefully
+//       // gracefulStop();
+//     }
+//   }
 
   @override
   Widget build(BuildContext context) {

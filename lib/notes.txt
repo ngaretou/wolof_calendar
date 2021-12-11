@@ -17,10 +17,12 @@ So normally:
 >>flutter build apk --split-per-abi --bundle-sksl-path flutter_01.sksl.json
 
 iOS: 
->>flutter build ios
-https://flutter.dev/docs/deployment/ios
 >>Xcode: 
 update build on general tab
+>>flutter build ipa
+Open build/ios/archive/MyApp.xcarchive in Xcode.
+Click the Validate App & Distribute App
+https://flutter.dev/docs/deployment/ios
 
 
 
