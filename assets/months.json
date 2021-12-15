@@ -3,7 +3,8 @@
             "monthID": "cover",
             "monthFR": "2022",
             "monthRS": "2022",
-            "monthAS": "١٤٤٣-١٤٤٤"
+            "monthAS": "١٤٤٣-١٤٤٤",
+            "arabicNameCode": "0"
         },
         {
             "monthID": "1",
@@ -11,6 +12,7 @@
             "monthRS": "Samwiye",
             "monthAS": "سَمْوِيࣹ",
             "arabicName": "الملك ",
+            "arabicNameCode": "4",
             "wolofName": "Buur bi",
             "wolofalName": "بُورْ بِ"
         },
@@ -20,6 +22,7 @@
             "monthRS": "Fewriye",
             "monthAS": "فࣹوْرِيࣹ",
             "arabicName": "الملك ",
+            "arabicNameCode": "4",
             "wolofName": "Buur bi",
             "wolofalName": "بُورْ بِ"
         },
@@ -29,6 +32,7 @@
             "monthRS": "Màrs",
             "monthAS": "مࣵرسّ",
             "arabicName": "الملك ",
+            "arabicNameCode": "4",
             "wolofName": "Buur bi",
             "wolofalName": "بُورْ بِ"
         },
@@ -38,6 +42,7 @@
             "monthRS": "Awril",
             "monthAS": "اَوْرِلْ",
             "arabicName": "الودود ",
+            "arabicNameCode": "48",
             "wolofName": "Boroom Cofeel",
             "wolofalName": "بࣷرࣷومْ ݖࣷفࣹيلْ"
         },
@@ -47,6 +52,7 @@
             "monthRS": "Me",
             "monthAS": "مࣹ",
             "arabicName": "الودود ",
+            "arabicNameCode": "48",
             "wolofName": "Boroom Cofeel",
             "wolofalName": "بࣷرࣷومْ ݖࣷفࣹيلْ"
         },
@@ -55,6 +61,7 @@
             "monthFR": "Juin",
             "monthRS": "Suwen",
             "monthAS": "سُوࣹنْ",
+            "arabicNameCode": "0",
             "wolofName": "Yàlla Cofeelu Neen la",
             "wolofalName": "يࣵلَّ ݖࣷفࣹيلُ نࣹينْ لَ"
         },
@@ -63,6 +70,7 @@
             "monthFR": "Juillet",
             "monthRS": "Sulet",
             "monthAS": "سُلࣹتْ",
+            "arabicNameCode": "0",
             "wolofName": "Yàlla Cofeelu Neen la",
             "wolofalName": "يࣵلَّ ݖࣷفࣹيلُ نࣹينْ لَ"
         },
@@ -71,6 +79,7 @@
             "monthFR": "Août",
             "monthRS": "Ut",
             "monthAS": "اُتْ",
+            "arabicNameCode": "0",
             "wolofName": "Yàlla Cofeelu Neen la",
             "wolofalName": "يࣵلَّ ݖࣷفࣹيلُ نࣹينْ لَ"
         },
@@ -80,6 +89,7 @@
             "monthRS": "Sàttumbar",
             "monthAS": "سࣵتُّمْبَرْ",
             "arabicName": "الواحد ",
+            "arabicNameCode": "67",
             "wolofName": "Kenn Ki",
             "wolofalName": "ڪࣹنّ ڪِ"
         },
@@ -89,6 +99,7 @@
             "monthRS": "Oktoobar",
             "monthAS": "اࣷڪْتࣷوبَرْ",
             "arabicName": "الواحد ",
+            "arabicNameCode": "67",
             "wolofName": "Kenn Ki",
             "wolofalName": "ڪࣹنّ ڪِ"
         },
@@ -98,6 +109,7 @@
             "monthRS": "Nowàmbar",
             "monthAS": "نࣷوࣵمْبَرْ",
             "arabicName": "الواحد ",
+            "arabicNameCode": "67",
             "wolofName": "Kenn Ki",
             "wolofalName": "ڪࣹنّ ڪِ"
         },
@@ -107,6 +119,7 @@
             "monthRS": "Desàmbar",
             "monthAS": "دࣹسࣵمْبَرْ",
             "arabicName": "الواحد ",
+            "arabicNameCode": "67",
             "wolofName": "Kenn Ki",
             "wolofalName": "ڪࣹنّ ڪِ"
         }

@@ -68,6 +68,7 @@ class Month {
   final String monthRS;
   final String monthAS;
   final String? arabicName;
+  final String arabicNameCode;
   final String? wolofName;
   final String? wolofalName;
   final List<Verses> verses;
@@ -78,6 +79,7 @@ class Month {
     required this.monthRS,
     required this.monthAS,
     this.arabicName,
+    required this.arabicNameCode,
     this.wolofName,
     this.wolofalName,
     required this.verses,
@@ -146,6 +148,7 @@ class Months with ChangeNotifier {
         monthRS: month['monthRS'],
         monthAS: month['monthAS'],
         arabicName: month['arabicName'],
+        arabicNameCode: month['arabicNameCode'],
         wolofName: month['wolofName'],
         wolofalName: month['wolofalName'],
         verses: versesData!

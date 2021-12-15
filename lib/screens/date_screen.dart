@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 import '../providers/months.dart';
 import '../providers/route_args.dart';
 
-import '../widgets/date_tile.dart';
 import '../widgets/drawer.dart';
 import '../widgets/play_button.dart';
+import '../widgets/date_tile.dart';
 
 class DateScreen extends StatefulWidget {
   static const routeName = '/date-screen';
@@ -374,10 +373,18 @@ class _DateScreenState extends State<DateScreen> {
       }
     }
 
+    String nameCode = Provider.of<Months>(context, listen: false)
+        .months
+        .where((element) => element.monthID == monthToPlayAndShare)
+        .toList()[0]
+        .arabicNameCode;
+
+    print('nameCode ' + nameCode);
+
     return Scaffold(
         drawer: MainDrawer(),
         floatingActionButton: showMonthHeaderButtons
-            ? PlayButton(file: monthToPlayAndShare)
+            ? PlayButton(file: monthToPlayAndShare, name: nameCode)
             : null,
         appBar: AppBar(
           backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
