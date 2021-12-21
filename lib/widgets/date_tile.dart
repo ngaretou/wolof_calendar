@@ -26,7 +26,7 @@ class DateTile extends StatelessWidget {
     late EdgeInsets adaptiveMargin;
 
     if (!isPhone) {
-      contentColWidth = 650;
+      contentColWidth = 600;
       headerImageHeight = _screenheight / 3;
       adaptiveMargin = EdgeInsets.symmetric(
           horizontal: (screenwidth - contentColWidth) / 2, vertical: 0);
@@ -145,8 +145,11 @@ class DateTile extends StatelessWidget {
           padding: adaptiveMargin,
           child: Card(
             elevation: 1,
+            //The list of holidays is zero then it's not a holiday
             color: currentDate.holidays!.length >= 1
-                ? Theme.of(context).colorScheme.secondary
+                //there is a holiday
+                ? Theme.of(context).colorScheme.primary
+                //there is not a holiday
                 : Theme.of(context).cardColor,
 
             //Western date, column of weekdays, Wolof date

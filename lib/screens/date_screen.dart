@@ -48,18 +48,22 @@ class _DateScreenState extends State<DateScreen> {
     final _screenwidth = MediaQuery.of(context).size.width;
     print(_screenwidth);
 
-    if (_screenwidth > 399) {
-      return Text(DateFormat('yMMMM', 'fr_FR').format(incomingDateTime),
-          style: Theme.of(context).appBarTheme.titleTextStyle);
-    } else if (_screenwidth <= 399 && _screenwidth > 344) {
+    //Screen range
+    double smallScreenMax = 344;
+    double mediumScreenMax = 399;
+
+    if (_screenwidth >= mediumScreenMax) {
+      print('large');
+      return Text(DateFormat('yMMMM', 'fr_FR').format(incomingDateTime));
+    } else if (_screenwidth >= smallScreenMax &&
+        _screenwidth < mediumScreenMax) {
+      print('medium');
       return Text(DateFormat('yMMM', 'fr_FR').format(incomingDateTime),
-          style: Theme.of(context).appBarTheme.titleTextStyle);
-    } else if (_screenwidth <= 344) {
-      return Text(DateFormat('M/yy', 'fr_FR').format(incomingDateTime),
-          style: Theme.of(context)
-              .appBarTheme
-              .titleTextStyle
-              ?.copyWith(fontSize: 10));
+          style: TextStyle(fontSize: 18));
+    } else if (_screenwidth < smallScreenMax) {
+      print('small');
+      return Text(DateFormat('yMMM', 'fr_FR').format(incomingDateTime),
+          style: TextStyle(fontSize: 14));
     }
     throw (error) {
       print('error in appBarTitle formatting');
@@ -373,18 +377,16 @@ class _DateScreenState extends State<DateScreen> {
       }
     }
 
-    String nameCode = Provider.of<Months>(context, listen: false)
+    String _nameCode = Provider.of<Months>(context, listen: false)
         .months
         .where((element) => element.monthID == monthToPlayAndShare)
         .toList()[0]
         .arabicNameCode;
 
-    print('nameCode ' + nameCode);
-
     return Scaffold(
         drawer: MainDrawer(),
         floatingActionButton: showMonthHeaderButtons
-            ? PlayButton(file: monthToPlayAndShare, name: nameCode)
+            ? PlayButton(file: monthToPlayAndShare, name: _nameCode)
             : null,
         appBar: AppBar(
           backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
