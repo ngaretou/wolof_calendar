@@ -17,7 +17,8 @@ ThemeData darkTheme = ThemeData(
       .copyWith(primary: Colors.teal[300], secondary: Colors.teal[850]),
   appBarTheme: AppBarTheme(
       backgroundColor: Colors.teal[800],
-      iconTheme: IconThemeData(color: Colors.white)),
+      iconTheme: IconThemeData(color: Colors.white),
+      titleTextStyle: ThemeData.dark().appBarTheme.titleTextStyle),
   // buttonTheme: ButtonThemeData(buttonColor: Colors.teal),
 );
 
@@ -28,7 +29,8 @@ ThemeData lightTheme = ThemeData(
       .copyWith(primary: Colors.teal[300], secondary: Colors.teal[100]),
   appBarTheme: AppBarTheme(
       backgroundColor: Colors.teal[800],
-      iconTheme: IconThemeData(color: Colors.white)),
+      iconTheme: IconThemeData(color: Colors.white),
+      titleTextStyle: ThemeData.dark().appBarTheme.titleTextStyle),
   // buttonTheme: ButtonThemeData(buttonColor: Colors.teal),
 );
 
@@ -41,7 +43,8 @@ ThemeData blueTheme = ThemeData(
   scaffoldBackgroundColor: Colors.blue[50],
   appBarTheme: AppBarTheme(
       backgroundColor: Colors.blue[800],
-      iconTheme: IconThemeData(color: Colors.white)),
+      iconTheme: IconThemeData(color: Colors.white),
+      titleTextStyle: ThemeData.dark().appBarTheme.titleTextStyle),
   // buttonTheme: ButtonThemeData(buttonColor: Colors.blue),
 );
 
@@ -53,7 +56,8 @@ ThemeData tealTheme = ThemeData(
   scaffoldBackgroundColor: Colors.teal[50],
   appBarTheme: AppBarTheme(
       backgroundColor: Colors.teal[800],
-      iconTheme: IconThemeData(color: Colors.white)),
+      iconTheme: IconThemeData(color: Colors.white),
+      titleTextStyle: ThemeData.dark().appBarTheme.titleTextStyle),
   // buttonTheme: ButtonThemeData(buttonColor: Colors.teal),
 );
 

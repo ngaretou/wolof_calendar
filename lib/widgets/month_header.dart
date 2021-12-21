@@ -7,6 +7,8 @@ import 'package:url_launcher/url_launcher.dart';
 import '../providers/months.dart';
 import '../providers/user_prefs.dart';
 
+//month_header is everything from the picture down to the month and year text in the list of days
+
 //We're feeding in all this info so that the widget tree doesn't have to rebuild
 ////and the code is a bit more efficient, although makes for a messy constructor
 class MonthHeader extends StatefulWidget {
@@ -37,6 +39,7 @@ class MonthHeader extends StatefulWidget {
 
 class _MonthHeaderState extends State<MonthHeader> {
   bool? verseIsExpanded;
+
   @override
   void initState() {
     verseIsExpanded = true;
@@ -73,7 +76,7 @@ class _MonthHeaderState extends State<MonthHeader> {
 
     var userPrefs = Provider.of<UserPrefs>(context, listen: false).userPrefs;
 
-    /* Fall 2021 Flutter 2.5.1, the AS text boxes get squished by Flutter on on web. 
+    /* Fall 2021 Flutter 2.5.1, the AS text boxes get squished by Flutter only on web. 
     Assuming this will get fixed in a future release. 
     This rtlTextFixer hacks any RTL text with a space on either side only if on web. 
      */
@@ -97,6 +100,7 @@ class _MonthHeaderState extends State<MonthHeader> {
             width: double.infinity,
             decoration: BoxDecoration(
               color: Colors.black87,
+              //The month header image
               image: DecorationImage(
                 alignment: Alignment.center,
                 fit: BoxFit.cover,
@@ -114,6 +118,7 @@ class _MonthHeaderState extends State<MonthHeader> {
                   ],
                 ),
               ),
+              //The Arabic name on top of the image if there is one
               child: widget.monthData[0].arabicName != null
                   ? Align(
                       alignment: Alignment.bottomCenter,
@@ -124,7 +129,7 @@ class _MonthHeaderState extends State<MonthHeader> {
                     )
                   : SizedBox(),
             )),
-        //Main name row
+        //Main month row
         Padding(
           padding: widget.adaptiveMargin,
           // padding: EdgeInsets.only(top: 0),
@@ -155,7 +160,7 @@ class _MonthHeaderState extends State<MonthHeader> {
               verseIsExpanded = !verseIsExpanded!;
             });
           },
-          collapsedBackgroundColor: Theme.of(context).cardColor,
+          collapsedBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
           children: [
             //Begin verses: Wolofal first, then Roman
             if (userPrefs.wolofalVerseEnabled!)

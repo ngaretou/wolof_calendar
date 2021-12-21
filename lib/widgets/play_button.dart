@@ -46,7 +46,8 @@ class PlayButtonState extends State<PlayButton> with WidgetsBindingObserver {
       ];
     }
     print('here');
-    await _player.setAudioSource(
+
+    _player.setAudioSource(
       ConcatenatingAudioSource(
         // Start loading next item just before reaching it.
         useLazyPreparation: true, // default
