@@ -18,6 +18,7 @@ class DateTile extends StatelessWidget {
     final screenwidth = MediaQuery.of(context).size.width;
     final _screenheight = MediaQuery.of(context).size.height;
     final bool isPhone = (screenwidth + _screenheight) <= 1400;
+    ScrollController holidayScrollController = ScrollController();
 
     // Column width for the name row
     late double contentColWidth;
@@ -206,6 +207,7 @@ class DateTile extends StatelessWidget {
                   if (currentDate.holidays!.length >= 1)
                     Container(
                       child: ListView.builder(
+                          controller: holidayScrollController,
                           physics: NeverScrollableScrollPhysics(),
                           padding: EdgeInsets.symmetric(vertical: 10),
                           shrinkWrap: true,
