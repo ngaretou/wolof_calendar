@@ -39,6 +39,8 @@ class MonthHeader extends StatefulWidget {
 
 class _MonthHeaderState extends State<MonthHeader> {
   bool? verseIsExpanded;
+  ScrollController wolofalScrollController = ScrollController();
+  ScrollController wolofScrollController = ScrollController();
 
   @override
   void initState() {
@@ -152,90 +154,96 @@ class _MonthHeaderState extends State<MonthHeader> {
           ),
         ),
 
-        ExpansionTile(
-          title: Text(''),
-          initiallyExpanded: true,
-          onExpansionChanged: (bool) {
-            setState(() {
-              verseIsExpanded = !verseIsExpanded!;
-            });
-          },
-          collapsedBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          children: [
-            //Begin verses: Wolofal first, then Roman
-            if (userPrefs.wolofalVerseEnabled!)
-              ListView.builder(
-                itemCount: widget.monthData[0].verses.length,
-                itemBuilder: (ctx, i) => VerseBuilder(
-                    widget.monthData[0].verses[i].verseAS,
-                    widget.monthData[0].verses[i].verseRefAS,
-                    asStyle,
-                    asRefStyle,
-                    rtlText,
-                    widget.monthData[0].verses.length,
-                    i,
-                    widget.adaptiveMargin),
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-              ),
-
-            if (userPrefs.wolofalVerseEnabled! && userPrefs.wolofVerseEnabled!)
-              Divider(
-                height: 60,
-                thickness: 2,
-              ),
-
-            //RS verses
-            if (userPrefs.wolofVerseEnabled!)
-              ListView.builder(
-                itemCount: widget.monthData[0].verses.length,
-                itemBuilder: (ctx, i) => VerseBuilder(
-                    widget.monthData[0].verses[i].verseRS,
-                    widget.monthData[0].verses[i].verseRefRS,
-                    rsStyle,
-                    rsRefStyle,
-                    ltrText,
-                    widget.monthData[0].verses.length,
-                    i,
-                    widget.adaptiveMargin),
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-              ),
-            SizedBox(height: 20),
-            //End verses
-
-            //Click here to read more button
-            Container(
-              padding: widget.isPhone
-                  ? EdgeInsets.symmetric(horizontal: 40)
-                  : EdgeInsets.symmetric(
-                      horizontal: (widget.contentColWidth) / 4),
-              child: ElevatedButton(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      AppLocalizations.of(context)!.clickHereToReadMore,
-                    ),
-                    Icon(
-                      Icons.arrow_forward,
-                    ),
-                  ],
+        ScrollConfiguration(
+          behavior: ScrollConfiguration.of(context).copyWith(scrollbars: true),
+          child: ExpansionTile(
+            title: Text(''),
+            initiallyExpanded: true,
+            onExpansionChanged: (bool) {
+              setState(() {
+                verseIsExpanded = !verseIsExpanded!;
+              });
+            },
+            collapsedBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            children: [
+              //Begin verses: Wolofal first, then Roman
+              if (userPrefs.wolofalVerseEnabled!)
+                ListView.builder(
+                  // controller: wolofalScrollController,
+                  itemCount: widget.monthData[0].verses.length,
+                  itemBuilder: (ctx, i) => VerseBuilder(
+                      widget.monthData[0].verses[i].verseAS,
+                      widget.monthData[0].verses[i].verseRefAS,
+                      asStyle,
+                      asRefStyle,
+                      rtlText,
+                      widget.monthData[0].verses.length,
+                      i,
+                      widget.adaptiveMargin),
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
                 ),
-                onPressed: () async {
-                  const url = 'https://sng.al/chrono';
-                  if (await canLaunch(url)) {
-                    await launch(url);
-                  } else {
-                    throw 'Could not launch $url';
-                  }
-                },
+
+              if (userPrefs.wolofalVerseEnabled! &&
+                  userPrefs.wolofVerseEnabled!)
+                Divider(
+                  height: 60,
+                  thickness: 2,
+                ),
+
+              //RS verses
+              if (userPrefs.wolofVerseEnabled!)
+                ListView.builder(
+                  // controller: wolofScrollController,
+                  itemCount: widget.monthData[0].verses.length,
+                  itemBuilder: (ctx, i) => VerseBuilder(
+                      widget.monthData[0].verses[i].verseRS,
+                      widget.monthData[0].verses[i].verseRefRS,
+                      rsStyle,
+                      rsRefStyle,
+                      ltrText,
+                      widget.monthData[0].verses.length,
+                      i,
+                      widget.adaptiveMargin),
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                ),
+              SizedBox(height: 20),
+              //End verses
+
+              //Click here to read more button
+              Container(
+                padding: widget.isPhone
+                    ? EdgeInsets.symmetric(horizontal: 40)
+                    : EdgeInsets.symmetric(
+                        horizontal: (widget.contentColWidth) / 4),
+                child: ElevatedButton(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.clickHereToReadMore,
+                      ),
+                      Icon(
+                        Icons.arrow_forward,
+                      ),
+                    ],
+                  ),
+                  onPressed: () async {
+                    const url = 'https://sng.al/chrono';
+                    if (await canLaunch(url)) {
+                      await launch(url);
+                    } else {
+                      throw 'Could not launch $url';
+                    }
+                  },
+                ),
               ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-          ],
+              SizedBox(
+                height: 20,
+              ),
+            ],
+          ),
         ),
 
         //Here is the first Row of the simple informational month header:

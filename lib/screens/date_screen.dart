@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
@@ -14,6 +15,17 @@ import '../providers/route_args.dart';
 import '../widgets/drawer.dart';
 import '../widgets/play_button.dart';
 import '../widgets/date_tile.dart';
+
+//To adapt to new Flutter 2.8 behavior that does not allow mice to drag - which is our desired behavior here
+class MyCustomScrollBehavior extends ScrollBehavior {
+  // Override behavior methods and getters like dragDevices
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+        // etc.
+      };
+}
 
 class DateScreen extends StatefulWidget {
   static const routeName = '/date-screen';
@@ -46,24 +58,24 @@ class _DateScreenState extends State<DateScreen> {
   //Normally we'd just set this inline but we have to use this a couple of times so putting it in code for uniformity
   Text appBarTitleFormat(DateTime incomingDateTime, BuildContext context) {
     final _screenwidth = MediaQuery.of(context).size.width;
-    print(_screenwidth);
+    // print(_screenwidth);
 
-    //Screen range
+    //Screen ranges
     double smallScreenMax = 344;
     double mediumScreenMax = 399;
 
     if (_screenwidth >= mediumScreenMax) {
-      print('large');
+      // print('large');
       return Text(DateFormat('yMMMM', 'fr_FR').format(incomingDateTime));
     } else if (_screenwidth >= smallScreenMax &&
         _screenwidth < mediumScreenMax) {
-      print('medium');
+      // print('medium');
       return Text(DateFormat('yMMM', 'fr_FR').format(incomingDateTime),
-          style: TextStyle(fontSize: 18));
+          style: TextStyle(fontSize: 16));
     } else if (_screenwidth < smallScreenMax) {
-      print('small');
+      // print('small');
       return Text(DateFormat('yMMM', 'fr_FR').format(incomingDateTime),
-          style: TextStyle(fontSize: 14));
+          style: TextStyle(fontSize: 13));
     }
     throw (error) {
       print('error in appBarTitle formatting');
@@ -72,7 +84,7 @@ class _DateScreenState extends State<DateScreen> {
 
   @override
   void didChangeDependencies() {
-    print('didChangeDependencies');
+    // print('didChangeDependencies');
 
     //We need context several places here so using this method rather than initState,
     //where there is no context - didChangeDependencies is initState with context
@@ -145,6 +157,7 @@ class _DateScreenState extends State<DateScreen> {
 
     // Updates the appbar title with the month and shows or hides the play and share buttons
     Future<void> updateAfterNavigation({int? navigatedIndex}) async {
+      // print('updateAfterNavigation');
       late int _topIndex;
       int? _bottomIndex;
 
@@ -384,73 +397,75 @@ class _DateScreenState extends State<DateScreen> {
         .arabicNameCode;
 
     return Scaffold(
-        drawer: MainDrawer(),
-        floatingActionButton: showMonthHeaderButtons
-            ? PlayButton(file: monthToPlayAndShare, name: _nameCode)
-            : null,
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-          title: formattedAppBarTitle,
-          actions: [
-            AnimatedOpacity(
-              child: IconButton(
-                  icon: Icon(Icons.share),
-                  onPressed: showMonthHeaderButtons
-                      ? () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text(
-                                  AppLocalizations.of(context)!.sharingTitle,
-                                ),
-                                content: Text(
-                                    AppLocalizations.of(context)!.sharingMsg),
-                                actions: [
-                                  TextButton(
-                                      child: Text("Wolof"),
-                                      onPressed: () async {
-                                        Navigator.of(context).pop();
-                                        _adaptiveShare('roman');
-                                      }),
-                                  TextButton(
-                                      child: Text("وࣷلࣷفَلْ",
-                                          style: TextStyle(
-                                              fontFamily: "Harmattan",
-                                              fontSize: 22)),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                        _adaptiveShare('arabic');
-                                      }),
-                                  TextButton(
-                                      child: Text(
-                                        AppLocalizations.of(context)!.cancel,
-                                      ),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      }),
-                                ],
-                              );
-                            },
-                          );
-                        }
-                      : () {}),
-              opacity: showMonthHeaderButtons ? 1.0 : 0.0,
-              duration: Duration(milliseconds: fadeInSpeed),
-            ),
-            IconButton(
-                icon: Icon(Icons.arrow_back_ios),
-                onPressed: () => moveMonths('backward')),
-            IconButton(
-              icon: Icon(Icons.date_range),
-              onPressed: () => pickDateToShow(),
-            ),
-            IconButton(
-                icon: Icon(Icons.arrow_forward_ios),
-                onPressed: () => moveMonths('forward')),
-          ],
-        ),
-        body: Center(
+      drawer: MainDrawer(),
+      floatingActionButton: showMonthHeaderButtons
+          ? PlayButton(file: monthToPlayAndShare, name: _nameCode)
+          : null,
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        title: formattedAppBarTitle,
+        actions: [
+          AnimatedOpacity(
+            child: IconButton(
+                icon: Icon(Icons.share),
+                onPressed: showMonthHeaderButtons
+                    ? () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text(
+                                AppLocalizations.of(context)!.sharingTitle,
+                              ),
+                              content: Text(
+                                  AppLocalizations.of(context)!.sharingMsg),
+                              actions: [
+                                TextButton(
+                                    child: Text("Wolof"),
+                                    onPressed: () async {
+                                      Navigator.of(context).pop();
+                                      _adaptiveShare('roman');
+                                    }),
+                                TextButton(
+                                    child: Text(" وࣷلࣷفَلْ ",
+                                        style: TextStyle(
+                                            fontFamily: "Harmattan",
+                                            fontSize: 22)),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                      _adaptiveShare('arabic');
+                                    }),
+                                TextButton(
+                                    child: Text(
+                                      AppLocalizations.of(context)!.cancel,
+                                    ),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    }),
+                              ],
+                            );
+                          },
+                        );
+                      }
+                    : () {}),
+            opacity: showMonthHeaderButtons ? 1.0 : 0.0,
+            duration: Duration(milliseconds: fadeInSpeed),
+          ),
+          IconButton(
+              icon: Icon(Icons.arrow_back_ios),
+              onPressed: () => moveMonths('backward')),
+          IconButton(
+            icon: Icon(Icons.date_range),
+            onPressed: () => pickDateToShow(),
+          ),
+          IconButton(
+              icon: Icon(Icons.arrow_forward_ios),
+              onPressed: () => moveMonths('forward')),
+        ],
+      ),
+      body: Center(
+        child: MouseRegion(
+          cursor: SystemMouseCursors.grab,
           child: Container(
             child: NotificationListener(
               onNotification: (dynamic notification) {
@@ -459,17 +474,23 @@ class _DateScreenState extends State<DateScreen> {
                 }
                 return true;
               },
-              child: ScrollablePositionedList.builder(
-                itemScrollController: itemScrollController,
-                itemPositionsListener: itemPositionsListener,
-                physics: BouncingScrollPhysics(),
-                initialScrollIndex: initialScrollIndex,
-                itemBuilder: (ctx, i) =>
-                    DateTile(currentDate: datesToDisplay[i]),
-                itemCount: datesToDisplay.length,
+              child: ScrollConfiguration(
+                //The 2.8 Flutter behavior is to not have mice grabbing and dragging - but we do want this in the web version of the app, so the custom scroll behavior here
+                behavior: MyCustomScrollBehavior().copyWith(scrollbars: false),
+                child: ScrollablePositionedList.builder(
+                  itemScrollController: itemScrollController,
+                  itemPositionsListener: itemPositionsListener,
+                  physics: BouncingScrollPhysics(),
+                  initialScrollIndex: initialScrollIndex,
+                  itemBuilder: (ctx, i) =>
+                      DateTile(currentDate: datesToDisplay[i]),
+                  itemCount: datesToDisplay.length,
+                ),
               ),
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 }
