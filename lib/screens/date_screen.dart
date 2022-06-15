@@ -28,13 +28,15 @@ class MyCustomScrollBehavior extends ScrollBehavior {
 }
 
 class DateScreen extends StatefulWidget {
+  const DateScreen({Key? key}) : super(key: key);
+
   static const routeName = '/date-screen';
 
   @override
-  _DateScreenState createState() => _DateScreenState();
+  DateScreenState createState() => DateScreenState();
 }
 
-class _DateScreenState extends State<DateScreen> {
+class DateScreenState extends State<DateScreen> {
   //For the ScrollablePositionedList
   ItemPositionsListener itemPositionsListener = ItemPositionsListener.create();
   ItemScrollController itemScrollController = ItemScrollController();
@@ -57,25 +59,24 @@ class _DateScreenState extends State<DateScreen> {
 
   //Normally we'd just set this inline but we have to use this a couple of times so putting it in code for uniformity
   Text appBarTitleFormat(DateTime incomingDateTime, BuildContext context) {
-    final _screenwidth = MediaQuery.of(context).size.width;
-    // print(_screenwidth);
+    final screenwidth = MediaQuery.of(context).size.width;
+    // print(screenwidth);
 
     //Screen ranges
     double smallScreenMax = 344;
     double mediumScreenMax = 399;
 
-    if (_screenwidth >= mediumScreenMax) {
+    if (screenwidth >= mediumScreenMax) {
       // print('large');
       return Text(DateFormat('yMMMM', 'fr_FR').format(incomingDateTime));
-    } else if (_screenwidth >= smallScreenMax &&
-        _screenwidth < mediumScreenMax) {
+    } else if (screenwidth >= smallScreenMax && screenwidth < mediumScreenMax) {
       // print('medium');
       return Text(DateFormat('yMMM', 'fr_FR').format(incomingDateTime),
-          style: TextStyle(fontSize: 16));
-    } else if (_screenwidth < smallScreenMax) {
+          style: const TextStyle(fontSize: 16));
+    } else if (screenwidth < smallScreenMax) {
       // print('small');
       return Text(DateFormat('yMMM', 'fr_FR').format(incomingDateTime),
-          style: TextStyle(fontSize: 13));
+          style: const TextStyle(fontSize: 13));
     }
     throw (error) {
       print('error in appBarTitle formatting');
@@ -98,14 +99,14 @@ class _DateScreenState extends State<DateScreen> {
     from wherever we've arrived from, or possibly null. 
     */
 
-    late DateScreenArgs _args;
+    late DateScreenArgs args;
 
     // When first opening, there are no arguments, so go to current date using the argument format
     if (ModalRoute.of(context)?.settings.arguments == null) {
-      DateTime _now = new DateTime.now();
-      String currentDate = DateFormat('d', 'fr_FR').format(_now);
-      String currentMonth = DateFormat('M', 'fr_FR').format(_now);
-      String currentYear = DateFormat('yyyy', 'fr_FR').format(_now);
+      DateTime now = DateTime.now();
+      String currentDate = DateFormat('d', 'fr_FR').format(now);
+      String currentMonth = DateFormat('M', 'fr_FR').format(now);
+      String currentYear = DateFormat('yyyy', 'fr_FR').format(now);
 
       //The data - display 'infinite' list; here infinite being all dates in the data
       datesToDisplay = Provider.of<Months>(context, listen: false).dates;
@@ -116,50 +117,50 @@ class _DateScreenState extends State<DateScreen> {
           currentMonth == element.month &&
           currentDate == element.westernDate)) {
         //Now that we know current date, today, is in the data, open to today's date
-        _args = DateScreenArgs(
+        args = DateScreenArgs(
             date: currentDate, month: currentMonth, year: currentYear);
       } else {
         print('today not in the data, going to last entry');
         //Get the last entry in the list
-        Date _lastDateInData = datesToDisplay.last;
+        Date lastDateInData = datesToDisplay.last;
         //and set our routargs to that date.
         //It gives a little bounce and you can't scroll any further down.
-        _args = DateScreenArgs(
-            date: _lastDateInData.westernDate,
-            month: _lastDateInData.month,
-            year: _lastDateInData.year);
+        args = DateScreenArgs(
+            date: lastDateInData.westernDate,
+            month: lastDateInData.month,
+            year: lastDateInData.year);
       }
     }
 
     //This is the index of the initial date to show in that infinite list
     //This sets up the first date you see as that initialDateIndex but will be changed as we scroll
     initialScrollIndex = (datesToDisplay.indexWhere((element) =>
-        _args.year == element.year &&
-        _args.month == element.month &&
-        _args.date == element.westernDate)).toInt();
+        args.year == element.year &&
+        args.month == element.month &&
+        args.date == element.westernDate)).toInt();
 
     //Get the initialDate as a DateTime
     initialDateTime = DateFormat('yyyy M d', 'fr_FR')
-        .parse('${_args.year} ${_args.month} ${_args.date}');
+        .parse('${args.year} ${args.month} ${args.date}');
     //Then make it nice for the initial appBarTitle
     //To change format of title bar change both in didChangeDependencies & in main build
     formattedAppBarTitle = appBarTitleFormat(initialDateTime, context);
     //This initializes with a value the month we initially open to.
     //If it's a 1, it will display the buttons, but if not, it will not show anyway
-    monthToPlayAndShare = _args.month!;
+    monthToPlayAndShare = args.month!;
     super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
-    late var navigateToDateIndex; //this is for later on when the user navigates
+    late int navigateToDateIndex; //this is for later on when the user navigates
     var lastIndex = datesToDisplay.length - 1;
 
     // Updates the appbar title with the month and shows or hides the play and share buttons
     Future<void> updateAfterNavigation({int? navigatedIndex}) async {
       // print('updateAfterNavigation');
-      late int _topIndex;
-      int? _bottomIndex;
+      late int topIndex;
+      int? bottomIndex;
 
       /*
       There are three ways you can get here.
@@ -176,18 +177,18 @@ class _DateScreenState extends State<DateScreen> {
         //navigated index is optional so 2 and 3 pass it in but 1 does not.
         //So this case is if the user scrolled and we can get the first and last Index displayed directly.
         //firstIndex i.e. the top position in the visible portion of the list.
-        _topIndex = itemPositionsListener.itemPositions.value.first.index;
-        _bottomIndex = itemPositionsListener.itemPositions.value.last.index;
+        topIndex = itemPositionsListener.itemPositions.value.first.index;
+        bottomIndex = itemPositionsListener.itemPositions.value.last.index;
       } else {
-        _topIndex = navigatedIndex;
+        topIndex = navigatedIndex;
       }
 
       //we'll definitely have the topIndex so get the topDate info.
-      Date _topDate = datesToDisplay[_topIndex];
+      Date topDate = datesToDisplay[topIndex];
 
       //Getting the top DateTime and saving it for the appBarTitle in the SetState below
-      DateTime _scrolledDateTime = DateFormat('M/yyyy', "fr_FR")
-          .parse('${_topDate.month}/${_topDate.year}');
+      DateTime scrolledDateTime = DateFormat('M/yyyy', "fr_FR")
+          .parse('${topDate.month}/${topDate.year}');
 
       //Because we will definitely have a firstIndex but may not have a lastIndex,
       //handle the null case before we get to the if below
@@ -196,25 +197,25 @@ class _DateScreenState extends State<DateScreen> {
       //if the first of the month visible on the screen, top of either Western or Wolof
       //or bottom of either Western or Wolof.
 
-      late bool _showHeaders;
-      late String _monthToPlayAndShare;
+      late bool showHeaders;
+      late String tempMonthToPlayAndShare;
       //Handle the first two cases in one expression:
-      if (_topDate.westernDate == '1') {
-        _showHeaders = true;
-        _monthToPlayAndShare = _topDate.month;
+      if (topDate.westernDate == '1') {
+        showHeaders = true;
+        tempMonthToPlayAndShare = topDate.month;
       }
 
       //Here unfortunately we have a complicated if, but we are checking if there is a bottom index in play
-      else if (_bottomIndex != null &&
+      else if (bottomIndex != null &&
           //and then now we know it's not null we test if either is a 1
-          (datesToDisplay[_bottomIndex].westernDate == '1')) {
-        _showHeaders = true;
-        _monthToPlayAndShare = datesToDisplay[_bottomIndex]
-            .month; //_topDate.month is the western month
+          (datesToDisplay[bottomIndex].westernDate == '1')) {
+        showHeaders = true;
+        tempMonthToPlayAndShare = datesToDisplay[bottomIndex]
+            .month; //topDate.month is the western month
       } else {
         //in this case it's not a 1st of any months, so make sure the headers are hidden
-        _showHeaders = false;
-        _monthToPlayAndShare = monthToPlayAndShare;
+        showHeaders = false;
+        tempMonthToPlayAndShare = monthToPlayAndShare;
       }
       //If we got here by direct navigation and we are going to show the headers,
       //we have to reset the FAB.
@@ -226,7 +227,7 @@ class _DateScreenState extends State<DateScreen> {
         button keeps playing and does not reset with the current month. This kills the button by setting
         showMonthHeaderButtons = false for .3 seconds, and doesn't slow down the UI too much. 
       */
-      if (_showHeaders == true && navigatedIndex != null) {
+      if (showHeaders == true && navigatedIndex != null) {
         setState(() {
           showMonthHeaderButtons = false;
         });
@@ -234,9 +235,9 @@ class _DateScreenState extends State<DateScreen> {
 
       Timer(Duration(milliseconds: fadeInSpeed), () {
         setState(() {
-          formattedAppBarTitle = appBarTitleFormat(_scrolledDateTime, context);
-          showMonthHeaderButtons = _showHeaders;
-          monthToPlayAndShare = _monthToPlayAndShare;
+          formattedAppBarTitle = appBarTitleFormat(scrolledDateTime, context);
+          showMonthHeaderButtons = showHeaders;
+          monthToPlayAndShare = tempMonthToPlayAndShare;
         });
       });
     }
@@ -255,13 +256,12 @@ class _DateScreenState extends State<DateScreen> {
       //Just feed in the direction forward or backward as a string.
 
       //This gets the current index of the topmost date visible.
-      var _topIndexShown =
-          itemPositionsListener.itemPositions.value.first.index;
+      var topIndexShown = itemPositionsListener.itemPositions.value.first.index;
       //Grab these elements and initialize the vars
-      var currentYearDisplayed = (datesToDisplay[_topIndexShown].year);
-      var currentMonthDisplayed = (datesToDisplay[_topIndexShown].month);
-      var goToMonth;
-      var goToYear;
+      var currentYearDisplayed = (datesToDisplay[topIndexShown].year);
+      var currentMonthDisplayed = (datesToDisplay[topIndexShown].month);
+      late String goToMonth;
+      late String goToYear;
 
       if (direction == 'forward') {
         //If it's not December, we just add a month
@@ -306,11 +306,16 @@ class _DateScreenState extends State<DateScreen> {
     }
 
     Future pickDateToShow() async {
+      DateTime lastDate = DateTime(
+          int.parse(datesToDisplay.last.year),
+          int.parse(datesToDisplay.last.month),
+          int.parse(datesToDisplay.last.westernDate));
+
       final chosenDate = await showDatePicker(
         context: context,
         initialDate: initialDateTime,
         firstDate: DateTime(2020, 8),
-        lastDate: DateTime(2022, 1, 31),
+        lastDate: lastDate,
         locale: const Locale("fr", "FR"),
       );
       if (chosenDate == null) {
@@ -323,11 +328,11 @@ class _DateScreenState extends State<DateScreen> {
 
       //This uses the scrollcontroller to whisk us to the desired date
       //Here this returns the index of the date we're headed to,
-      int _navigateToIndex = getDateIndex(goToYear, goToMonth, goToDate);
+      int navigateToIndex = getDateIndex(goToYear, goToMonth, goToDate);
       //then passes it to the scroll controlloer to get us there
-      itemScrollController.jumpTo(index: _navigateToIndex);
+      itemScrollController.jumpTo(index: navigateToIndex);
       //and then updates the interface to match the new date
-      updateAfterNavigation(navigatedIndex: _navigateToIndex);
+      updateAfterNavigation(navigatedIndex: navigateToIndex);
     }
 
     void _adaptiveShare(String script) async {
@@ -344,7 +349,8 @@ class _DateScreenState extends State<DateScreen> {
       kIsWeb ? lineBreak = '%0d%0a' : lineBreak = '\n';
 
       //Put together the verses to share. Do with forEach to take into account the multiple verse months.
-      monthData.verses.forEach((element) {
+      for (var element in monthData.verses) {
+        // monthData.verses.forEach((element) {
         if (script == 'roman') {
           // yallaMooy = 'Yàlla mooy ';
           vs = element.verseRS;
@@ -365,15 +371,11 @@ class _DateScreenState extends State<DateScreen> {
 
         versesToShare =
             versesToShare + vs + lineBreak + ref + lineBreak + lineBreak;
-      });
+      }
 
       //Put together the whole sharing string
-      final String textToShare = name +
-          ": " +
-          lineBreak +
-          lineBreak +
-          versesToShare +
-          'https://sng.al/cal';
+      final String textToShare =
+          '$name: $lineBreak $lineBreak $versesToShare https://sng.al/cal';
 
       //if it's not the web app, share using the device share function
       if (!kIsWeb) {
@@ -382,32 +384,34 @@ class _DateScreenState extends State<DateScreen> {
         //If it's the web app version best way to share is probably email, so put the text to share in an email
         final String url = "mailto:?subject=Arminaatu Wolof&body=$textToShare";
 
-        if (await canLaunch(url)) {
-          await launch(url);
+        if (await canLaunchUrl(Uri.parse(url))) {
+          await launchUrl(Uri.parse(url));
         } else {
           throw 'Could not launch $url';
         }
       }
     }
 
-    String _nameCode = Provider.of<Months>(context, listen: false)
+    String nameCode = Provider.of<Months>(context, listen: false)
         .months
         .where((element) => element.monthID == monthToPlayAndShare)
         .toList()[0]
         .arabicNameCode;
 
     return Scaffold(
-      drawer: MainDrawer(),
+      drawer: const MainDrawer(),
       floatingActionButton: showMonthHeaderButtons
-          ? PlayButton(file: monthToPlayAndShare, name: _nameCode)
+          ? PlayButton(file: monthToPlayAndShare, name: nameCode)
           : null,
       appBar: AppBar(
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         title: formattedAppBarTitle,
         actions: [
           AnimatedOpacity(
+            opacity: showMonthHeaderButtons ? 1.0 : 0.0,
+            duration: Duration(milliseconds: fadeInSpeed),
             child: IconButton(
-                icon: Icon(Icons.share),
+                icon: const Icon(Icons.share),
                 onPressed: showMonthHeaderButtons
                     ? () {
                         showDialog(
@@ -421,13 +425,13 @@ class _DateScreenState extends State<DateScreen> {
                                   AppLocalizations.of(context)!.sharingMsg),
                               actions: [
                                 TextButton(
-                                    child: Text("Wolof"),
+                                    child: const Text("Wolof"),
                                     onPressed: () async {
                                       Navigator.of(context).pop();
                                       _adaptiveShare('roman');
                                     }),
                                 TextButton(
-                                    child: Text(" وࣷلࣷفَلْ ",
+                                    child: const Text(" وࣷلࣷفَلْ ",
                                         style: TextStyle(
                                             fontFamily: "Harmattan",
                                             fontSize: 22)),
@@ -448,44 +452,40 @@ class _DateScreenState extends State<DateScreen> {
                         );
                       }
                     : () {}),
-            opacity: showMonthHeaderButtons ? 1.0 : 0.0,
-            duration: Duration(milliseconds: fadeInSpeed),
           ),
           IconButton(
-              icon: Icon(Icons.arrow_back_ios),
+              icon: const Icon(Icons.arrow_back_ios),
               onPressed: () => moveMonths('backward')),
           IconButton(
-            icon: Icon(Icons.date_range),
+            icon: const Icon(Icons.date_range),
             onPressed: () => pickDateToShow(),
           ),
           IconButton(
-              icon: Icon(Icons.arrow_forward_ios),
+              icon: const Icon(Icons.arrow_forward_ios),
               onPressed: () => moveMonths('forward')),
         ],
       ),
       body: Center(
         child: MouseRegion(
           cursor: SystemMouseCursors.grab,
-          child: Container(
-            child: NotificationListener(
-              onNotification: (dynamic notification) {
-                if (notification is ScrollEndNotification) {
-                  updateAfterNavigation();
-                }
-                return true;
-              },
-              child: ScrollConfiguration(
-                //The 2.8 Flutter behavior is to not have mice grabbing and dragging - but we do want this in the web version of the app, so the custom scroll behavior here
-                behavior: MyCustomScrollBehavior().copyWith(scrollbars: false),
-                child: ScrollablePositionedList.builder(
-                  itemScrollController: itemScrollController,
-                  itemPositionsListener: itemPositionsListener,
-                  physics: BouncingScrollPhysics(),
-                  initialScrollIndex: initialScrollIndex,
-                  itemBuilder: (ctx, i) =>
-                      DateTile(currentDate: datesToDisplay[i]),
-                  itemCount: datesToDisplay.length,
-                ),
+          child: NotificationListener(
+            onNotification: (dynamic notification) {
+              if (notification is ScrollEndNotification) {
+                updateAfterNavigation();
+              }
+              return true;
+            },
+            child: ScrollConfiguration(
+              //The 2.8 Flutter behavior is to not have mice grabbing and dragging - but we do want this in the web version of the app, so the custom scroll behavior here
+              behavior: MyCustomScrollBehavior().copyWith(scrollbars: false),
+              child: ScrollablePositionedList.builder(
+                itemScrollController: itemScrollController,
+                itemPositionsListener: itemPositionsListener,
+                physics: const BouncingScrollPhysics(),
+                initialScrollIndex: initialScrollIndex,
+                itemBuilder: (ctx, i) =>
+                    DateTile(currentDate: datesToDisplay[i]),
+                itemCount: datesToDisplay.length,
               ),
             ),
           ),

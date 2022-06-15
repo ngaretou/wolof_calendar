@@ -1,0 +1,6 @@
+version: "Apple Swift version 5.6.1 (swiftlang-5.6.0.323.66 clang-1316.0.20.12)"
+options: "9037f8f28640b62bc4f3772dab406bbb5f0910cac02e0fc4e71901f3dbfb3793"
+build_start_time: [1655229947, 885088920]
+build_end_time: [1655229947, 955229997]
+inputs:
+  "/Users/corey/myflutter/wolof_calendar/ios/Runner/AppDelegate.swift": !private [1593645056, 0]

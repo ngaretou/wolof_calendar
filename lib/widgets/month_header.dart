@@ -1,3 +1,6 @@
+// ignore_for_file: sized_box_for_whitespace
+
+import 'dart:io';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +24,7 @@ class MonthHeader extends StatefulWidget {
   final bool isPhone;
   final bool kIsWeb;
 
-  MonthHeader(
+  const MonthHeader(
       {Key? key,
       required this.currentDate,
       required this.monthData,
@@ -34,10 +37,10 @@ class MonthHeader extends StatefulWidget {
       : super(key: key);
 
   @override
-  _MonthHeaderState createState() => _MonthHeaderState();
+  MonthHeaderState createState() => MonthHeaderState();
 }
 
-class _MonthHeaderState extends State<MonthHeader> {
+class MonthHeaderState extends State<MonthHeader> {
   bool? verseIsExpanded;
   ScrollController wolofalScrollController = ScrollController();
   ScrollController wolofScrollController = ScrollController();
@@ -74,7 +77,7 @@ class _MonthHeaderState extends State<MonthHeader> {
     ui.TextDirection ltrText = ui.TextDirection.ltr;
     //End text styles
 
-    final double _nameColWidth = (widget.contentColWidth / 2);
+    final double nameColWidth = (widget.contentColWidth / 2);
 
     var userPrefs = Provider.of<UserPrefs>(context, listen: false).userPrefs;
 
@@ -83,13 +86,13 @@ class _MonthHeaderState extends State<MonthHeader> {
     This rtlTextFixer hacks any RTL text with a space on either side only if on web. 
      */
     String rtlTextFixer(String textToFix) {
-      late String _correctedText;
-      if (widget.kIsWeb) {
-        _correctedText = ' ' + textToFix + ' ';
+      late String correctedText;
+      if (widget.kIsWeb || Platform.isIOS || Platform.isAndroid) {
+        correctedText = '$textToFix ';
       } else {
-        _correctedText = textToFix;
+        correctedText = textToFix;
       }
-      return _correctedText;
+      return correctedText;
     }
 
     //Now build the month expandable header
@@ -97,7 +100,7 @@ class _MonthHeaderState extends State<MonthHeader> {
       children: [
         //Image header
         Container(
-            margin: EdgeInsets.only(top: 10),
+            margin: const EdgeInsets.only(top: 10),
             height: widget.headerImageHeight,
             width: double.infinity,
             decoration: BoxDecoration(
@@ -129,7 +132,7 @@ class _MonthHeaderState extends State<MonthHeader> {
                         style: asHeaderStyle.copyWith(color: Colors.white),
                       ),
                     )
-                  : SizedBox(),
+                  : const SizedBox(),
             )),
         //Main month row
         Padding(
@@ -139,11 +142,11 @@ class _MonthHeaderState extends State<MonthHeader> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                  width: _nameColWidth,
+                  width: nameColWidth,
                   child: Text(widget.monthData[0].wolofName.toString(),
                       style: rsHeaderStyle)),
               Container(
-                width: _nameColWidth,
+                width: nameColWidth,
                 child: Text(
                   widget.monthData[0].wolofalName.toString(),
                   style: asHeaderStyle,
@@ -157,9 +160,9 @@ class _MonthHeaderState extends State<MonthHeader> {
         ScrollConfiguration(
           behavior: ScrollConfiguration.of(context).copyWith(scrollbars: true),
           child: ExpansionTile(
-            title: Text(''),
+            title: const Text(''),
             initiallyExpanded: true,
-            onExpansionChanged: (bool) {
+            onExpansionChanged: (_) {
               setState(() {
                 verseIsExpanded = !verseIsExpanded!;
               });
@@ -181,12 +184,12 @@ class _MonthHeaderState extends State<MonthHeader> {
                       i,
                       widget.adaptiveMargin),
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                 ),
 
               if (userPrefs.wolofalVerseEnabled! &&
                   userPrefs.wolofVerseEnabled!)
-                Divider(
+                const Divider(
                   height: 60,
                   thickness: 2,
                 ),
@@ -206,15 +209,15 @@ class _MonthHeaderState extends State<MonthHeader> {
                       i,
                       widget.adaptiveMargin),
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                 ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               //End verses
 
               //Click here to read more button
               Container(
                 padding: widget.isPhone
-                    ? EdgeInsets.symmetric(horizontal: 40)
+                    ? const EdgeInsets.symmetric(horizontal: 40)
                     : EdgeInsets.symmetric(
                         horizontal: (widget.contentColWidth) / 4),
                 child: ElevatedButton(
@@ -224,22 +227,22 @@ class _MonthHeaderState extends State<MonthHeader> {
                       Text(
                         AppLocalizations.of(context)!.clickHereToReadMore,
                       ),
-                      Icon(
+                      const Icon(
                         Icons.arrow_forward,
                       ),
                     ],
                   ),
                   onPressed: () async {
                     const url = 'https://sng.al/chrono';
-                    if (await canLaunch(url)) {
-                      await launch(url);
+                    if (await canLaunchUrl(Uri.parse(url))) {
+                      await launchUrl(Uri.parse(url));
                     } else {
                       throw 'Could not launch $url';
                     }
                   },
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
             ],
@@ -301,8 +304,10 @@ class VerseBuilder extends StatelessWidget {
   final int i;
   final EdgeInsets adaptiveMargin;
 
-  VerseBuilder(this.verse, this.ref, this.verseStyle, this.refStyle,
-      this.direction, this.numItems, this.i, this.adaptiveMargin);
+  const VerseBuilder(this.verse, this.ref, this.verseStyle, this.refStyle,
+      this.direction, this.numItems, this.i, this.adaptiveMargin,
+      {Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -316,7 +321,7 @@ class VerseBuilder extends StatelessWidget {
             textDirection: direction,
             textAlign: TextAlign.center,
           ),
-          Divider(
+          const Divider(
             height: 30,
             thickness: 1,
             indent: 50,
@@ -329,7 +334,7 @@ class VerseBuilder extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           if (numItems - i != 1)
-            Divider(
+            const Divider(
               thickness: 1,
               height: 60,
             )
