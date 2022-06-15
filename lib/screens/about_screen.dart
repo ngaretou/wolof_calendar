@@ -1,10 +1,6 @@
-// import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-// import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-// import 'package:flutter/foundation.dart' show kIsWeb;
-// import 'package:flutter/services.dart' show rootBundle;
 import 'package:url_launcher/url_launcher.dart';
 
 class AboutScreen extends StatelessWidget {
@@ -26,15 +22,15 @@ class AboutScreen extends StatelessWidget {
         future: fetchHtmlSection(url),
         builder: (ctx, snapshot) => snapshot.connectionState ==
                 ConnectionState.waiting
-            ? Center(child: CircularProgressIndicator())
+            ? const Center(child: CircularProgressIndicator())
             //this is actually where the business happens; HTML just takes the data and renders it
             : Html(
                 data: snapshot.data.toString(),
                 onLinkTap: (String? url, RenderContext context,
                     Map<String, String> attributes, element) async {
                   if (url != null) {
-                    await canLaunch(url)
-                        ? await launch(url)
+                    await canLaunchUrl(Uri.parse(url))
+                        ? await launchUrl(Uri.parse(url))
                         : throw 'Could not launch $url';
                   }
                 }),
@@ -52,7 +48,7 @@ class AboutScreen extends StatelessWidget {
         child: ListView(
           children: [
             ExpansionTile(
-              tilePadding: EdgeInsets.only(left: 8),
+              tilePadding: const EdgeInsets.only(left: 8),
               title: Text('Arminaatu Wolof',
                   style: Theme.of(context).textTheme.headline6),
               initiallyExpanded: true,
@@ -66,7 +62,7 @@ class AboutScreen extends StatelessWidget {
             // SizedBox(height: 10),
             // htmlSection("assets/html/about.html"),
             ExpansionTile(
-              tilePadding: EdgeInsets.only(left: 8),
+              tilePadding: const EdgeInsets.only(left: 8),
               title: Text('Remerciements',
                   style: Theme.of(context).textTheme.headline6),
               initiallyExpanded: false,
@@ -75,7 +71,7 @@ class AboutScreen extends StatelessWidget {
               ],
             ),
             ExpansionTile(
-              tilePadding: EdgeInsets.only(left: 8),
+              tilePadding: const EdgeInsets.only(left: 8),
               title: Text('Licences',
                   style: Theme.of(context).textTheme.headline6),
               initiallyExpanded: false,

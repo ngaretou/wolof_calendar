@@ -1,3 +1,5 @@
+// ignore_for_file: sized_box_for_whitespace
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -6,13 +8,15 @@ import '../providers/theme.dart';
 import '../providers/user_prefs.dart';
 
 class SettingsScreen extends StatefulWidget {
+  const SettingsScreen({Key? key}) : super(key: key);
+
   static const routeName = '/settings-screen';
 
   @override
-  _SettingsScreenState createState() => _SettingsScreenState();
+  SettingsScreenState createState() => SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class SettingsScreenState extends State<SettingsScreen> {
   //The individual setting headings
 
   //Main Settings screen construction:
@@ -24,8 +28,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     Locale? userLocale =
         Provider.of<ThemeModel>(context, listen: false).userLocale;
     final userPrefs = Provider.of<UserPrefs>(context, listen: false);
-    final _wolof = userPrefs.userPrefs.wolofVerseEnabled;
-    final _wolofal = userPrefs.userPrefs.wolofalVerseEnabled;
+    final wolof = userPrefs.userPrefs.wolofVerseEnabled;
+    final wolofal = userPrefs.userPrefs.wolofalVerseEnabled;
 
     //Widgets
     //Main template for all setting titles
@@ -35,7 +39,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         child: Container(
             width: 300,
             child: Padding(
-                padding: EdgeInsets.all(20),
+                padding: const EdgeInsets.all(20),
                 child: Row(
                   children: [
                     Icon(
@@ -43,7 +47,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       size: 27,
                       color: Theme.of(context).textTheme.headline6!.color,
                     ),
-                    SizedBox(width: 25),
+                    const SizedBox(width: 25),
                     Text(title, style: Theme.of(context).textTheme.headline6),
                   ],
                 ))),
@@ -57,7 +61,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           title,
-          VerticalDivider(width: 10, color: Colors.white),
+          const VerticalDivider(width: 10, color: Colors.white),
           Expanded(
             child: setting,
           )
@@ -73,7 +77,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         children: [
           title,
           setting,
-          Divider(),
+          const Divider(),
         ],
       );
     }
@@ -106,8 +110,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     Widget themeSettings() {
       ButtonStyle raisedButtonStyle = ElevatedButton.styleFrom(
-        padding: EdgeInsets.all(0),
-        shape: CircleBorder(),
+        padding: const EdgeInsets.all(0),
+        shape: const CircleBorder(),
         //this one must be white
         // primary: Colors.white
       );
@@ -120,7 +124,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
             ),
             child: userThemeName == 'lightTheme'
-                ? Icon(
+                ? const Icon(
                     Icons.check,
                     color: Colors.black,
                   )
@@ -133,7 +137,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             style: raisedButtonStyle.copyWith(
               backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
             ),
-            child: userThemeName == 'blueTheme' ? Icon(Icons.check) : null,
+            child:
+                userThemeName == 'blueTheme' ? const Icon(Icons.check) : null,
             //must be blue
             // color: Colors.blue,
             onPressed: () {
@@ -144,7 +149,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               style: raisedButtonStyle.copyWith(
                 backgroundColor: MaterialStateProperty.all<Color>(Colors.teal),
               ),
-              child: userThemeName == 'tealTheme' ? Icon(Icons.check) : null,
+              child:
+                  userThemeName == 'tealTheme' ? const Icon(Icons.check) : null,
               //must be teal
               // color: Colors.teal,
               onPressed: () {
@@ -155,7 +161,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
             ),
             child: userThemeName == 'darkTheme'
-                ? Icon(Icons.check, color: Colors.white)
+                ? const Icon(Icons.check, color: Colors.white)
                 : null,
             //must be black
             // color: Colors.black,
@@ -176,11 +182,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (script == 'roman') {
         labelText = Text(AppLocalizations.of(context)!.settingsVerseinWolof,
             style: Theme.of(context).textTheme.subtitle1);
-        switchValue = _wolof!;
+        switchValue = wolof!;
       } else if (script == 'arabic') {
         labelText = Text(AppLocalizations.of(context)!.settingsVerseinWolofal,
             style: Theme.of(context).textTheme.subtitle1);
-        switchValue = _wolofal!;
+        switchValue = wolofal!;
       }
 
       return Row(
@@ -190,7 +196,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Container(
             width: 210,
             child: Padding(
-              padding: EdgeInsetsDirectional.only(start: 80),
+              padding: const EdgeInsetsDirectional.only(start: 80),
               child: Row(
                 children: [
                   labelText,
@@ -204,11 +210,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onChanged: (_) {
                 if (script == 'arabic') {
                   setState(() {
-                    userPrefs.savePref('wolofalVerseEnabled', !_wolofal!);
+                    userPrefs.savePref('wolofalVerseEnabled', !wolofal!);
                   });
                 } else if (script == 'roman') {
                   setState(() {
-                    userPrefs.savePref('wolofVerseEnabled', !_wolof!);
+                    userPrefs.savePref('wolofVerseEnabled', !wolof!);
                   });
                 }
               },
@@ -227,7 +233,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             spacing: 15,
             children: [
               ChoiceChip(
-                padding: EdgeInsets.symmetric(horizontal: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
                 selected: userLocale.toString() == 'fr_CH' ? true : false,
                 label: Text(
                   "Wolof",
@@ -240,7 +246,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 },
               ),
               ChoiceChip(
-                padding: EdgeInsets.symmetric(horizontal: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
                 selected: userLocale.toString() == 'fr' ? true : false,
 
                 label: Text(
@@ -255,7 +261,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 },
               ),
               ChoiceChip(
-                padding: EdgeInsets.symmetric(horizontal: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
 
                 selected: userLocale.toString() == 'en' ? true : false,
                 label: Text(
@@ -287,11 +293,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
       //show the wide view
       body: MediaQuery.of(context).size.width >= 730
           ? Padding(
-              padding: EdgeInsets.symmetric(horizontal: 50),
+              padding: const EdgeInsets.symmetric(horizontal: 50),
               child: ListView(
                 children: [
                   settingRow(themeTitle(), themeSettings()),
-                  Divider(),
+                  const Divider(),
                   // settingRow(backgroundTitle(), backgroundSettings()),
                   // Divider(),
                   // settingRow(directionTitle(), directionSettings()),
@@ -299,7 +305,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   scriptPickerTitle(),
                   scriptPicker('arabic'),
                   scriptPicker('roman'),
-                  Divider(),
+                  const Divider(),
                   settingRow(languageTitle(), languageSetting()),
                 ],
               ),
@@ -312,7 +318,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 scriptPickerTitle(),
                 scriptPicker('arabic'),
                 scriptPicker('roman'),
-                Divider(),
+                const Divider(),
                 settingColumn(languageTitle(), languageSetting()),
               ],
             ),

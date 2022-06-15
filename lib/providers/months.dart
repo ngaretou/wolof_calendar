@@ -119,7 +119,7 @@ class Months with ChangeNotifier {
 
   Future getData() async {
     //check if the current session still contains the names - if so no need to rebuild
-    if (_months.length != 0) {
+    if (_months.isNotEmpty) {
       return;
     }
 
@@ -141,7 +141,8 @@ class Months with ChangeNotifier {
     final datesData = json.decode(datesJSON) as List<dynamic>;
 
     //So we have the info but it's in the wrong format - here map it to our class
-    monthsData.forEach((month) {
+
+    for (var month in monthsData) {
       loadedMonthData.add(Month(
         monthID: month['monthID'],
         monthFR: month['monthFR'],
@@ -162,11 +163,10 @@ class Months with ChangeNotifier {
             .where((element) => element.monthID == month['monthID'])
             .toList(),
       ));
-    });
+    }
 
     _months = loadedMonthData;
-
-    datesData.forEach((date) {
+    for (var date in datesData) {
       loadedDateData.add(Date(
         year: date['year'],
         month: date['month'],
@@ -189,7 +189,7 @@ class Months with ChangeNotifier {
                 element.westernMonthDate == date['westernDate'])
             .toList(),
       ));
-    });
+    }
 
     _dates = loadedDateData;
 

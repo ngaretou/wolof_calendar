@@ -1,9 +1,12 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 import './providers/user_prefs.dart';
@@ -33,19 +36,19 @@ void main() {
           create: (ctx) => PlayAction(),
         ),
       ],
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }
 
 class MyApp extends StatefulWidget {
-  MyApp();
+  const MyApp({Key? key}) : super(key: key);
 
   @override
-  _MyAppState createState() => _MyAppState();
+  MyAppState createState() => MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class MyAppState extends State<MyApp> {
   //Language code:
   Future<void> setupLang() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -90,31 +93,31 @@ class _MyAppState extends State<MyApp> {
             .initialSetupAsync(context),
         builder: (ctx, snapshot) =>
             snapshot.connectionState == ConnectionState.waiting
-                ? Center(child: CircularProgressIndicator())
-                : DateScreen(),
+                ? const Center(child: CircularProgressIndicator())
+                : const DateScreen(),
       ),
       theme: Provider.of<ThemeModel>(context).currentTheme,
       routes: {
-        SettingsScreen.routeName: (ctx) => SettingsScreen(),
-        AboutScreen.routeName: (ctx) => AboutScreen(),
-        DateScreen.routeName: (ctx) => DateScreen(),
+        SettingsScreen.routeName: (ctx) => const SettingsScreen(),
+        AboutScreen.routeName: (ctx) => const AboutScreen(),
+        DateScreen.routeName: (ctx) => const DateScreen(),
       },
-      localizationsDelegates: [
+      localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: [
-        const Locale('en', ''),
-        const Locale('fr', 'FR'),
+      supportedLocales: const [
+        Locale('en', ''),
+        Locale('fr', 'FR'),
         // Unfortunately there is a ton of setup to add a new language
         // to Flutter post version 2.0 and intl 0.17.
         // The most doable way to stick with the official Flutter l10n method
         // is to use Swiss French as the main source for the translations
         // and add in the Wolof to the app_fr_ch.arb in the l10n folder.
         // So when we switch locale to fr_CH, that's Wolof.
-        const Locale('fr', 'CH'),
+        Locale('fr', 'CH'),
       ],
       locale: Provider.of<ThemeModel>(context, listen: true).userLocale,
     );

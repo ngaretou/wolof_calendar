@@ -1,7 +1,8 @@
+// ignore_for_file: no_leading_underscores_for_local_identifiers
+
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
-// import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 
@@ -13,11 +14,11 @@ import './user_prefs.dart';
 //Secondary ends up being only the color of holidays
 ThemeData darkTheme = ThemeData(
   fontFamily: 'Lato',
-  colorScheme: ColorScheme.dark()
+  colorScheme: const ColorScheme.dark()
       .copyWith(primary: Colors.teal[300], secondary: Colors.teal[850]),
   appBarTheme: AppBarTheme(
       backgroundColor: Colors.teal[800],
-      iconTheme: IconThemeData(color: Colors.white),
+      iconTheme: const IconThemeData(color: Colors.white),
       titleTextStyle: ThemeData.dark().appBarTheme.titleTextStyle),
   // buttonTheme: ButtonThemeData(buttonColor: Colors.teal),
 );
@@ -25,11 +26,11 @@ ThemeData darkTheme = ThemeData(
 ThemeData lightTheme = ThemeData(
   fontFamily: 'Lato',
   primarySwatch: Colors.teal,
-  colorScheme: ColorScheme.light()
+  colorScheme: const ColorScheme.light()
       .copyWith(primary: Colors.teal[300], secondary: Colors.teal[100]),
   appBarTheme: AppBarTheme(
       backgroundColor: Colors.teal[800],
-      iconTheme: IconThemeData(color: Colors.white),
+      iconTheme: const IconThemeData(color: Colors.white),
       titleTextStyle: ThemeData.dark().appBarTheme.titleTextStyle),
   // buttonTheme: ButtonThemeData(buttonColor: Colors.teal),
 );
@@ -38,12 +39,12 @@ ThemeData blueTheme = ThemeData(
   fontFamily: 'Lato',
   primarySwatch: Colors.blue,
   backgroundColor: Colors.teal,
-  colorScheme: ColorScheme.light()
+  colorScheme: const ColorScheme.light()
       .copyWith(primary: Colors.blue, secondary: Colors.blue[100]),
   scaffoldBackgroundColor: Colors.blue[50],
   appBarTheme: AppBarTheme(
       backgroundColor: Colors.blue[800],
-      iconTheme: IconThemeData(color: Colors.white),
+      iconTheme: const IconThemeData(color: Colors.white),
       titleTextStyle: ThemeData.dark().appBarTheme.titleTextStyle),
   // buttonTheme: ButtonThemeData(buttonColor: Colors.blue),
 );
@@ -51,18 +52,18 @@ ThemeData blueTheme = ThemeData(
 ThemeData tealTheme = ThemeData(
   fontFamily: 'Lato',
   primarySwatch: Colors.teal,
-  colorScheme: ColorScheme.light()
+  colorScheme: const ColorScheme.light()
       .copyWith(primary: Colors.teal, secondary: Colors.teal[100]),
   scaffoldBackgroundColor: Colors.teal[50],
   appBarTheme: AppBarTheme(
       backgroundColor: Colors.teal[800],
-      iconTheme: IconThemeData(color: Colors.white),
+      iconTheme: const IconThemeData(color: Colors.white),
       titleTextStyle: ThemeData.dark().appBarTheme.titleTextStyle),
   // buttonTheme: ButtonThemeData(buttonColor: Colors.teal),
 );
 
 //////////////////////
-enum ThemeType { Light, Blue, Teal, Dark }
+enum ThemeType { light, blue, teal, dark }
 
 class ThemeModel extends ChangeNotifier {
   Future<SharedPreferences> prefs = SharedPreferences.getInstance();
@@ -75,15 +76,15 @@ class ThemeModel extends ChangeNotifier {
   Future<void> setLocale(String incomingLocale) async {
     switch (incomingLocale) {
       case 'en':
-        userLocale = Locale('en', '');
+        userLocale = const Locale('en', '');
         notifyListeners();
         break;
       case 'fr':
-        userLocale = Locale('fr', '');
+        userLocale = const Locale('fr', '');
         notifyListeners();
         break;
       case 'fr_CH':
-        userLocale = Locale('fr', 'CH');
+        userLocale = const Locale('fr', 'CH');
         notifyListeners();
         break;
       default:
@@ -92,8 +93,8 @@ class ThemeModel extends ChangeNotifier {
     //get prefs from disk
     final prefs = await SharedPreferences.getInstance();
     //save userLang to disk
-    String _userLang = json.encode(incomingLocale);
-    prefs.setString('userLang', _userLang);
+    String userLang = json.encode(incomingLocale);
+    prefs.setString('userLang', userLang);
   }
 
   Future<void> initialSetupAsync(context) async {
@@ -122,26 +123,26 @@ class ThemeModel extends ChangeNotifier {
           {
             currentTheme = darkTheme;
 
-            _themeType = ThemeType.Dark;
+            _themeType = ThemeType.dark;
             break;
           }
 
         case 'lightTheme':
           {
             currentTheme = lightTheme;
-            _themeType = ThemeType.Light;
+            _themeType = ThemeType.light;
             break;
           }
         case 'blueTheme':
           {
             currentTheme = blueTheme;
-            _themeType = ThemeType.Blue;
+            _themeType = ThemeType.blue;
             break;
           }
         case 'tealTheme':
           {
             currentTheme = tealTheme;
-            _themeType = ThemeType.Teal;
+            _themeType = ThemeType.teal;
             break;
           }
       }
@@ -151,7 +152,7 @@ class ThemeModel extends ChangeNotifier {
 
   void setDarkTheme() {
     currentTheme = darkTheme;
-    _themeType = ThemeType.Dark;
+    _themeType = ThemeType.dark;
     //get the theme name as a string for storage
     userThemeName = 'darkTheme';
     //send it for storage
@@ -161,7 +162,7 @@ class ThemeModel extends ChangeNotifier {
 
   void setLightTheme() {
     currentTheme = lightTheme;
-    _themeType = ThemeType.Light;
+    _themeType = ThemeType.light;
     userThemeName = 'lightTheme';
     saveThemeToDisk(userThemeName);
     notifyListeners();
@@ -169,7 +170,7 @@ class ThemeModel extends ChangeNotifier {
 
   void setTealTheme() {
     currentTheme = tealTheme;
-    _themeType = ThemeType.Teal;
+    _themeType = ThemeType.teal;
     userThemeName = 'tealTheme';
     saveThemeToDisk(userThemeName);
     notifyListeners();
@@ -177,7 +178,7 @@ class ThemeModel extends ChangeNotifier {
 
   void setBlueTheme() {
     currentTheme = blueTheme;
-    _themeType = ThemeType.Blue;
+    _themeType = ThemeType.blue;
     userThemeName = 'blueTheme';
     saveThemeToDisk(userThemeName);
     notifyListeners();
