@@ -1,3 +1,11 @@
+2.1.0
+New data for 2023
+Improved add to Google Calendar from drawer logic
+
+
+2.0.0
+Rewrite with new interface for 2022
+
 1.06
 Corrected an incorrect date
 Corrected sharing links not working on web app

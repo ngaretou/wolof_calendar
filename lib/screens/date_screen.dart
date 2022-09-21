@@ -311,6 +311,8 @@ class DateScreenState extends State<DateScreen> {
           int.parse(datesToDisplay.last.month),
           int.parse(datesToDisplay.last.westernDate));
 
+      print(lastDate);
+
       final chosenDate = await showDatePicker(
         context: context,
         initialDate: initialDateTime,
@@ -335,7 +337,7 @@ class DateScreenState extends State<DateScreen> {
       updateAfterNavigation(navigatedIndex: navigateToIndex);
     }
 
-    void _adaptiveShare(String script) async {
+    void adaptiveShare(String script) async {
       //Grab the months data, which contains the verse data
       Month monthData = (Provider.of<Months>(context, listen: false)
           .months
@@ -392,16 +394,12 @@ class DateScreenState extends State<DateScreen> {
       }
     }
 
-    String nameCode = Provider.of<Months>(context, listen: false)
-        .months
-        .where((element) => element.monthID == monthToPlayAndShare)
-        .toList()[0]
-        .arabicNameCode;
-
     return Scaffold(
       drawer: const MainDrawer(),
       floatingActionButton: showMonthHeaderButtons
-          ? PlayButton(file: monthToPlayAndShare, name: nameCode)
+          ? PlayButton(
+              file: monthToPlayAndShare,
+            )
           : null,
       appBar: AppBar(
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
@@ -428,7 +426,7 @@ class DateScreenState extends State<DateScreen> {
                                     child: const Text("Wolof"),
                                     onPressed: () async {
                                       Navigator.of(context).pop();
-                                      _adaptiveShare('roman');
+                                      adaptiveShare('roman');
                                     }),
                                 TextButton(
                                     child: const Text(" وࣷلࣷفَلْ ",
@@ -437,7 +435,7 @@ class DateScreenState extends State<DateScreen> {
                                             fontSize: 22)),
                                     onPressed: () {
                                       Navigator.of(context).pop();
-                                      _adaptiveShare('arabic');
+                                      adaptiveShare('arabic');
                                     }),
                                 TextButton(
                                     child: Text(

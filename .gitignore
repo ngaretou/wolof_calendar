@@ -1,5 +1,6 @@
 
 #Corey edit
+.fvm/flutter_sdk
 test
 pubspec.lock
 **/android/key.properties
