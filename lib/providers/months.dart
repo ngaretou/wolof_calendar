@@ -67,8 +67,7 @@ class Month {
   final String monthFR;
   final String monthRS;
   final String monthAS;
-  final String? arabicName;
-  final String arabicNameCode;
+
   final String? wolofName;
   final String? wolofalName;
   final List<Verses> verses;
@@ -78,8 +77,6 @@ class Month {
     required this.monthFR,
     required this.monthRS,
     required this.monthAS,
-    this.arabicName,
-    required this.arabicNameCode,
     this.wolofName,
     this.wolofalName,
     required this.verses,
@@ -109,9 +106,9 @@ class Months with ChangeNotifier {
     return 'yes';
   }
 
-  String get currentCalendarYear {
-    return '2021';
-  }
+  // String get currentCalendarYear {
+  //   return '2021';
+  // }
 
   //   List<Date> get datesToShow {
   //   return _dates.where((date) => date.monthId).toList();
@@ -148,8 +145,8 @@ class Months with ChangeNotifier {
         monthFR: month['monthFR'],
         monthRS: month['monthRS'],
         monthAS: month['monthAS'],
-        arabicName: month['arabicName'],
-        arabicNameCode: month['arabicNameCode'],
+        // arabicName: month['arabicName'],
+        // arabicNameCode: month['arabicNameCode'],
         wolofName: month['wolofName'],
         wolofalName: month['wolofalName'],
         verses: versesData!

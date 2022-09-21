@@ -1,5 +1,5 @@
 // ignore_for_file: sized_box_for_whitespace
-
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:share/share.dart';
@@ -95,9 +95,17 @@ class MainDrawer extends StatelessWidget {
               AppLocalizations.of(context)!.addHolidays,
               Icons.calendar_today,
               () async {
-                const url =
-                    'https://calendar.google.com/calendar/u/0/r?cid=NWlzbHZmZXVsczY3MG05Y2t2cG9wNDBhbzRAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ';
-                // 'https://calendar.google.com/calendar?cid=NWlzbHZmZXVsczY3MG05Y2t2cG9wNDBhbzRAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ';
+                late String url;
+
+                if (Platform.isIOS) {
+                  //iCal format for iOS
+                  url =
+                      'https://calendar.google.com/calendar/ical/5islvfeuls670m9ckvpop40ao4%40group.calendar.google.com/public/basic.ics';
+                } else {
+                  //Direct add
+                  url =
+                      'https://calendar.google.com/calendar/u/0/r?cid=5islvfeuls670m9ckvpop40ao4@group.calendar.google.com';
+                }
 
                 if (await canLaunchUrl(Uri.parse(url))) {
                   await launchUrl(Uri.parse(url),

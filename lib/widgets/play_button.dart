@@ -6,10 +6,8 @@ import 'package:flutter/services.dart' show rootBundle;
 
 class PlayButton extends StatefulWidget {
   final String file;
-  final String name;
 
-  const PlayButton({Key? key, required this.file, required this.name})
-      : super(key: key);
+  const PlayButton({Key? key, required this.file}) : super(key: key);
 
   @override
   PlayButtonState createState() => PlayButtonState();
@@ -50,20 +48,7 @@ class PlayButtonState extends State<PlayButton> with WidgetsBindingObserver {
       }
     }
 
-    if (widget.name != '0') {
-      // source = [
-      //   AudioSource.uri(
-      //       Uri.parse("asset:///assets/audio/names/${widget.name}.mp3")),
-      //   AudioSource.uri(Uri.parse("asset:///assets/audio/${widget.file}.mp3")),
-      // ];
-      await checkAndAddAudioSource('names/${widget.name}.mp3');
-      await checkAndAddAudioSource('${widget.file}.mp3');
-    } else {
-      // source = [
-      //   AudioSource.uri(Uri.parse("asset:///assets/audio/${widget.file}.mp3")),
-      // ];
-      await checkAndAddAudioSource('${widget.file}.mp3');
-    }
+    await checkAndAddAudioSource('${widget.file}.mp3');
 
     try {
       await _player.setAudioSource(
