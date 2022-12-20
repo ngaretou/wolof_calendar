@@ -70,14 +70,9 @@ class MonthHeaderState extends State<MonthHeader> {
     TextStyle asRefStyle = asStyle.copyWith(fontSize: 24);
     TextStyle rsRefStyle = rsStyle.copyWith(fontSize: 18);
 
-    TextStyle asHeaderStyle = asStyle.copyWith(fontSize: 46, height: 1.5);
-    TextStyle rsHeaderStyle = rsStyle.copyWith(fontSize: 36, height: 1.7);
-
     ui.TextDirection rtlText = ui.TextDirection.rtl;
     ui.TextDirection ltrText = ui.TextDirection.ltr;
     //End text styles
-
-    final double nameColWidth = (widget.contentColWidth / 2);
 
     var userPrefs = Provider.of<UserPrefs>(context, listen: false).userPrefs;
 
