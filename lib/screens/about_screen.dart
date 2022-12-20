@@ -77,6 +77,35 @@ class AboutScreen extends StatelessWidget {
               initiallyExpanded: false,
               children: [
                 htmlSection("assets/html/licenses.html"),
+                ElevatedButton(
+                    onPressed: () {
+                      void showLicensePage({
+                        required BuildContext context,
+                        String? applicationName,
+                        String? applicationVersion,
+                        Widget? applicationIcon,
+                        String? applicationLegalese,
+                        bool useRootNavigator = false,
+                      }) {
+                        // assert(context != null);
+                        // assert(useRootNavigator != null);
+                        Navigator.of(context, rootNavigator: useRootNavigator)
+                            .push(MaterialPageRoute<void>(
+                          builder: (BuildContext context) => LicensePage(
+                            applicationName: applicationName,
+                            applicationVersion: applicationVersion,
+                            applicationIcon: applicationIcon,
+                            applicationLegalese: applicationLegalese,
+                          ),
+                        ));
+                      }
+
+                      showLicensePage(
+                          context: context,
+                          applicationName: '99',
+                          useRootNavigator: true);
+                    },
+                    child: const Text('Licenses')),
               ],
             ),
           ],

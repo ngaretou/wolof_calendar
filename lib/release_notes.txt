@@ -1,6 +1,9 @@
 2.1.0
 New data for 2023
 Improved add to Google Calendar from drawer logic
+--
+Flutter license page on about page
+Sundays holiday color
 
 
 2.0.0
