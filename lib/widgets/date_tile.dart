@@ -149,10 +149,10 @@ class DateTile extends StatelessWidget {
           child: Card(
             elevation: 1,
             //The list of holidays is zero then it's not a holiday
-            color: currentDate.holidays!.isNotEmpty
-                //there is a holiday
+            color: currentDate.holidays!.isNotEmpty || wolofWeekday == "dibéer"
+                //there is a holiday or Sunday
                 ? Theme.of(context).colorScheme.primary
-                //there is not a holiday
+                //there is not a holiday or Sunday
                 : Theme.of(context).cardColor,
 
             //Western date, column of weekdays, Wolof date

@@ -95,31 +95,32 @@ class MonthHeaderState extends State<MonthHeader> {
       children: [
         //Image header
         Container(
-            margin: const EdgeInsets.only(top: 10),
-            height: widget.headerImageHeight,
-            width: double.infinity,
+          margin: const EdgeInsets.only(top: 10),
+          height: widget.headerImageHeight,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.black87,
+            //The month header image
+            image: DecorationImage(
+              alignment: Alignment.center,
+              fit: BoxFit.cover,
+              image: AssetImage(
+                  "assets/images/${widget.monthData[0].monthID}.jpg"),
+            ),
+          ),
+          child: Container(
             decoration: BoxDecoration(
-              color: Colors.black87,
-              //The month header image
-              image: DecorationImage(
-                alignment: Alignment.center,
-                fit: BoxFit.cover,
-                image: AssetImage(
-                    "assets/images/${widget.monthData[0].monthID}.jpg"),
+              gradient: LinearGradient(
+                begin: Alignment.bottomRight,
+                colors: [
+                  Colors.black.withOpacity(.7),
+                  Colors.black.withOpacity(.0)
+                ],
               ),
             ),
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.bottomRight,
-                  colors: [
-                    Colors.black.withOpacity(.7),
-                    Colors.black.withOpacity(.0)
-                  ],
-                ),
-              ),
-              //The Arabic name on top of the image if there is one
-            )),
+          ),
+        ),
+
         //Main month row
         Padding(
           padding: widget.adaptiveMargin,
@@ -129,52 +130,42 @@ class MonthHeaderState extends State<MonthHeader> {
             children: [
               //Here is the first Row of the simple informational month header:
               //the RS Western and Wolofal months
-              Container(
-                padding: EdgeInsets.symmetric(
-                    horizontal: (widget.adaptiveMargin.horizontal / 2) + 5.0),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(widget.monthData[0].monthRS, style: headerStyle),
-                      Text(widget.currentDate.wolofMonthRS.toString(),
-                          style: headerStyle),
-                    ]),
-              ),
+
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                Text(widget.monthData[0].monthRS, style: headerStyle),
+                Text(widget.currentDate.wolofMonthRS.toString(),
+                    style: headerStyle),
+              ]),
+
               //Second row, AS month names
-              Container(
-                padding: EdgeInsets.symmetric(
-                    horizontal: (widget.adaptiveMargin.horizontal / 2) + 5.0),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        rtlTextFixer(widget.monthData[0].monthAS),
-                        style: headerStyle,
-                        textDirection: ui.TextDirection.rtl,
-                      ),
-                      Text(
-                        rtlTextFixer(
-                            widget.currentDate.wolofMonthAS.toString()),
-                        style: headerStyle,
-                        textDirection: ui.TextDirection.rtl,
-                      ),
-                    ]),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(
-                    horizontal: (widget.adaptiveMargin.horizontal / 2) + 5.0),
-                child:
-                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                Text(
+                  rtlTextFixer(widget.monthData[0].monthAS),
+                  style: headerStyle,
+                  textDirection: ui.TextDirection.rtl,
+                ),
+                Text(
+                  rtlTextFixer(widget.currentDate.wolofMonthAS.toString()),
+                  style: headerStyle,
+                  textDirection: ui.TextDirection.rtl,
+                ),
+              ]),
+
+              //year
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
                   Text(
                     widget.currentDate.year,
                     style: headerStyle,
                   ),
-                ]),
-              )
+                ],
+              ),
             ],
           ),
         ),
 
+        // Start of verses
         ScrollConfiguration(
           behavior: ScrollConfiguration.of(context).copyWith(scrollbars: true),
           child: ExpansionTile(
@@ -237,7 +228,7 @@ class MonthHeaderState extends State<MonthHeader> {
                 padding: widget.isPhone
                     ? const EdgeInsets.symmetric(horizontal: 40)
                     : EdgeInsets.symmetric(
-                        horizontal: (widget.contentColWidth) / 4),
+                        horizontal: widget.adaptiveMargin.left + 150),
                 child: ElevatedButton(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
