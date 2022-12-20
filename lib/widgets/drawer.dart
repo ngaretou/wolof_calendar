@@ -97,14 +97,20 @@ class MainDrawer extends StatelessWidget {
               () async {
                 late String url;
 
-                if (Platform.isIOS) {
+                String directAddURL =
+                    'https://calendar.google.com/calendar/u/0/r?cid=5islvfeuls670m9ckvpop40ao4@group.calendar.google.com';
+
+                if (kIsWeb) {
+                  //Direct add
+                  url = directAddURL;
+                } else if (Platform.isIOS) {
                   //iCal format for iOS
                   url =
                       'https://calendar.google.com/calendar/ical/5islvfeuls670m9ckvpop40ao4%40group.calendar.google.com/public/basic.ics';
                 } else {
                   //Direct add
-                  url =
-                      'https://calendar.google.com/calendar/u/0/r?cid=5islvfeuls670m9ckvpop40ao4@group.calendar.google.com';
+                  //second time here but have to account for web not liking Platform.isOS
+                  url = directAddURL;
                 }
 
                 if (await canLaunchUrl(Uri.parse(url))) {
