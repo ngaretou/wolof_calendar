@@ -47,10 +47,10 @@ class DateScreenState extends State<DateScreen> {
   //This is used just for the initial navigation on open
   late int initialScrollIndex;
   //Holders for the app bar title info that gets refreshed as the user navigates
-  late Text formattedAppBarTitle;
-  late String appBarWesternMonth;
-  late String appBarWolofMonth;
-  late String appBarWolofalMonth;
+  Text formattedAppBarTitle = const Text("");
+  String appBarWesternMonth = "";
+  String appBarWolofMonth = "";
+  String appBarWolofalMonth = "";
   //used both for that initial navigation on open AND for the starting date for the date picker
   late DateTime initialDateTime;
   //this gets initialized so it can never be null but is really set below
@@ -159,6 +159,13 @@ class DateScreenState extends State<DateScreen> {
     late int navigateToDateIndex; //this is for later on when the user navigates
     var lastIndex = datesToDisplay.length - 1;
 
+    TextStyle appBarMonthsStyle = Theme.of(context)
+        .textTheme
+        .titleLarge!
+        .copyWith(
+            fontFamily: "Harmattan",
+            color: Theme.of(context).colorScheme.onPrimaryContainer);
+
     // Updates the appbar title with the month and shows or hides the play and share buttons
     Future<void> updateAfterNavigation({int? navigatedIndex}) async {
       // print('updateAfterNavigation');
@@ -233,8 +240,25 @@ class DateScreenState extends State<DateScreen> {
       }
 
       Timer(Duration(milliseconds: fadeInSpeed), () {
+        // Here get the French month for the header
+        DateTime topDateAsDateTime = DateTime(int.parse(topDate.year),
+            int.parse(topDate.month), int.parse(topDate.westernDate));
+        var monthSpelledOut =
+            DateFormat('MMMM', 'fr_FR').format(topDateAsDateTime).toString();
+
+        // Look back from topDate and get the first record where Wolof month is not empty
+        int index = topIndex;
+        while (datesToDisplay[index].wolofMonthRS == "") {
+          index--;
+        }
+        datesToDisplay[index].wolofMonthRS;
+
         setState(() {
           formattedAppBarTitle = Text(topDate.year);
+          appBarWesternMonth = monthSpelledOut;
+
+          appBarWolofMonth = datesToDisplay[index].wolofMonthRS;
+          appBarWolofalMonth = datesToDisplay[index].wolofMonthAS;
           showMonthHeaderButtons = showHeaders;
           monthToPlayAndShare = tempMonthToPlayAndShare;
         });
@@ -468,7 +492,7 @@ class DateScreenState extends State<DateScreen> {
           cursor: SystemMouseCursors.grab,
           child: NotificationListener(
             onNotification: (dynamic notification) {
-              if (notification is ScrollEndNotification) {
+              if (notification is ScrollNotification) {
                 updateAfterNavigation();
               }
               return true;
@@ -478,17 +502,19 @@ class DateScreenState extends State<DateScreen> {
                 Material(
                   elevation: 10,
                   child: Container(
-                    padding: const EdgeInsets.all(10),
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
                     color: Theme.of(context).appBarTheme.backgroundColor,
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'put the months here',
-                          style: TextStyle(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onPrimaryContainer),
-                        )
+                          appBarWesternMonth,
+                          style: appBarMonthsStyle,
+                        ),
+                        Text(
+                          '$appBarWolofMonth/$appBarWolofalMonth',
+                          style: appBarMonthsStyle,
+                        ),
                       ],
                     ),
                   ),

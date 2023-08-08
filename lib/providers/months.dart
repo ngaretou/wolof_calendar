@@ -45,8 +45,8 @@ class Verses {
 class Date {
   final String year;
   final String month;
-  final String? wolofMonthRS;
-  final String? wolofMonthAS;
+  final String wolofMonthRS;
+  final String wolofMonthAS;
   final String westernDate;
   final String wolofDate;
   final List<Holiday>? holidays;
@@ -54,8 +54,8 @@ class Date {
   Date({
     required this.year,
     required this.month,
-    this.wolofMonthRS,
-    this.wolofMonthAS,
+    required this.wolofMonthRS,
+    required this.wolofMonthAS,
     required this.westernDate,
     required this.wolofDate,
     this.holidays,
