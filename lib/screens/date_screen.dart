@@ -198,6 +198,7 @@ class DateScreenState extends State<DateScreen> {
       //or bottom of either Western or Wolof.
 
       late bool showHeaders;
+
       late String tempMonthToPlayAndShare;
       //Handle the first two cases in one expression:
       if (topDate.westernDate == '1') {
