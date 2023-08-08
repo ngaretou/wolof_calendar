@@ -26,8 +26,8 @@ class AboutScreen extends StatelessWidget {
             //this is actually where the business happens; HTML just takes the data and renders it
             : Html(
                 data: snapshot.data.toString(),
-                onLinkTap: (String? url, RenderContext context,
-                    Map<String, String> attributes, element) async {
+                onLinkTap: (String? url, Map<String, String> attributes,
+                    element) async {
                   if (url != null) {
                     await canLaunchUrl(Uri.parse(url))
                         ? await launchUrl(Uri.parse(url))
@@ -50,21 +50,21 @@ class AboutScreen extends StatelessWidget {
             ExpansionTile(
               tilePadding: const EdgeInsets.only(left: 8),
               title: Text('Arminaatu Wolof',
-                  style: Theme.of(context).textTheme.headline6),
+                  style: Theme.of(context).textTheme.titleLarge),
               initiallyExpanded: true,
               children: [
                 htmlSection("assets/html/about.html"),
               ],
             ),
             // Text('Arminaatu Wolof',
-            //     style: Theme.of(context).textTheme.headline6,
+            //     style: Theme.of(context).textTheme.titleLarge,
             //     textAlign: TextAlign.left),
             // SizedBox(height: 10),
             // htmlSection("assets/html/about.html"),
             ExpansionTile(
               tilePadding: const EdgeInsets.only(left: 8),
               title: Text('Remerciements',
-                  style: Theme.of(context).textTheme.headline6),
+                  style: Theme.of(context).textTheme.titleLarge),
               initiallyExpanded: false,
               children: [
                 htmlSection("assets/html/thanks.html"),
@@ -73,7 +73,7 @@ class AboutScreen extends StatelessWidget {
             ExpansionTile(
               tilePadding: const EdgeInsets.only(left: 8),
               title: Text('Licences',
-                  style: Theme.of(context).textTheme.headline6),
+                  style: Theme.of(context).textTheme.titleLarge),
               initiallyExpanded: false,
               children: [
                 htmlSection("assets/html/licenses.html"),

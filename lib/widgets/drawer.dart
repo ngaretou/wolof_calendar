@@ -15,8 +15,8 @@ class MainDrawer extends StatelessWidget {
   const MainDrawer({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    TextStyle whiteHeadline6 =
-        Theme.of(context).textTheme.headline6!.copyWith(color: Colors.white);
+    TextStyle whitetitleLarge =
+        Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.white);
 
     //Main template for all titles
     Widget drawerTitle(String title, IconData icon, Function tapHandler) {
@@ -41,7 +41,7 @@ class MainDrawer extends StatelessWidget {
                                 Theme.of(context).appBarTheme.iconTheme!.color,
                           ),
                     const SizedBox(width: 25),
-                    Text(title, style: whiteHeadline6),
+                    Text(title, style: whitetitleLarge),
                   ],
                 ))),
       );
@@ -71,7 +71,7 @@ class MainDrawer extends StatelessWidget {
                   Text("Arminaatu wolof",
                       style: Theme.of(context)
                           .textTheme
-                          .headline5!
+                          .headlineSmall!
                           .copyWith(color: Colors.white)),
                 ],
               ),
@@ -174,7 +174,7 @@ class MainDrawer extends StatelessWidget {
                     child: Row(
                       children: [
                         Text(AppLocalizations.of(context)!.settingsContactUs,
-                            style: whiteHeadline6),
+                            style: whitetitleLarge),
                       ],
                     ))),
 
