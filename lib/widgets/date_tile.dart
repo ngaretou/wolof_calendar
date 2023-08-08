@@ -108,7 +108,7 @@ class DateTile extends StatelessWidget {
     }
 
     //TextStyles
-    TextStyle head6 = Theme.of(context).textTheme.headline6!;
+    TextStyle head6 = Theme.of(context).textTheme.titleLarge!;
     //end TextStyles
 
     /* Fall 2021 Flutter 2.5.1, the AS text boxes get squished by Flutter on on web. 
@@ -178,7 +178,7 @@ class DateTile extends StatelessWidget {
                                 rtlTextFixer(wolofalWeekday),
                                 style: Theme.of(context)
                                     .textTheme
-                                    .headline6!
+                                    .titleLarge!
                                     .copyWith(
                                         fontFamily: "Harmattan", fontSize: 30),
                                 textDirection: ui.TextDirection.rtl,
@@ -221,7 +221,7 @@ class DateTile extends StatelessWidget {
                             rtlTextFixer(currentDate.holidays![i].holidayAS),
                             style: Theme.of(context)
                                 .textTheme
-                                .headline6!
+                                .titleLarge!
                                 .copyWith(
                                     fontFamily: "Harmattan", fontSize: 30),
                             textDirection: ui.TextDirection.rtl,

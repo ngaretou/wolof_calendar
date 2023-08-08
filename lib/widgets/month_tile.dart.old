@@ -15,10 +15,10 @@ class MonthTile extends StatelessWidget {
         1400;
     TextStyle rsStyle = Theme.of(context)
         .textTheme
-        .headline6!
+        .titleLarge!
         .copyWith(color: Colors.white, fontSize: 30);
 
-    TextStyle? asStyle = Theme.of(context).textTheme.headline6!.copyWith(
+    TextStyle? asStyle = Theme.of(context).textTheme.titleLarge!.copyWith(
           color: Colors.white,
           fontSize: 40,
           fontFamily: "Harmattan",

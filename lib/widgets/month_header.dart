@@ -57,14 +57,14 @@ class MonthHeaderState extends State<MonthHeader> {
     TextStyle headerStyle = TextStyle(
         fontFamily: "Harmattan",
         fontSize: 30,
-        color: Theme.of(context).textTheme.headline6!.color);
-    TextStyle asStyle = Theme.of(context).textTheme.headline6!.copyWith(
+        color: Theme.of(context).textTheme.titleLarge!.color);
+    TextStyle asStyle = Theme.of(context).textTheme.titleLarge!.copyWith(
           fontFamily: "Harmattan",
           fontSize: 40,
         );
     TextStyle rsStyle = Theme.of(context)
         .textTheme
-        .headline6!
+        .titleLarge!
         .copyWith(fontFamily: "Charis", fontSize: 30);
 
     TextStyle asRefStyle = asStyle.copyWith(fontSize: 24);

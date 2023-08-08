@@ -36,18 +36,23 @@ ThemeData lightTheme = ThemeData(
 );
 
 ThemeData blueTheme = ThemeData(
-  fontFamily: 'Lato',
-  primarySwatch: Colors.blue,
-  backgroundColor: Colors.teal,
-  colorScheme: const ColorScheme.light()
-      .copyWith(primary: Colors.blue, secondary: Colors.blue[100]),
-  scaffoldBackgroundColor: Colors.blue[50],
-  appBarTheme: AppBarTheme(
-      backgroundColor: Colors.blue[800],
-      iconTheme: const IconThemeData(color: Colors.white),
-      titleTextStyle: ThemeData.dark().appBarTheme.titleTextStyle),
-  // buttonTheme: ButtonThemeData(buttonColor: Colors.blue),
-);
+    brightness: Brightness.light,
+    colorSchemeSeed: Colors.blue,
+    fontFamily: 'Lato');
+
+// ThemeData(
+//   fontFamily: 'Lato',
+//   primarySwatch: Colors.blue,
+//   backgroundColor: Colors.teal,
+//   colorScheme: const ColorScheme.light()
+//       .copyWith(primary: Colors.blue, secondary: Colors.blue[100]),
+//   scaffoldBackgroundColor: Colors.blue[50],
+//   appBarTheme: AppBarTheme(
+//       backgroundColor: Colors.blue[800],
+//       iconTheme: const IconThemeData(color: Colors.white),
+//       titleTextStyle: ThemeData.dark().appBarTheme.titleTextStyle),
+//   // buttonTheme: ButtonThemeData(buttonColor: Colors.blue),
+// );
 
 ThemeData tealTheme = ThemeData(
   fontFamily: 'Lato',

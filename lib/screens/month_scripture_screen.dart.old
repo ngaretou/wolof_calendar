@@ -32,13 +32,13 @@ class MonthScriptureScreen extends StatelessWidget {
     final MonthScriptureScreenArgs args =
         ModalRoute.of(context)!.settings.arguments as MonthScriptureScreenArgs;
 
-    TextStyle asStyle = Theme.of(context).textTheme.headline6!.copyWith(
+    TextStyle asStyle = Theme.of(context).textTheme.titleLarge!.copyWith(
           fontFamily: "Harmattan",
           fontSize: 40,
         );
     TextStyle rsStyle = Theme.of(context)
         .textTheme
-        .headline6!
+        .titleLarge!
         .copyWith(fontFamily: "Charis", fontSize: 30);
 
     TextStyle asRefStyle = asStyle.copyWith(fontSize: 24);
@@ -199,7 +199,7 @@ class MonthScriptureScreen extends StatelessWidget {
                       // style: Theme.of(context)
                       //     .appBarTheme
                       //     .textTheme!
-                      //     .headline6!
+                      //     .titleLarge!
                       //     .copyWith(fontFamily: 'Charis')
                     )
                   : MainTitle(args.data.arabicName),
@@ -326,7 +326,7 @@ class MonthScriptureScreen extends StatelessWidget {
                                     // style: Theme.of(context)
                                     //     .appBarTheme
                                     //     .textTheme!
-                                    //     .headline6!
+                                    //     .titleLarge!
                                     //     .copyWith(fontSize: 18)
                                   ),
                                   Icon(
@@ -377,13 +377,13 @@ class HolidayBuilder extends StatelessWidget {
   // ignore: missing_return
   Widget build(BuildContext context) {
 //Set up some styling for use down below
-    TextStyle asStyle = Theme.of(context).textTheme.headline6!.copyWith(
+    TextStyle asStyle = Theme.of(context).textTheme.titleLarge!.copyWith(
           fontFamily: "Harmattan",
           fontSize: 30,
         );
     TextStyle rsStyle = Theme.of(context)
         .textTheme
-        .headline6!
+        .titleLarge!
         .copyWith(fontFamily: "Charis", fontSize: 22);
 
     ui.TextDirection rtlText = ui.TextDirection.rtl;
@@ -630,7 +630,7 @@ class _MainTitleState extends State<MainTitle> {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle asStyle = Theme.of(context).textTheme.headline6!.copyWith(
+    TextStyle asStyle = Theme.of(context).textTheme.titleLarge!.copyWith(
         fontFamily: "Harmattan", fontSize: 40, color: Colors.white, height: 1);
 
     return AnimatedOpacity(

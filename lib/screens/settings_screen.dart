@@ -45,10 +45,10 @@ class SettingsScreenState extends State<SettingsScreen> {
                     Icon(
                       icon,
                       size: 27,
-                      color: Theme.of(context).textTheme.headline6!.color,
+                      color: Theme.of(context).textTheme.titleLarge!.color,
                     ),
                     const SizedBox(width: 25),
-                    Text(title, style: Theme.of(context).textTheme.headline6),
+                    Text(title, style: Theme.of(context).textTheme.titleLarge),
                   ],
                 ))),
       );
@@ -181,11 +181,11 @@ class SettingsScreenState extends State<SettingsScreen> {
 
       if (script == 'roman') {
         labelText = Text(AppLocalizations.of(context)!.settingsVerseinWolof,
-            style: Theme.of(context).textTheme.subtitle1);
+            style: Theme.of(context).textTheme.titleMedium);
         switchValue = wolof!;
       } else if (script == 'arabic') {
         labelText = Text(AppLocalizations.of(context)!.settingsVerseinWolofal,
-            style: Theme.of(context).textTheme.subtitle1);
+            style: Theme.of(context).textTheme.titleMedium);
         switchValue = wolofal!;
       }
 
@@ -237,7 +237,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                 selected: userLocale.toString() == 'fr_CH' ? true : false,
                 label: Text(
                   "Wolof",
-                  style: Theme.of(context).textTheme.subtitle1,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
                 // backgroundColor: Theme.of(context).primaryColor,
 
@@ -251,7 +251,7 @@ class SettingsScreenState extends State<SettingsScreen> {
 
                 label: Text(
                   "Français",
-                  style: Theme.of(context).textTheme.subtitle1,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
                 // backgroundColor: Theme.of(context).primaryColor,
                 // selectedColor: Theme.of(context).accentColor,
@@ -266,7 +266,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                 selected: userLocale.toString() == 'en' ? true : false,
                 label: Text(
                   "English",
-                  style: Theme.of(context).textTheme.subtitle1,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
                 // backgroundColor: Theme.of(context).primaryColor,
                 // selectedColor: Theme.of(context).accentColor,
@@ -286,7 +286,7 @@ class SettingsScreenState extends State<SettingsScreen> {
         title: Text(AppLocalizations.of(context)!.settingsTitle,
             style: Theme.of(context)
                 .textTheme
-                .headline6!
+                .titleLarge!
                 .copyWith(color: Colors.white)),
       ),
       //If the width of the screen is greater or equal to 730 (whether or not _isPhone is true)

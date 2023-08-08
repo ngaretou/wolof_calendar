@@ -46,8 +46,11 @@ class DateScreenState extends State<DateScreen> {
   late List<Date> datesToDisplay;
   //This is used just for the initial navigation on open
   late int initialScrollIndex;
-  //Holder for the app bar title that gets refreshed as the user navigates
+  //Holders for the app bar title info that gets refreshed as the user navigates
   late Text formattedAppBarTitle;
+  late String appBarWesternMonth;
+  late String appBarWolofMonth;
+  late String appBarWolofalMonth;
   //used both for that initial navigation on open AND for the starting date for the date picker
   late DateTime initialDateTime;
   //this gets initialized so it can never be null but is really set below
@@ -58,30 +61,30 @@ class DateScreenState extends State<DateScreen> {
   late String monthToPlayAndShare;
 
   //Normally we'd just set this inline but we have to use this a couple of times so putting it in code for uniformity
-  Text appBarTitleFormat(DateTime incomingDateTime, BuildContext context) {
-    final screenwidth = MediaQuery.of(context).size.width;
-    // print(screenwidth);
+  // Text appBarTitleFormat(DateTime incomingDateTime, BuildContext context) {
+  //   final screenwidth = MediaQuery.of(context).size.width;
+  //   // print(screenwidth);
 
-    //Screen ranges
-    double smallScreenMax = 344;
-    double mediumScreenMax = 399;
+  //   //Screen ranges
+  //   double smallScreenMax = 344;
+  //   double mediumScreenMax = 399;
 
-    if (screenwidth >= mediumScreenMax) {
-      // print('large');
-      return Text(DateFormat('yMMMM', 'fr_FR').format(incomingDateTime));
-    } else if (screenwidth >= smallScreenMax && screenwidth < mediumScreenMax) {
-      // print('medium');
-      return Text(DateFormat('yMMM', 'fr_FR').format(incomingDateTime),
-          style: const TextStyle(fontSize: 16));
-    } else if (screenwidth < smallScreenMax) {
-      // print('small');
-      return Text(DateFormat('yMMM', 'fr_FR').format(incomingDateTime),
-          style: const TextStyle(fontSize: 13));
-    }
-    throw (error) {
-      print('error in appBarTitle formatting');
-    };
-  }
+  //   if (screenwidth >= mediumScreenMax) {
+  //     // print('large');
+  //     return Text(DateFormat('yMMMM', 'fr_FR').format(incomingDateTime));
+  //   } else if (screenwidth >= smallScreenMax && screenwidth < mediumScreenMax) {
+  //     // print('medium');
+  //     return Text(DateFormat('yMMM', 'fr_FR').format(incomingDateTime),
+  //         style: const TextStyle(fontSize: 16));
+  //   } else if (screenwidth < smallScreenMax) {
+  //     // print('small');
+  //     return Text(DateFormat('yMMM', 'fr_FR').format(incomingDateTime),
+  //         style: const TextStyle(fontSize: 13));
+  //   }
+  //   throw (error) {
+  //     print('error in appBarTitle formatting');
+  //   };
+  // }
 
   @override
   void didChangeDependencies() {
@@ -144,7 +147,7 @@ class DateScreenState extends State<DateScreen> {
         .parse('${args.year} ${args.month} ${args.date}');
     //Then make it nice for the initial appBarTitle
     //To change format of title bar change both in didChangeDependencies & in main build
-    formattedAppBarTitle = appBarTitleFormat(initialDateTime, context);
+    formattedAppBarTitle = Text(args.year!);
     //This initializes with a value the month we initially open to.
     //If it's a 1, it will display the buttons, but if not, it will not show anyway
     monthToPlayAndShare = args.month!;
@@ -185,10 +188,6 @@ class DateScreenState extends State<DateScreen> {
 
       //we'll definitely have the topIndex so get the topDate info.
       Date topDate = datesToDisplay[topIndex];
-
-      //Getting the top DateTime and saving it for the appBarTitle in the SetState below
-      DateTime scrolledDateTime = DateFormat('M/yyyy', "fr_FR")
-          .parse('${topDate.month}/${topDate.year}');
 
       //Because we will definitely have a firstIndex but may not have a lastIndex,
       //handle the null case before we get to the if below
@@ -235,7 +234,7 @@ class DateScreenState extends State<DateScreen> {
 
       Timer(Duration(milliseconds: fadeInSpeed), () {
         setState(() {
-          formattedAppBarTitle = appBarTitleFormat(scrolledDateTime, context);
+          formattedAppBarTitle = Text(topDate.year);
           showMonthHeaderButtons = showHeaders;
           monthToPlayAndShare = tempMonthToPlayAndShare;
         });
@@ -402,6 +401,7 @@ class DateScreenState extends State<DateScreen> {
             )
           : null,
       appBar: AppBar(
+        elevation: 0,
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         title: formattedAppBarTitle,
         actions: [
@@ -473,18 +473,49 @@ class DateScreenState extends State<DateScreen> {
               }
               return true;
             },
-            child: ScrollConfiguration(
-              //The 2.8 Flutter behavior is to not have mice grabbing and dragging - but we do want this in the web version of the app, so the custom scroll behavior here
-              behavior: MyCustomScrollBehavior().copyWith(scrollbars: false),
-              child: ScrollablePositionedList.builder(
-                itemScrollController: itemScrollController,
-                itemPositionsListener: itemPositionsListener,
-                physics: const BouncingScrollPhysics(),
-                initialScrollIndex: initialScrollIndex,
-                itemBuilder: (ctx, i) =>
-                    DateTile(currentDate: datesToDisplay[i]),
-                itemCount: datesToDisplay.length,
-              ),
+            child: Column(
+              children: [
+                Material(
+                  elevation: 10,
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    color: Theme.of(context).appBarTheme.backgroundColor,
+                    child: Row(
+                      children: [
+                        Text(
+                          'put the months here',
+                          style: TextStyle(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onPrimaryContainer),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                // SizedBox(
+                //   height: 10,
+                //   child: const Row(
+                //     children: [Text('data')],
+                //   ),
+                // ),
+                Expanded(
+                  child: ScrollConfiguration(
+                    //The 2.8 Flutter behavior is to not have mice grabbing and dragging - but we do want this in the web version of the app, so the custom scroll behavior here
+                    behavior:
+                        MyCustomScrollBehavior().copyWith(scrollbars: false),
+                    child: ScrollablePositionedList.builder(
+                      itemScrollController: itemScrollController,
+                      itemPositionsListener: itemPositionsListener,
+                      physics: const BouncingScrollPhysics(),
+                      initialScrollIndex: initialScrollIndex,
+                      itemBuilder: (ctx, i) =>
+                          DateTile(currentDate: datesToDisplay[i]),
+                      itemCount: datesToDisplay.length,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
