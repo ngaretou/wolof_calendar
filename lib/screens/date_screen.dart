@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/rendering.dart';
 import 'dart:async';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -8,7 +9,9 @@ import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:animated_box_decoration/animated_box_decoration.dart';
 
+import '../providers/theme.dart';
 import '../providers/months.dart';
 import '../providers/route_args.dart';
 
@@ -26,6 +29,7 @@ class MyCustomScrollBehavior extends ScrollBehavior {
         // etc.
       };
 }
+/////////
 
 class DateScreen extends StatefulWidget {
   const DateScreen({Key? key}) : super(key: key);
@@ -44,13 +48,23 @@ class DateScreenState extends State<DateScreen> {
   // Things we declare here to get values in didChangeDependencies
   // that we can then use in the first build
   late List<Date> datesToDisplay;
+  late List<Month> allMonths;
   //This is used just for the initial navigation on open
   late int initialScrollIndex;
   //Holders for the app bar title info that gets refreshed as the user navigates
-  Text formattedAppBarTitle = const Text("");
-  String appBarWesternMonth = "";
-  String appBarWolofMonth = "";
-  String appBarWolofalMonth = "";
+  ValueNotifier<String> formattedAppBarTitle = ValueNotifier("");
+  // String formattedAppBarTitle = "";
+  ValueNotifier<String> appBarWesternMonthFR = ValueNotifier("");
+  // String appBarWesternMonthFR = "";
+  ValueNotifier<String> appBarWesternMonthRS = ValueNotifier("");
+  // String appBarWesternMonthRS = "";
+  ValueNotifier<String> appBarWesternMonthAS = ValueNotifier("");
+  // String appBarWesternMonthAS = "";
+  ValueNotifier<String> appBarWolofMonth = ValueNotifier("");
+  // String appBarWolofMonth = "";
+  ValueNotifier<String> appBarWolofalMonth = ValueNotifier("");
+  // String appBarWolofalMonth = "";
+
   //used both for that initial navigation on open AND for the starting date for the date picker
   late DateTime initialDateTime;
   //this gets initialized so it can never be null but is really set below
@@ -58,37 +72,15 @@ class DateScreenState extends State<DateScreen> {
   // the fade-in speed for the button animations in milliseconds
   final int fadeInSpeed = 300;
   //store the month that we'll grab the verses to play and share
-  late String monthToPlayAndShare;
+  ValueNotifier<String> monthToPlayAndShare = ValueNotifier("");
+  // late String monthToPlayAndShare;
 
-  //Normally we'd just set this inline but we have to use this a couple of times so putting it in code for uniformity
-  // Text appBarTitleFormat(DateTime incomingDateTime, BuildContext context) {
-  //   final screenwidth = MediaQuery.of(context).size.width;
-  //   // print(screenwidth);
-
-  //   //Screen ranges
-  //   double smallScreenMax = 344;
-  //   double mediumScreenMax = 399;
-
-  //   if (screenwidth >= mediumScreenMax) {
-  //     // print('large');
-  //     return Text(DateFormat('yMMMM', 'fr_FR').format(incomingDateTime));
-  //   } else if (screenwidth >= smallScreenMax && screenwidth < mediumScreenMax) {
-  //     // print('medium');
-  //     return Text(DateFormat('yMMM', 'fr_FR').format(incomingDateTime),
-  //         style: const TextStyle(fontSize: 16));
-  //   } else if (screenwidth < smallScreenMax) {
-  //     // print('small');
-  //     return Text(DateFormat('yMMM', 'fr_FR').format(incomingDateTime),
-  //         style: const TextStyle(fontSize: 13));
-  //   }
-  //   throw (error) {
-  //     print('error in appBarTitle formatting');
-  //   };
-  // }
+  //the image to show in the background
+  ValueNotifier<int> imageNumber = ValueNotifier(1);
 
   @override
   void didChangeDependencies() {
-    // print('didChangeDependencies');
+    print('didChangeDependencies');
 
     //We need context several places here so using this method rather than initState,
     //where there is no context - didChangeDependencies is initState with context
@@ -147,28 +139,66 @@ class DateScreenState extends State<DateScreen> {
         .parse('${args.year} ${args.month} ${args.date}');
     //Then make it nice for the initial appBarTitle
     //To change format of title bar change both in didChangeDependencies & in main build
-    formattedAppBarTitle = Text(args.year!);
+    formattedAppBarTitle.value = args.year!;
     //This initializes with a value the month we initially open to.
     //If it's a 1, it will display the buttons, but if not, it will not show anyway
-    monthToPlayAndShare = args.month!;
+    monthToPlayAndShare.value = args.month!;
+
+    Month currentMonth = (Provider.of<Months>(context, listen: false)
+            .months
+            .where((element) => element.monthID == args.month!)
+            .toList()[
+        0]); //the [0] grabs the first in the list, which will be the only one
+
+// Look back from topDate and get the first record where Wolof month is not empty
+    int index = initialScrollIndex;
+    while (datesToDisplay[index].wolofMonthRS == "") {
+      index--;
+    }
+
+    appBarWesternMonthFR.value = currentMonth.monthFR;
+    appBarWesternMonthRS.value = currentMonth.monthRS;
+    appBarWesternMonthAS.value = currentMonth.monthAS;
+    appBarWolofMonth.value = datesToDisplay[index].wolofMonthRS;
+    appBarWolofalMonth.value = datesToDisplay[index].wolofMonthAS;
+
     super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    formattedAppBarTitle.dispose();
+    appBarWesternMonthFR.dispose();
+    appBarWesternMonthRS.dispose();
+    appBarWesternMonthAS.dispose();
+    appBarWolofMonth.dispose();
+    appBarWolofalMonth.dispose();
+    monthToPlayAndShare.dispose();
+    imageNumber.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     late int navigateToDateIndex; //this is for later on when the user navigates
     var lastIndex = datesToDisplay.length - 1;
+    final screenwidth = MediaQuery.of(context).size.width;
+    print('date_screen build');
+
+    var themeProvider = Provider.of<ThemeModel>(context, listen: true);
+    var userThemeName = themeProvider.userThemeName;
+
+    Color appBarItemColor =
+        userThemeName == 'lightTheme' ? Colors.black87 : Colors.white;
 
     TextStyle appBarMonthsStyle = Theme.of(context)
         .textTheme
         .titleLarge!
-        .copyWith(
-            fontFamily: "Harmattan",
-            color: Theme.of(context).colorScheme.onPrimaryContainer);
+        .copyWith(fontFamily: "Harmattan", color: appBarItemColor);
 
     // Updates the appbar title with the month and shows or hides the play and share buttons
     Future<void> updateAfterNavigation({int? navigatedIndex}) async {
-      // print('updateAfterNavigation');
+      print('updateAfterNavigation');
       late int topIndex;
       int? bottomIndex;
 
@@ -187,7 +217,20 @@ class DateScreenState extends State<DateScreen> {
         //navigated index is optional so 2 and 3 pass it in but 1 does not.
         //So this case is if the user scrolled and we can get the first and last Index displayed directly.
         //firstIndex i.e. the top position in the visible portion of the list.
-        topIndex = itemPositionsListener.itemPositions.value.first.index;
+        //itemPositionsListener's 'first' and 'last' are relative to scroll direction.
+        //This is how to get the scroll direction
+        if (itemPositionsListener.itemPositions.value.first.index <
+            itemPositionsListener.itemPositions.value.last.index) {
+          //scrolling down
+          topIndex = itemPositionsListener.itemPositions.value.first.index;
+          bottomIndex = itemPositionsListener.itemPositions.value.last.index;
+        } else {
+          //scrolling up
+          topIndex = itemPositionsListener.itemPositions.value.last.index;
+          bottomIndex = itemPositionsListener.itemPositions.value.first.index;
+        }
+        //this +2 adjusts for the fact the real top one is actually going to be behind the app bar
+        topIndex = itemPositionsListener.itemPositions.value.first.index + 1;
         bottomIndex = itemPositionsListener.itemPositions.value.last.index;
       } else {
         topIndex = navigatedIndex;
@@ -221,7 +264,7 @@ class DateScreenState extends State<DateScreen> {
       } else {
         //in this case it's not a 1st of any months, so make sure the headers are hidden
         showHeaders = false;
-        tempMonthToPlayAndShare = monthToPlayAndShare;
+        tempMonthToPlayAndShare = monthToPlayAndShare.value;
       }
       //If we got here by direct navigation and we are going to show the headers,
       //we have to reset the FAB.
@@ -239,30 +282,37 @@ class DateScreenState extends State<DateScreen> {
         });
       }
 
-      Timer(Duration(milliseconds: fadeInSpeed), () {
-        // Here get the French month for the header
-        DateTime topDateAsDateTime = DateTime(int.parse(topDate.year),
-            int.parse(topDate.month), int.parse(topDate.westernDate));
-        var monthSpelledOut =
-            DateFormat('MMMM', 'fr_FR').format(topDateAsDateTime).toString();
+      // Timer(Duration(milliseconds: fadeInSpeed), () {
+      // Here get the French month for the header
 
-        // Look back from topDate and get the first record where Wolof month is not empty
-        int index = topIndex;
-        while (datesToDisplay[index].wolofMonthRS == "") {
-          index--;
-        }
-        datesToDisplay[index].wolofMonthRS;
+      Month currentMonth = (Provider.of<Months>(context, listen: false)
+              .months
+              .where((element) => element.monthID == topDate.month)
+              .toList()[
+          0]); //the [0] grabs the first in the list, which will be the only one
 
-        setState(() {
-          formattedAppBarTitle = Text(topDate.year);
-          appBarWesternMonth = monthSpelledOut;
+      // DateTime topDateAsDateTime = DateTime(int.parse(topDate.year),
+      //     int.parse(topDate.month), int.parse(topDate.westernDate));
+      // var monthSpelledOut =
+      //     DateFormat('MMMM', 'fr_FR').format(topDateAsDateTime).toString();
 
-          appBarWolofMonth = datesToDisplay[index].wolofMonthRS;
-          appBarWolofalMonth = datesToDisplay[index].wolofMonthAS;
-          showMonthHeaderButtons = showHeaders;
-          monthToPlayAndShare = tempMonthToPlayAndShare;
-        });
-      });
+      // Look back from topDate and get the first record where Wolof month is not empty
+      int index = topIndex;
+      while (datesToDisplay[index].wolofMonthRS == "") {
+        index--;
+      }
+
+      formattedAppBarTitle.value = topDate.year;
+
+      appBarWesternMonthFR.value = currentMonth.monthFR;
+      appBarWesternMonthRS.value = currentMonth.monthRS;
+      appBarWesternMonthAS.value = currentMonth.monthAS;
+      appBarWolofMonth.value = datesToDisplay[index].wolofMonthRS;
+      appBarWolofalMonth.value = datesToDisplay[index].wolofMonthAS;
+      showMonthHeaderButtons = showHeaders;
+      monthToPlayAndShare.value = tempMonthToPlayAndShare;
+
+      // });
     }
 
     int getDateIndex(String goToYear, String goToMonth, String goToDate) {
@@ -364,7 +414,7 @@ class DateScreenState extends State<DateScreen> {
       //Grab the months data, which contains the verse data
       Month monthData = (Provider.of<Months>(context, listen: false)
           .months
-          .where((element) => element.monthID == monthToPlayAndShare)
+          .where((element) => element.monthID == monthToPlayAndShare.value)
           .toList()[0]);
       //the [0] grabs the first in the list, which will be the only one
 
@@ -417,134 +467,249 @@ class DateScreenState extends State<DateScreen> {
       }
     }
 
+    Widget monthNames(ValueNotifier<String> notifier, TextAlign textAlign) {
+      return ValueListenableBuilder(
+          valueListenable: notifier,
+          builder: (context, value, _) {
+            return Text(
+              value.toString(),
+              style: appBarMonthsStyle,
+              textAlign: textAlign,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            );
+          });
+    }
+
+    Widget monthRow() {
+      late Row row;
+
+      if (screenwidth > 344) {
+        //larger screen
+        row = Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            monthNames(appBarWesternMonthFR, TextAlign.left),
+            Text(
+              '/',
+              style: appBarMonthsStyle,
+            ),
+            monthNames(appBarWesternMonthAS, TextAlign.right),
+            const Expanded(
+                child: SizedBox(
+              width: 1,
+            )),
+            monthNames(appBarWolofMonth, TextAlign.left),
+            Text(
+              '/',
+              style: appBarMonthsStyle,
+            ),
+            monthNames(appBarWolofalMonth, TextAlign.right),
+          ],
+        );
+      } else {
+        //smaller screen
+        row = Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            monthNames(appBarWolofMonth, TextAlign.left),
+            const Text('/'),
+            monthNames(appBarWolofalMonth, TextAlign.right)
+          ],
+        );
+      }
+
+      return row;
+    }
+
     return Scaffold(
-      drawer: const MainDrawer(),
+      extendBodyBehindAppBar: true,
+      //Theme + BackdropFilter gets the glass theme on the drawer
+      drawerScrimColor: Colors.transparent,
+      drawer: Theme(
+        data: Theme.of(context).copyWith(
+          // Set the transparency here
+          // canvasColor: Color.fromARGB(10, 4, 4, 4),
+          canvasColor:
+              userThemeName == 'lightTheme' ? Colors.white12 : Colors.black12,
+        ),
+        child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+            child: const MainDrawer()),
+      ),
       floatingActionButton: showMonthHeaderButtons
           ? PlayButton(
-              file: monthToPlayAndShare,
+              file: monthToPlayAndShare.value,
             )
           : null,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-        title: formattedAppBarTitle,
-        actions: [
-          AnimatedOpacity(
-            opacity: showMonthHeaderButtons ? 1.0 : 0.0,
-            duration: Duration(milliseconds: fadeInSpeed),
-            child: IconButton(
-                icon: const Icon(Icons.share),
-                onPressed: showMonthHeaderButtons
-                    ? () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Text(
-                                AppLocalizations.of(context)!.sharingTitle,
-                              ),
-                              content: Text(
-                                  AppLocalizations.of(context)!.sharingMsg),
-                              actions: [
-                                TextButton(
-                                    child: const Text("Wolof"),
-                                    onPressed: () async {
-                                      Navigator.of(context).pop();
-                                      adaptiveShare('roman');
-                                    }),
-                                TextButton(
-                                    child: const Text(" وࣷلࣷفَلْ ",
-                                        style: TextStyle(
-                                            fontFamily: "Harmattan",
-                                            fontSize: 22)),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                      adaptiveShare('arabic');
-                                    }),
-                                TextButton(
-                                    child: Text(
-                                      AppLocalizations.of(context)!.cancel,
-                                    ),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    }),
-                              ],
-                            );
+      appBar: PreferredSize(
+        preferredSize: const Size(
+          double.infinity,
+          89.0,
+        ),
+        child: ClipRRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
+            child: Container(
+              color: userThemeName == 'lightTheme'
+                  ? Colors.white54
+                  : Colors.black38,
+              child: Column(
+                children: [
+                  AppBar(
+                    foregroundColor: userThemeName == 'lightTheme'
+                        ? Colors.black87
+                        : Colors.white70,
+                    elevation: 0.0,
+                    backgroundColor: Colors.transparent,
+                    title: Text(formattedAppBarTitle.value),
+                    actions: [
+                      IconButton(
+                          onPressed: () {
+                            userThemeName == 'lightTheme'
+                                ? themeProvider.setDarkTheme()
+                                : themeProvider.setLightTheme();
                           },
-                        );
-                      }
-                    : () {}),
+                          icon: userThemeName == 'lightTheme'
+                              ? const Icon(Icons.light_mode)
+                              : const Icon(Icons.dark_mode)),
+                      IconButton(
+                          onPressed: (() =>
+                              imageNumber.value = imageNumber.value + 1),
+                          icon: const Icon(Icons.plus_one)),
+                      AnimatedOpacity(
+                        opacity: showMonthHeaderButtons ? 1.0 : 0.0,
+                        duration: Duration(milliseconds: fadeInSpeed),
+                        child: IconButton(
+                            icon: const Icon(Icons.share),
+                            onPressed: showMonthHeaderButtons
+                                ? () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: Text(
+                                            AppLocalizations.of(context)!
+                                                .sharingTitle,
+                                          ),
+                                          content: Text(
+                                              AppLocalizations.of(context)!
+                                                  .sharingMsg),
+                                          actions: [
+                                            TextButton(
+                                                child: const Text("Wolof"),
+                                                onPressed: () async {
+                                                  Navigator.of(context).pop();
+                                                  adaptiveShare('roman');
+                                                }),
+                                            TextButton(
+                                                child: const Text(" وࣷلࣷفَلْ ",
+                                                    style: TextStyle(
+                                                        fontFamily: "Harmattan",
+                                                        fontSize: 22)),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                  adaptiveShare('arabic');
+                                                }),
+                                            TextButton(
+                                                child: Text(
+                                                  AppLocalizations.of(context)!
+                                                      .cancel,
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                }),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  }
+                                : () {}),
+                      ),
+                      IconButton(
+                          icon: const Icon(Icons.arrow_back_ios),
+                          onPressed: () => moveMonths('backward')),
+                      IconButton(
+                        icon: const Icon(Icons.date_range),
+                        onPressed: () => pickDateToShow(),
+                      ),
+                      IconButton(
+                          icon: const Icon(Icons.arrow_forward_ios),
+                          onPressed: () => moveMonths('forward')),
+                    ],
+                  ),
+                  Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: monthRow()),
+                ],
+              ),
+            ),
           ),
-          IconButton(
-              icon: const Icon(Icons.arrow_back_ios),
-              onPressed: () => moveMonths('backward')),
-          IconButton(
-            icon: const Icon(Icons.date_range),
-            onPressed: () => pickDateToShow(),
-          ),
-          IconButton(
-              icon: const Icon(Icons.arrow_forward_ios),
-              onPressed: () => moveMonths('forward')),
-        ],
+        ),
       ),
-      body: Center(
-        child: MouseRegion(
-          cursor: SystemMouseCursors.grab,
-          child: NotificationListener(
-            onNotification: (dynamic notification) {
-              if (notification is ScrollNotification) {
-                updateAfterNavigation();
-              }
-              return true;
-            },
-            child: Column(
-              children: [
-                Material(
-                  elevation: 10,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    color: Theme.of(context).appBarTheme.backgroundColor,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+        child: ValueListenableBuilder(
+            valueListenable: imageNumber,
+            builder: (context, value, _) {
+              return SmoothAnimatedContainer(
+                duration: const Duration(seconds: 2),
+                curve: Curves.ease,
+                height: double.infinity,
+                width: double.infinity,
+                //TODO image or gradient here, or let user choose - or like random colors...
+
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(
+                        'assets/images/backgrounds/${value.toString()}.jpg'),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                // decoration: BoxDecoration(
+                //   gradient: LinearGradient(
+                //     begin: Alignment.topLeft,
+                //     end: Alignment.bottomRight,
+                //     colors: [Theme.of(context).colorScheme.primary, Colors.brown],
+                //     stops: const [
+                //       0.4,
+                //       1,
+                //     ],
+                //   ),
+                // ),
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.grab,
+                  child: NotificationListener(
+                    onNotification: (dynamic notification) {
+                      if (notification is ScrollNotification) {
+                        updateAfterNavigation();
+                      }
+                      return true;
+                    },
+                    child: Column(
                       children: [
-                        Text(
-                          appBarWesternMonth,
-                          style: appBarMonthsStyle,
-                        ),
-                        Text(
-                          '$appBarWolofMonth/$appBarWolofalMonth',
-                          style: appBarMonthsStyle,
+                        Expanded(
+                          child: ScrollConfiguration(
+                            //The 2.8 Flutter behavior is to not have mice grabbing and dragging - but we do want this in the web version of the app, so the custom scroll behavior here
+                            behavior: MyCustomScrollBehavior()
+                                .copyWith(scrollbars: false),
+                            child: ScrollablePositionedList.builder(
+                              itemScrollController: itemScrollController,
+                              itemPositionsListener: itemPositionsListener,
+                              physics: const BouncingScrollPhysics(),
+                              initialScrollIndex: initialScrollIndex,
+                              itemBuilder: (ctx, i) =>
+                                  DateTile(currentDate: datesToDisplay[i]),
+                              itemCount: datesToDisplay.length,
+                            ),
+                          ),
                         ),
                       ],
                     ),
                   ),
                 ),
-                // SizedBox(
-                //   height: 10,
-                //   child: const Row(
-                //     children: [Text('data')],
-                //   ),
-                // ),
-                Expanded(
-                  child: ScrollConfiguration(
-                    //The 2.8 Flutter behavior is to not have mice grabbing and dragging - but we do want this in the web version of the app, so the custom scroll behavior here
-                    behavior:
-                        MyCustomScrollBehavior().copyWith(scrollbars: false),
-                    child: ScrollablePositionedList.builder(
-                      itemScrollController: itemScrollController,
-                      itemPositionsListener: itemPositionsListener,
-                      physics: const BouncingScrollPhysics(),
-                      initialScrollIndex: initialScrollIndex,
-                      itemBuilder: (ctx, i) =>
-                          DateTile(currentDate: datesToDisplay[i]),
-                      itemCount: datesToDisplay.length,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+              );
+            }),
       ),
     );
   }

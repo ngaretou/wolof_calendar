@@ -1,5 +1,5 @@
 // ignore_for_file: sized_box_for_whitespace
-
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -135,29 +135,6 @@ class SettingsScreenState extends State<SettingsScreen> {
           ),
           ElevatedButton(
             style: raisedButtonStyle.copyWith(
-              backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
-            ),
-            child:
-                userThemeName == 'blueTheme' ? const Icon(Icons.check) : null,
-            //must be blue
-            // color: Colors.blue,
-            onPressed: () {
-              themeProvider.setBlueTheme();
-            },
-          ),
-          ElevatedButton(
-              style: raisedButtonStyle.copyWith(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.teal),
-              ),
-              child:
-                  userThemeName == 'tealTheme' ? const Icon(Icons.check) : null,
-              //must be teal
-              // color: Colors.teal,
-              onPressed: () {
-                themeProvider.setTealTheme();
-              }),
-          ElevatedButton(
-            style: raisedButtonStyle.copyWith(
               backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
             ),
             child: userThemeName == 'darkTheme'
@@ -166,9 +143,7 @@ class SettingsScreenState extends State<SettingsScreen> {
             //must be black
             // color: Colors.black,
             onPressed: () {
-              setState(() {
-                themeProvider.setDarkTheme();
-              });
+              themeProvider.setDarkTheme();
             },
           ),
         ],
@@ -282,46 +257,53 @@ class SettingsScreenState extends State<SettingsScreen> {
 
 ///////////////////////////////
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.settingsTitle,
-            style: Theme.of(context)
-                .textTheme
-                .titleLarge!
-                .copyWith(color: Colors.white)),
+        title: Text(
+          AppLocalizations.of(context)!.settingsTitle,
+        ),
       ),
       //If the width of the screen is greater or equal to 730 (whether or not _isPhone is true)
       //show the wide view
-      body: MediaQuery.of(context).size.width >= 730
-          ? Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 50),
-              child: ListView(
-                children: [
-                  settingRow(themeTitle(), themeSettings()),
-                  const Divider(),
-                  // settingRow(backgroundTitle(), backgroundSettings()),
-                  // Divider(),
-                  // settingRow(directionTitle(), directionSettings()),
-                  // Divider(),
-                  scriptPickerTitle(),
-                  scriptPicker('arabic'),
-                  scriptPicker('roman'),
-                  const Divider(),
-                  settingRow(languageTitle(), languageSetting()),
-                ],
-              ),
-            )
-          : ListView(
-              children: [
-                settingColumn(themeTitle(), themeSettings()),
-                // settingColumn(backgroundTitle(), backgroundSettings()),
-                // settingColumn(directionTitle(), directionSettings()),
-                scriptPickerTitle(),
-                scriptPicker('arabic'),
-                scriptPicker('roman'),
-                const Divider(),
-                settingColumn(languageTitle(), languageSetting()),
-              ],
-            ),
+      body: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 100, sigmaY: 100),
+        child: Container(
+          height: double.infinity,
+          width: double.infinity,
+          // color: Theme.of(context).colorScheme.background.withOpacity(.1),
+          child: MediaQuery.of(context).size.width >= 730
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 50),
+                  child: ListView(
+                    children: [
+                      settingRow(themeTitle(), themeSettings()),
+                      const Divider(),
+                      // settingRow(backgroundTitle(), backgroundSettings()),
+                      // Divider(),
+                      // settingRow(directionTitle(), directionSettings()),
+                      // Divider(),
+                      scriptPickerTitle(),
+                      scriptPicker('arabic'),
+                      scriptPicker('roman'),
+                      const Divider(),
+                      settingRow(languageTitle(), languageSetting()),
+                    ],
+                  ),
+                )
+              : ListView(
+                  children: [
+                    settingColumn(themeTitle(), themeSettings()),
+                    // settingColumn(backgroundTitle(), backgroundSettings()),
+                    // settingColumn(directionTitle(), directionSettings()),
+                    scriptPickerTitle(),
+                    scriptPicker('arabic'),
+                    scriptPicker('roman'),
+                    const Divider(),
+                    settingColumn(languageTitle(), languageSetting()),
+                  ],
+                ),
+        ),
+      ),
       // ),
     );
   }

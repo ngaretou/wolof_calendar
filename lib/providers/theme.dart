@@ -13,32 +13,35 @@ import './user_prefs.dart';
 //text of OK/Cancel buttons, highlights in calendar picker.
 //Secondary ends up being only the color of holidays
 ThemeData darkTheme = ThemeData(
-  fontFamily: 'Lato',
-  colorScheme: const ColorScheme.dark()
-      .copyWith(primary: Colors.teal[300], secondary: Colors.teal[850]),
-  appBarTheme: AppBarTheme(
-      backgroundColor: Colors.teal[800],
-      iconTheme: const IconThemeData(color: Colors.white),
-      titleTextStyle: ThemeData.dark().appBarTheme.titleTextStyle),
-  // buttonTheme: ButtonThemeData(buttonColor: Colors.teal),
-);
+    fontFamily: 'Lato',
+    colorSchemeSeed: Colors.teal,
+    brightness: Brightness.dark
+    // colorScheme: const ColorScheme.dark().copyWith(
+    //   primary: Colors.teal[300],
+    //   secondary: Colors.teal[850],
+    // ),
+    // appBarTheme: AppBarTheme(
+    //     backgroundColor: Colors.teal[800],
+    //     iconTheme: const IconThemeData(color: Colors.white),
+    //     titleTextStyle: ThemeData.dark().appBarTheme.titleTextStyle),
+    // buttonTheme: ButtonThemeData(buttonColor: Colors.teal),
+    );
 
 ThemeData lightTheme = ThemeData(
-  fontFamily: 'Lato',
-  primarySwatch: Colors.teal,
-  colorScheme: const ColorScheme.light()
-      .copyWith(primary: Colors.teal[300], secondary: Colors.teal[100]),
-  appBarTheme: AppBarTheme(
-      backgroundColor: Colors.teal[800],
-      iconTheme: const IconThemeData(color: Colors.white),
-      titleTextStyle: ThemeData.dark().appBarTheme.titleTextStyle),
-  // buttonTheme: ButtonThemeData(buttonColor: Colors.teal),
-);
+    fontFamily: 'Lato', primarySwatch: Colors.teal, brightness: Brightness.light
+    // colorScheme: const ColorScheme.light()
+    //     .copyWith(primary: Colors.teal[300], secondary: Colors.teal[100]),
+    // appBarTheme: AppBarTheme(
+    //     backgroundColor: Colors.teal[800],
+    //     iconTheme: const IconThemeData(color: Colors.white),
+    //     titleTextStyle: ThemeData.dark().appBarTheme.titleTextStyle),
+    // buttonTheme: ButtonThemeData(buttonColor: Colors.teal),
+    );
 
-ThemeData blueTheme = ThemeData(
-    brightness: Brightness.light,
-    colorSchemeSeed: Colors.blue,
-    fontFamily: 'Lato');
+// ThemeData blueTheme = ThemeData(
+//     brightness: Brightness.light,
+//     colorSchemeSeed: Colors.blue,
+//     fontFamily: 'Lato');
 
 // ThemeData(
 //   fontFamily: 'Lato',
@@ -54,21 +57,21 @@ ThemeData blueTheme = ThemeData(
 //   // buttonTheme: ButtonThemeData(buttonColor: Colors.blue),
 // );
 
-ThemeData tealTheme = ThemeData(
-  fontFamily: 'Lato',
-  primarySwatch: Colors.teal,
-  colorScheme: const ColorScheme.light()
-      .copyWith(primary: Colors.teal, secondary: Colors.teal[100]),
-  scaffoldBackgroundColor: Colors.teal[50],
-  appBarTheme: AppBarTheme(
-      backgroundColor: Colors.teal[800],
-      iconTheme: const IconThemeData(color: Colors.white),
-      titleTextStyle: ThemeData.dark().appBarTheme.titleTextStyle),
-  // buttonTheme: ButtonThemeData(buttonColor: Colors.teal),
-);
+// ThemeData tealTheme = ThemeData(
+//   fontFamily: 'Lato',
+//   primarySwatch: Colors.teal,
+//   colorScheme: const ColorScheme.light()
+//       .copyWith(primary: Colors.teal, secondary: Colors.teal[100]),
+//   scaffoldBackgroundColor: Colors.teal[50],
+//   appBarTheme: AppBarTheme(
+//       backgroundColor: Colors.teal[800],
+//       iconTheme: const IconThemeData(color: Colors.white),
+//       titleTextStyle: ThemeData.dark().appBarTheme.titleTextStyle),
+//   // buttonTheme: ButtonThemeData(buttonColor: Colors.teal),
+// );
 
 //////////////////////
-enum ThemeType { light, blue, teal, dark }
+enum ThemeType { light, dark }
 
 class ThemeModel extends ChangeNotifier {
   Future<SharedPreferences> prefs = SharedPreferences.getInstance();
@@ -138,18 +141,7 @@ class ThemeModel extends ChangeNotifier {
             _themeType = ThemeType.light;
             break;
           }
-        case 'blueTheme':
-          {
-            currentTheme = blueTheme;
-            _themeType = ThemeType.blue;
-            break;
-          }
-        case 'tealTheme':
-          {
-            currentTheme = tealTheme;
-            _themeType = ThemeType.teal;
-            break;
-          }
+       
       }
     }
     notifyListeners();
@@ -173,21 +165,7 @@ class ThemeModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setTealTheme() {
-    currentTheme = tealTheme;
-    _themeType = ThemeType.teal;
-    userThemeName = 'tealTheme';
-    saveThemeToDisk(userThemeName);
-    notifyListeners();
-  }
-
-  void setBlueTheme() {
-    currentTheme = blueTheme;
-    _themeType = ThemeType.blue;
-    userThemeName = 'blueTheme';
-    saveThemeToDisk(userThemeName);
-    notifyListeners();
-  }
+  
 
   Future<void> saveThemeToDisk(userThemeName) async {
     //get prefs from disk
