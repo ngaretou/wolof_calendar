@@ -13,10 +13,12 @@ import '../screens/settings_screen.dart';
 
 class MainDrawer extends StatelessWidget {
   const MainDrawer({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    TextStyle whitetitleLarge =
-        Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.white);
+    // Color mainColor = Colors.white;
+
+    TextStyle whitetitleLarge = Theme.of(context).textTheme.titleLarge!;
 
     //Main template for all titles
     Widget drawerTitle(String title, IconData icon, Function tapHandler) {
@@ -30,15 +32,13 @@ class MainDrawer extends StatelessWidget {
                 child: Row(
                   children: [
                     icon.toString().startsWith("FontAwesomeIcons")
-                        ? FaIcon(icon,
+                        ? FaIcon(
+                            icon,
                             size: 27,
-                            color:
-                                Theme.of(context).appBarTheme.iconTheme!.color)
+                          )
                         : Icon(
                             icon,
                             size: 27,
-                            color:
-                                Theme.of(context).appBarTheme.iconTheme!.color,
                           ),
                     const SizedBox(width: 25),
                     Text(title, style: whitetitleLarge),
@@ -48,11 +48,11 @@ class MainDrawer extends StatelessWidget {
     }
 
     return Drawer(
-      elevation: 5.0,
+      elevation: 0,
       child: Container(
         width: MediaQuery.of(context).size.width * .8,
         //The color of the Drawer
-        color: Theme.of(context).appBarTheme.backgroundColor,
+        color: Theme.of(context).colorScheme.surface.withOpacity(.5),
         child: ListView(
           children: [
             //Main title
@@ -62,17 +62,13 @@ class MainDrawer extends StatelessWidget {
                   top: 30, bottom: 20, left: 20, right: 20),
               child: Row(
                 children: [
-                  FaIcon(
+                  const FaIcon(
                     FontAwesomeIcons.calendar,
                     size: 27,
-                    color: Theme.of(context).appBarTheme.iconTheme!.color,
                   ),
                   const SizedBox(width: 25),
                   Text("Arminaatu wolof",
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineSmall!
-                          .copyWith(color: Colors.white)),
+                      style: Theme.of(context).textTheme.headlineSmall!),
                 ],
               ),
             ),

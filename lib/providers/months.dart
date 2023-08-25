@@ -167,7 +167,7 @@ class Months with ChangeNotifier {
       loadedDateData.add(Date(
         year: date['year'],
         month: date['month'],
-        wolofMonthAS: date['wolofMonthAS'],
+        wolofMonthAS: date['wolofMonthAS'] ?? '',
         wolofMonthRS: date['wolofMonthRS'] ?? '',
         westernDate: date['westernDate'],
         wolofDate: date['wolofDate'],
