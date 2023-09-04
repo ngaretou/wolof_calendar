@@ -1,15 +1,13 @@
 import 'dart:io';
-import 'dart:ui';
-
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:intl/intl.dart';
 
 import '../providers/months.dart';
-import 'package:intl/intl.dart';
-import 'dart:ui' as ui;
-import 'package:flutter/foundation.dart' show kIsWeb;
-
 import 'month_header.dart';
+// import 'glass_card.dart';
 
 class DateTile extends StatelessWidget {
   final Date currentDate;
@@ -17,7 +15,7 @@ class DateTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('date tile build');
+    // print('date tile build');
     //viewing setup
     final screenwidth = MediaQuery.of(context).size.width;
     final screenheight = MediaQuery.of(context).size.height;
@@ -130,7 +128,7 @@ class DateTile extends StatelessWidget {
     final Color tintColor =
         currentDate.holidays!.isNotEmpty || wolofWeekday == "dibéer"
             //there is a holiday or Sunday
-            ? Theme.of(context).colorScheme.primary
+            ? Theme.of(context).colorScheme.primaryContainer
             //there is not a holiday or Sunday
             : Theme.of(context).cardColor;
 
@@ -155,96 +153,29 @@ class DateTile extends StatelessWidget {
         //Regular date card
         Padding(
           padding: adaptiveMargin,
-          child: ClipRRect(
-            clipBehavior: Clip.hardEdge,
-            borderRadius: BorderRadius.circular(20),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: const Color(0xFFFFFFFF).withOpacity(0.3),
-                    width: 1,
-                  ),
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      tintColor.withOpacity(.6),
-                      Theme.of(context).cardColor.withOpacity(.01)
-                    ],
-                    stops: const [
-                      0.2,
-                      1,
-                    ],
-                  ),
-                ),
-                child: Padding(
-                    padding: const EdgeInsets.only(
-                        top: 10.0, bottom: 10, left: 20, right: 20),
-                    child: Column(children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Card(
+            color: tintColor,
+            // tintColor: tintColor,
+            child: Padding(
+                padding: const EdgeInsets.only(
+                    top: 10.0, bottom: 10, left: 20, right: 20),
+                child: Column(children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
                         children: [
-                          Column(
-                            children: [
-                              Text(currentDate.westernDate, style: head6),
-                            ],
-                          ),
-                          Expanded(
-                            flex: 6,
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(wolofWeekday, style: head6),
-                                  Text(
-                                    rtlTextFixer(wolofalWeekday),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleLarge!
-                                        .copyWith(
-                                            fontFamily: "Harmattan",
-                                            fontSize: 30),
-                                    textDirection: ui.TextDirection.rtl,
-                                  ),
-                                  Text(currentDayOfWeek, style: head6),
-                                  // SizedBox(height: 16),
-                                ]),
-                          ),
-                          Column(
-                            children: [
-                              Text(currentDate.wolofDate, style: head6),
-                            ],
-                          ),
+                          Text(currentDate.westernDate, style: head6),
                         ],
                       ),
-
-                      //Holiday extension to the card
-                      currentDate.holidays!.isNotEmpty
-                          ? const Divider(
-                              thickness: 4,
-                            )
-                          : const SizedBox(
-                              height: 0,
-                            ),
-                      if (currentDate.holidays!.isNotEmpty)
-                        ListView.builder(
-                          controller: holidayScrollController,
-                          physics: const NeverScrollableScrollPhysics(),
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          shrinkWrap: true,
-                          scrollDirection: Axis.vertical,
-                          itemCount: currentDate.holidays!.length,
-                          itemBuilder: (BuildContext context, int i) => Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                      Expanded(
+                        flex: 6,
+                        child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text(currentDate.holidays![i].holidayRS,
-                                  style: head6),
+                              Text(wolofWeekday, style: head6),
                               Text(
-                                rtlTextFixer(
-                                    currentDate.holidays![i].holidayAS),
+                                rtlTextFixer(wolofalWeekday),
                                 style: Theme.of(context)
                                     .textTheme
                                     .titleLarge!
@@ -252,21 +183,62 @@ class DateTile extends StatelessWidget {
                                         fontFamily: "Harmattan", fontSize: 30),
                                 textDirection: ui.TextDirection.rtl,
                               ),
-                              Text(
-                                currentDate.holidays![i].holidayFR,
-                                style: head6,
-                              ),
-                              currentDate.holidays!.length - (i + 1) != 0
-                                  ? const Divider(thickness: 3, height: 40)
-                                  : const SizedBox(
-                                      height: 0,
-                                    ),
-                            ],
-                          ),
+                              Text(currentDayOfWeek, style: head6),
+                              // SizedBox(height: 16),
+                            ]),
+                      ),
+                      Column(
+                        children: [
+                          Text(currentDate.wolofDate, style: head6),
+                        ],
+                      ),
+                    ],
+                  ),
+
+                  //Holiday extension to the card
+                  currentDate.holidays!.isNotEmpty
+                      ? const Divider(
+                          thickness: 2,
+                        )
+                      : const SizedBox(
+                          height: 0,
                         ),
-                    ])),
-              ),
-            ),
+                  if (currentDate.holidays!.isNotEmpty)
+                    ListView.builder(
+                      controller: holidayScrollController,
+                      physics: const NeverScrollableScrollPhysics(),
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      itemCount: currentDate.holidays!.length,
+                      itemBuilder: (BuildContext context, int i) => Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(currentDate.holidays![i].holidayRS,
+                              style: head6),
+                          Text(
+                            rtlTextFixer(currentDate.holidays![i].holidayAS),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge!
+                                .copyWith(
+                                    fontFamily: "Harmattan", fontSize: 30),
+                            textDirection: ui.TextDirection.rtl,
+                          ),
+                          Text(
+                            currentDate.holidays![i].holidayFR,
+                            style: head6,
+                          ),
+                          currentDate.holidays!.length - (i + 1) != 0
+                              ? const Divider(thickness: 3, height: 40)
+                              : const SizedBox(
+                                  height: 0,
+                                ),
+                        ],
+                      ),
+                    ),
+                ])),
           ),
         ),
       ],

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:wolof_calendar/widgets/glass_app_bar.dart';
 import '../providers/theme.dart';
 import '../providers/user_prefs.dart';
 
@@ -27,9 +28,14 @@ class SettingsScreenState extends State<SettingsScreen> {
     final themeProvider = Provider.of<ThemeModel>(context, listen: false);
     Locale? userLocale =
         Provider.of<ThemeModel>(context, listen: false).userLocale;
-    final userPrefs = Provider.of<UserPrefs>(context, listen: false);
+    UserPrefs userPrefs = Provider.of<UserPrefs>(context, listen: true);
     final wolof = userPrefs.userPrefs.wolofVerseEnabled;
     final wolofal = userPrefs.userPrefs.wolofalVerseEnabled;
+    final glassEffects = userPrefs.userPrefs.glassEffects;
+    final backgroundImage = userPrefs.userPrefs.backgroundImage;
+    final lowPowerMode = userPrefs.userPrefs.lowPowerMode;
+
+    final darkMode = userThemeName == 'darkTheme';
 
     //Widgets
     //Main template for all setting titles
@@ -108,96 +114,185 @@ class SettingsScreenState extends State<SettingsScreen> {
           Icons.translate, null);
     }
 
-    Widget themeSettings() {
-      ButtonStyle raisedButtonStyle = ElevatedButton.styleFrom(
-        padding: const EdgeInsets.all(0),
-        shape: const CircleBorder(),
-        //this one must be white
-        // primary: Colors.white
-      );
+    // Original two circle style
+    // Widget themeSettings() {
+    //   ButtonStyle raisedButtonStyle = ElevatedButton.styleFrom(
+    //     padding: const EdgeInsets.all(0),
+    //     shape: const CircleBorder(),
+    //     //this one must be white
+    //     // primary: Colors.white
+    //   );
 
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          ElevatedButton(
-            style: raisedButtonStyle.copyWith(
-              backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-            ),
-            child: userThemeName == 'lightTheme'
-                ? const Icon(
-                    Icons.check,
-                    color: Colors.black,
-                  )
-                : null,
-            onPressed: () {
-              themeProvider.setLightTheme();
-            },
-          ),
-          ElevatedButton(
-            style: raisedButtonStyle.copyWith(
-              backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
-            ),
-            child: userThemeName == 'darkTheme'
-                ? const Icon(Icons.check, color: Colors.white)
-                : null,
-            //must be black
-            // color: Colors.black,
-            onPressed: () {
-              themeProvider.setDarkTheme();
-            },
-          ),
-        ],
-      );
-    }
+    //   return Row(
+    //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    //     children: [
+    //       ElevatedButton(
+    //         style: raisedButtonStyle.copyWith(
+    //           backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+    //         ),
+    //         child: userThemeName == 'lightTheme'
+    //             ? const Icon(
+    //                 Icons.check,
+    //                 color: Colors.black,
+    //               )
+    //             : null,
+    //         onPressed: () {
+    //           themeProvider.setLightTheme();
+    //         },
+    //       ),
+    //       ElevatedButton(
+    //         style: raisedButtonStyle.copyWith(
+    //           backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
+    //         ),
+    //         child: userThemeName == 'darkTheme'
+    //             ? const Icon(Icons.check, color: Colors.white)
+    //             : null,
+    //         //must be black
+    //         // color: Colors.black,
+    //         onPressed: () {
+    //           themeProvider.setDarkTheme();
+    //         },
+    //       ),
+    //     ],
+    //   );
+    // }
 
-    Widget scriptPicker(String script) {
+    Widget settingPicker(String kind) {
       late Text labelText;
       late bool switchValue;
 
-      if (script == 'roman') {
+      if (kind == 'brightness') {
+        labelText = Text(AppLocalizations.of(context)!.darkMode,
+            style: Theme.of(context).textTheme.titleMedium);
+        switchValue = darkMode;
+      } else if (kind == 'glassEffects') {
+        labelText = Text(
+          AppLocalizations.of(context)!.glassEffects,
+          style: Theme.of(context).textTheme.titleMedium,
+        );
+        switchValue = glassEffects!;
+      } else if (kind == 'backgroundImage') {
+        labelText = Text(AppLocalizations.of(context)!.backgroundImage,
+            style: Theme.of(context).textTheme.titleMedium);
+        switchValue = backgroundImage!;
+      } else if (kind == 'lowPowerMode') {
+        labelText = Text('lowPowerMode',
+            style: Theme.of(context).textTheme.titleMedium);
+        switchValue = lowPowerMode!;
+      }
+      // else if (kind == 'lowPowerMode') {
+      //   labelText = Text(AppLocalizations.of(context)!.backgroundImage,
+      //       style: Theme.of(context).textTheme.titleMedium);
+      //   switchValue = backgroundImage!;
+      // }
+
+      else if (kind == 'roman') {
         labelText = Text(AppLocalizations.of(context)!.settingsVerseinWolof,
             style: Theme.of(context).textTheme.titleMedium);
         switchValue = wolof!;
-      } else if (script == 'arabic') {
+      } else if (kind == 'arabic') {
         labelText = Text(AppLocalizations.of(context)!.settingsVerseinWolofal,
             style: Theme.of(context).textTheme.titleMedium);
         switchValue = wolofal!;
       }
 
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            width: 210,
-            child: Padding(
-              padding: const EdgeInsetsDirectional.only(start: 80),
-              child: Row(
-                children: [
-                  labelText,
-                ],
-              ),
+      return Padding(
+        padding: const EdgeInsetsDirectional.only(start: 75, end: 18),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // width: 250,
+            Row(
+              children: [
+                labelText,
+              ],
             ),
-          ),
-          Expanded(
-            child: Switch(
+
+            const Expanded(
+                child: SizedBox(
+              width: 1,
+            )),
+            Switch(
               value: switchValue,
               onChanged: (_) {
-                if (script == 'arabic') {
+                if (kind == 'brightness') {
+                  if (!switchValue) {
+                    themeProvider.setDarkTheme();
+                  } else {
+                    themeProvider.setLightTheme();
+                  }
+                } else if (kind == 'glassEffects') {
+                  userPrefs.savePref('glassEffects', !switchValue);
+                } else if (kind == 'backgroundImage') {
+                  userPrefs.savePref('backgroundImage', !switchValue);
+                } else if (kind == 'lowPowerMode') {
+                  userPrefs.savePref('lowPowerMode', !switchValue);
+                } else if (kind == 'arabic') {
                   setState(() {
                     userPrefs.savePref('wolofalVerseEnabled', !wolofal!);
                   });
-                } else if (script == 'roman') {
+                } else if (kind == 'roman') {
                   setState(() {
                     userPrefs.savePref('wolofVerseEnabled', !wolof!);
                   });
                 }
               },
             ),
-          ),
-        ],
+          ],
+        ),
       );
     }
+
+    // Widget scriptPickerOld(String script) {
+    //   late Text labelText;
+    //   late bool switchValue;
+
+    //   if (script == 'roman') {
+    //     labelText = Text(AppLocalizations.of(context)!.settingsVerseinWolof,
+    //         style: Theme.of(context).textTheme.titleMedium);
+    //     switchValue = wolof!;
+    //   } else if (script == 'arabic') {
+    //     labelText = Text(AppLocalizations.of(context)!.settingsVerseinWolofal,
+    //         style: Theme.of(context).textTheme.titleMedium);
+    //     switchValue = wolofal!;
+    //   }
+
+    //   return Padding(
+    //     padding: const EdgeInsets.only(right: 18.0),
+    //     child: Row(
+    //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //       crossAxisAlignment: CrossAxisAlignment.center,
+    //       children: [
+    //         Container(
+    //           width: 210,
+    //           child: Padding(
+    //             padding: const EdgeInsetsDirectional.only(start: 80),
+    //             child: Row(
+    //               children: [
+    //                 labelText,
+    //               ],
+    //             ),
+    //           ),
+    //         ),
+    //         Switch(
+    //           value: switchValue,
+    //           onChanged: (_) {
+    //             if (script == 'arabic') {
+    //               setState(() {
+    //                 userPrefs.savePref('wolofalVerseEnabled', !wolofal!);
+    //               });
+    //             } else if (script == 'roman') {
+    //               setState(() {
+    //                 userPrefs.savePref('wolofVerseEnabled', !wolof!);
+    //               });
+    //             }
+    //           },
+    //         ),
+    //       ],
+    //     ),
+    //   );
+    // }
 
     Widget languageSetting() {
       return Row(
@@ -257,51 +352,77 @@ class SettingsScreenState extends State<SettingsScreen> {
 
 ///////////////////////////////
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      appBar: AppBar(
-        title: Text(
-          AppLocalizations.of(context)!.settingsTitle,
-        ),
-      ),
+      extendBodyBehindAppBar: true,
+      backgroundColor: userPrefs.userPrefs.glassEffects!
+          ? Colors.transparent
+          : Theme.of(context).canvasColor,
+
+      appBar: glassAppBar(
+          context: context,
+          title: AppLocalizations.of(context)!.settingsTitle,
+          actions: []),
+
       //If the width of the screen is greater or equal to 730 (whether or not _isPhone is true)
       //show the wide view
-      body: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 100, sigmaY: 100),
-        child: Container(
-          height: double.infinity,
-          width: double.infinity,
-          // color: Theme.of(context).colorScheme.background.withOpacity(.1),
-          child: MediaQuery.of(context).size.width >= 730
-              ? Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 50),
-                  child: ListView(
+      body: Container(
+        color: Theme.of(context).brightness == Brightness.light
+            ? Colors.white12
+            : Colors.black12,
+        child: BackdropFilter(
+          filter: userPrefs.userPrefs.glassEffects!
+              ? ImageFilter.blur(sigmaX: 75, sigmaY: 75)
+              : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
+          child: Container(
+            height: double.infinity,
+            width: double.infinity,
+            color: userPrefs.userPrefs.glassEffects!
+                ? Colors.transparent
+                : Theme.of(context).canvasColor,
+            child: MediaQuery.of(context).size.width >= 730
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 50),
+                    child: ListView(
+                      children: [
+                        themeTitle(),
+                        settingPicker('brightness'),
+                        settingPicker('glassEffects'),
+                        settingPicker('backgroundImage'),
+                        settingPicker('lowPowerMode'),
+                        const Divider(),
+                        // settingRow(backgroundTitle(), backgroundSettings()),
+                        // Divider(),
+                        // settingRow(directionTitle(), directionSettings()),
+                        // Divider(),
+                        scriptPickerTitle(),
+                        settingPicker('arabic'),
+                        settingPicker('roman'),
+                        const Divider(),
+                        settingRow(languageTitle(), languageSetting()),
+                      ],
+                    ),
+                  )
+                : ListView(
                     children: [
-                      settingRow(themeTitle(), themeSettings()),
+                      // Container(
+                      //   height: 50,
+                      //   color: Theme.of(context).colorScheme.primary,
+                      // ),
+                      themeTitle(),
+                      settingPicker('brightness'),
+                      settingPicker('glassEffects'),
+                      settingPicker('backgroundImage'),
+                      settingPicker('lowPowerMode'),
                       const Divider(),
-                      // settingRow(backgroundTitle(), backgroundSettings()),
-                      // Divider(),
-                      // settingRow(directionTitle(), directionSettings()),
-                      // Divider(),
+                      // settingColumn(backgroundTitle(), backgroundSettings()),
+                      // settingColumn(directionTitle(), directionSettings()),
                       scriptPickerTitle(),
-                      scriptPicker('arabic'),
-                      scriptPicker('roman'),
+                      settingPicker('arabic'),
+                      settingPicker('roman'),
                       const Divider(),
-                      settingRow(languageTitle(), languageSetting()),
+                      settingColumn(languageTitle(), languageSetting()),
                     ],
                   ),
-                )
-              : ListView(
-                  children: [
-                    settingColumn(themeTitle(), themeSettings()),
-                    // settingColumn(backgroundTitle(), backgroundSettings()),
-                    // settingColumn(directionTitle(), directionSettings()),
-                    scriptPickerTitle(),
-                    scriptPicker('arabic'),
-                    scriptPicker('roman'),
-                    const Divider(),
-                    settingColumn(languageTitle(), languageSetting()),
-                  ],
-                ),
+          ),
         ),
       ),
       // ),

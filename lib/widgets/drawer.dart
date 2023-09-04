@@ -1,22 +1,31 @@
 // ignore_for_file: sized_box_for_whitespace
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-
+import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../providers/user_prefs.dart';
 
 import '../screens/about_screen.dart';
 import '../screens/settings_screen.dart';
 
-class MainDrawer extends StatelessWidget {
+class MainDrawer extends StatefulWidget {
   const MainDrawer({Key? key}) : super(key: key);
 
   @override
+  State<MainDrawer> createState() => _MainDrawerState();
+}
+
+class _MainDrawerState extends State<MainDrawer> {
+  @override
   Widget build(BuildContext context) {
-    // Color mainColor = Colors.white;
+    UserPrefs userPrefs =
+        Provider.of<UserPrefs>(context, listen: true).userPrefs;
 
     TextStyle whitetitleLarge = Theme.of(context).textTheme.titleLarge!;
 
@@ -48,11 +57,14 @@ class MainDrawer extends StatelessWidget {
     }
 
     return Drawer(
-      elevation: 0,
       child: Container(
         width: MediaQuery.of(context).size.width * .8,
         //The color of the Drawer
-        color: Theme.of(context).colorScheme.surface.withOpacity(.5),
+        // color: Colors.transparent,
+        color: userPrefs.glassEffects!
+            ? Theme.of(context).colorScheme.surface.withOpacity(.2)
+            : Theme.of(context).colorScheme.surface,
+
         child: ListView(
           children: [
             //Main title
@@ -79,7 +91,16 @@ class MainDrawer extends StatelessWidget {
               AppLocalizations.of(context)!.settingsTitle,
               Icons.settings,
               () {
-                Navigator.of(context).popAndPushNamed(SettingsScreen.routeName);
+                Navigator.of(context).pop();
+                // Navigator.of(context).popAndPushNamed(SettingsScreen.routeName);
+                clearPage(Widget page) => PageRouteBuilder(
+                      opaque: false,
+                      pageBuilder: (BuildContext context, _, __) => page,
+                    );
+                Navigator.push(
+                  context,
+                  clearPage(const SettingsScreen()),
+                );
               },
             ),
 
@@ -223,7 +244,8 @@ class MainDrawer extends StatelessWidget {
               AppLocalizations.of(context)!.settingsAbout,
               Icons.question_answer,
               () {
-                Navigator.of(context).popAndPushNamed(AboutScreen.routeName);
+                Navigator.of(context).pop();
+                showAbout(context);
               },
             ),
           ],
@@ -231,4 +253,151 @@ class MainDrawer extends StatelessWidget {
       ),
     );
   }
+
+  void showAbout(BuildContext context) async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    if (!mounted) return;
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            // title: Text(packageInfo.appName),
+            content: SingleChildScrollView(
+                child: ListBody(children: [
+              Row(
+                children: [
+                  Container(
+                    // child: Image.asset('assets/icons/icon.png'),
+                    width: 50,
+                    height: 50,
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage("assets/icons/icon.png"),
+                      ),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(50)),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 200),
+                        child: Text(
+                          packageInfo.appName,
+                          style: Theme.of(context).textTheme.headlineSmall,
+                        ),
+                      ),
+                      Text(
+                          'Version ${packageInfo.version} (${packageInfo.buildNumber})'),
+                      const Text('appli © 2023 Foundational'),
+                    ],
+                  )
+                ],
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              RichText(
+                  text: TextSpan(
+                children: [
+                  TextSpan(
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge!
+                        .copyWith(fontStyle: FontStyle.italic),
+                    text: 'Kàddug Yàlla',
+                  ),
+                  TextSpan(
+                    style: Theme.of(context).textTheme.bodyLarge,
+                    text: ' copyright © 2023 La MBS.',
+                  ),
+                ],
+              )),
+              RichText(
+                  text: TextSpan(
+                children: [
+                  TextSpan(
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge!
+                        .copyWith(fontStyle: FontStyle.italic),
+                    text: 'Arminaatu Wolof',
+                  ),
+                  TextSpan(
+                    style: Theme.of(context).textTheme.bodyLarge,
+                    text: ' produit par le MEAO.',
+                  ),
+                ],
+              )),
+            ])),
+
+            actions: <Widget>[
+              OutlinedButton(
+                child: const Text('Copyrights'),
+                onPressed: () {
+                  // Navigator.of(context).pushNamed(AboutScreen.routeName);
+                  clearPage(Widget page) => PageRouteBuilder(
+                        opaque: false,
+                        pageBuilder: (BuildContext context, _, __) => page,
+                      );
+                  Navigator.push(
+                    context,
+                    clearPage(const AboutScreen()),
+                  );
+                },
+              ),
+              OutlinedButton(
+                child: const Text('Licenses'),
+                onPressed: () {
+                  // Navigator.of(context).pop();
+                  showLicenses(context,
+                      appName: packageInfo.appName,
+                      appVersion:
+                          '${packageInfo.version} (${packageInfo.buildNumber})');
+                },
+              ),
+              OutlinedButton(
+                child: Text(AppLocalizations.of(context)!.settingsOK),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
+  }
+}
+
+void showLicenses(BuildContext context, {String? appName, String? appVersion}) {
+  void showLicensePage({
+    required BuildContext context,
+    String? applicationName,
+    String? applicationVersion,
+    Widget? applicationIcon,
+    String? applicationLegalese,
+    bool useRootNavigator = false,
+  }) {
+    // assert(context != null);
+    // assert(useRootNavigator != null);
+    Navigator.of(context, rootNavigator: useRootNavigator)
+        .push(MaterialPageRoute<void>(
+      builder: (BuildContext context) => LicensePage(
+        applicationName: applicationName,
+        applicationVersion: applicationVersion,
+        applicationIcon: applicationIcon,
+        applicationLegalese: applicationLegalese,
+      ),
+    ));
+  }
+
+  showLicensePage(
+      context: context,
+      applicationVersion: appVersion,
+      applicationName: appName,
+      useRootNavigator: true);
 }
