@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter/services.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -49,6 +48,8 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
+  late Future init;
+
   //Language code:
   Future<void> setupLang() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -72,25 +73,22 @@ class MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    super.initState();
+    init = Provider.of<ThemeModel>(context, listen: false)
+        .initialSetupAsync(context);
     // Call the intitialization of the locale
     setupLang();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    //Don't show top status bar
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
-
     print('main.dart build');
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Arminaat Wolof',
       home: FutureBuilder(
-        future: Provider.of<ThemeModel>(context, listen: false)
-            .initialSetupAsync(context),
+        future: init,
         builder: (ctx, snapshot) =>
             snapshot.connectionState == ConnectionState.waiting
                 ? const Center(child: CircularProgressIndicator())
@@ -116,7 +114,7 @@ class MyAppState extends State<MyApp> {
         // The most doable way to stick with the official Flutter l10n method
         // is to use Swiss French as the main source for the translations
         // and add in the Wolof to the app_fr_ch.arb in the l10n folder.
-        // So when we switch locale to fr_CH, that's Wolof.
+        // So when we switch locale to fr_CH, that's Wolof. Sorry everyone. 
         Locale('fr', 'CH'),
       ],
       locale: Provider.of<ThemeModel>(context, listen: true).userLocale,

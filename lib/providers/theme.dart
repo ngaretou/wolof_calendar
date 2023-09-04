@@ -9,66 +9,19 @@ import 'package:provider/provider.dart';
 import './months.dart';
 import './user_prefs.dart';
 
-// Primary is all of the raised text and buttons: Button color,
-//text of OK/Cancel buttons, highlights in calendar picker.
-//Secondary ends up being only the color of holidays
 ThemeData darkTheme = ThemeData(
-    fontFamily: 'Lato',
-    colorSchemeSeed: Colors.teal,
-    brightness: Brightness.dark
-    // colorScheme: const ColorScheme.dark().copyWith(
-    //   primary: Colors.teal[300],
-    //   secondary: Colors.teal[850],
-    // ),
-    // appBarTheme: AppBarTheme(
-    //     backgroundColor: Colors.teal[800],
-    //     iconTheme: const IconThemeData(color: Colors.white),
-    //     titleTextStyle: ThemeData.dark().appBarTheme.titleTextStyle),
-    // buttonTheme: ButtonThemeData(buttonColor: Colors.teal),
-    );
+  useMaterial3: true, //important!
+  fontFamily: 'Lato',
+  colorSchemeSeed: Colors.teal,
+  brightness: Brightness.dark,
+);
 
 ThemeData lightTheme = ThemeData(
-    fontFamily: 'Lato', primarySwatch: Colors.teal, brightness: Brightness.light
-    // colorScheme: const ColorScheme.light()
-    //     .copyWith(primary: Colors.teal[300], secondary: Colors.teal[100]),
-    // appBarTheme: AppBarTheme(
-    //     backgroundColor: Colors.teal[800],
-    //     iconTheme: const IconThemeData(color: Colors.white),
-    //     titleTextStyle: ThemeData.dark().appBarTheme.titleTextStyle),
-    // buttonTheme: ButtonThemeData(buttonColor: Colors.teal),
-    );
-
-// ThemeData blueTheme = ThemeData(
-//     brightness: Brightness.light,
-//     colorSchemeSeed: Colors.blue,
-//     fontFamily: 'Lato');
-
-// ThemeData(
-//   fontFamily: 'Lato',
-//   primarySwatch: Colors.blue,
-//   backgroundColor: Colors.teal,
-//   colorScheme: const ColorScheme.light()
-//       .copyWith(primary: Colors.blue, secondary: Colors.blue[100]),
-//   scaffoldBackgroundColor: Colors.blue[50],
-//   appBarTheme: AppBarTheme(
-//       backgroundColor: Colors.blue[800],
-//       iconTheme: const IconThemeData(color: Colors.white),
-//       titleTextStyle: ThemeData.dark().appBarTheme.titleTextStyle),
-//   // buttonTheme: ButtonThemeData(buttonColor: Colors.blue),
-// );
-
-// ThemeData tealTheme = ThemeData(
-//   fontFamily: 'Lato',
-//   primarySwatch: Colors.teal,
-//   colorScheme: const ColorScheme.light()
-//       .copyWith(primary: Colors.teal, secondary: Colors.teal[100]),
-//   scaffoldBackgroundColor: Colors.teal[50],
-//   appBarTheme: AppBarTheme(
-//       backgroundColor: Colors.teal[800],
-//       iconTheme: const IconThemeData(color: Colors.white),
-//       titleTextStyle: ThemeData.dark().appBarTheme.titleTextStyle),
-//   // buttonTheme: ButtonThemeData(buttonColor: Colors.teal),
-// );
+  useMaterial3: true,
+  fontFamily: 'Lato',
+  colorSchemeSeed: Colors.teal,
+  brightness: Brightness.light,
+);
 
 //////////////////////
 enum ThemeType { light, dark }
@@ -141,10 +94,10 @@ class ThemeModel extends ChangeNotifier {
             _themeType = ThemeType.light;
             break;
           }
-       
       }
     }
     notifyListeners();
+    return;
   }
 
   void setDarkTheme() {
@@ -165,10 +118,19 @@ class ThemeModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  
+  void setThemeColor(Color color) {
+    currentTheme = ThemeData(
+        useMaterial3: true,
+        fontFamily: 'Lato',
+        colorSchemeSeed: color,
+        brightness:
+            userThemeName == 'lightTheme' ? Brightness.light : Brightness.dark);
+
+    notifyListeners();
+  }
 
   Future<void> saveThemeToDisk(userThemeName) async {
-    //get prefs from disk
+    //get preferences from disk
     final prefs = await SharedPreferences.getInstance();
     //save _themeName to disk
     final _userThemeName = json.encode(userThemeName);

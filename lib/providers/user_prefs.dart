@@ -14,15 +14,22 @@ class UserPrefs with ChangeNotifier {
   bool? wolofalVerseEnabled;
   bool? showFavs;
   bool? showOnboarding;
+  bool? glassEffects;
+  bool? backgroundImage;
+  bool? lowPowerMode;
+  bool? shouldTestDevicePerformance;
 
-  UserPrefs({
-    this.textDirection,
-    this.imageEnabled,
-    this.wolofVerseEnabled,
-    this.wolofalVerseEnabled,
-    this.showFavs,
-    this.showOnboarding,
-  });
+  UserPrefs(
+      {this.textDirection,
+      this.imageEnabled,
+      this.wolofVerseEnabled,
+      this.wolofalVerseEnabled,
+      this.showFavs,
+      this.showOnboarding,
+      this.glassEffects,
+      this.backgroundImage,
+      this.lowPowerMode,
+      this.shouldTestDevicePerformance});
 
   late UserPrefs _userPrefs;
 
@@ -36,8 +43,7 @@ class UserPrefs with ChangeNotifier {
     //if there's no userTheme, it's the first time they've run the app, so give them lightTheme
     //We're also grabbing other setup info here: language:
 
-    if (!prefs.containsKey('userPrefs')) {
-      UserPrefs defaultUserPrefs = UserPrefs(
+    UserPrefs defaultUserPrefs = UserPrefs(
         //Starting off LTR as in English - the relevant setting is PageView(reverse: false) = LTR
         textDirection: false,
         imageEnabled: true,
@@ -45,7 +51,12 @@ class UserPrefs with ChangeNotifier {
         wolofalVerseEnabled: true,
         showFavs: false,
         showOnboarding: true,
-      );
+        glassEffects: true,
+        backgroundImage: true,
+        lowPowerMode: false,
+        shouldTestDevicePerformance: true);
+
+    if (!prefs.containsKey('userPrefs')) {
       //Set in-memory copy of prefs
       _userPrefs = defaultUserPrefs;
       //Save prefs to disk
@@ -56,23 +67,47 @@ class UserPrefs with ChangeNotifier {
         'wolofalVerseEnabled': true,
         'showFavs': false,
         'showOnboarding': true,
+        'glassEffects': true,
+        'backgroundImage': true,
+        'lowPowerMode': false,
+        'shouldTestDevicePerformance': true
       });
       prefs.setString('userPrefs', _defaultUserPrefs);
     } else {
-      //Sep 1 error here
-      Map<String, dynamic> jsonResponse =
-          json.decode(prefs.getString('userPrefs')!);
+      try {
+        Map<String?, dynamic> jsonResponse =
+            json.decode(prefs.getString('userPrefs')!);
 
-      _userPrefs = UserPrefs(
-        textDirection: jsonResponse['textDirection'] as bool,
-        imageEnabled: jsonResponse['imageEnabled'] as bool,
-        wolofVerseEnabled: jsonResponse['wolofVerseEnabled'] as bool,
-        wolofalVerseEnabled: jsonResponse['wolofalVerseEnabled'] as bool,
-        showFavs: jsonResponse['showFavs'] as bool,
-        showOnboarding: jsonResponse['showOnboarding'] as bool,
-      );
+        _userPrefs = UserPrefs(
+          textDirection: jsonResponse['textDirection'] as bool,
+          imageEnabled: jsonResponse['imageEnabled'] as bool,
+          wolofVerseEnabled: jsonResponse['wolofVerseEnabled'] as bool,
+          wolofalVerseEnabled: jsonResponse['wolofalVerseEnabled'] as bool,
+          showFavs: jsonResponse['showFavs'] as bool,
+          showOnboarding: jsonResponse['showOnboarding'] as bool,
+          glassEffects: jsonResponse['glassEffects'] == null
+              ? true
+              : jsonResponse['glassEffects'] as bool,
+          backgroundImage: jsonResponse['backgroundImage'] == null
+              ? true
+              : jsonResponse['backgroundImage'] as bool,
+          lowPowerMode: jsonResponse['lowPowerMode'] == null
+              ? true
+              : jsonResponse['lowPowerMode'] as bool,
+          shouldTestDevicePerformance:
+              jsonResponse['shouldTestDevicePerformance'] == null
+                  ? true
+                  : jsonResponse['shouldTestDevicePerformance'] as bool,
+        );
+      } catch (e) {
+        print(e);
+        //Set in-memory copy of prefs
+        _userPrefs = defaultUserPrefs;
+      }
     }
-    print('in setup');
+    print('setting up user prefs done');
+    print(_userPrefs.backgroundImage);
+    return;
   }
 
   Future<void> savePref(String setting, userPref) async {
@@ -86,6 +121,19 @@ class UserPrefs with ChangeNotifier {
       wolofalVerseEnabled: jsonResponse['wolofalVerseEnabled'] as bool,
       showFavs: jsonResponse['showFavs'] as bool,
       showOnboarding: jsonResponse['showOnboarding'] as bool,
+      glassEffects: jsonResponse['glassEffects'] == null
+          ? true
+          : jsonResponse['glassEffects'] as bool,
+      backgroundImage: jsonResponse['backgroundImage'] == null
+          ? true
+          : jsonResponse['backgroundImage'] as bool,
+      lowPowerMode: jsonResponse['lowPowerMode'] == null
+          ? true
+          : jsonResponse['lowPowerMode'] as bool,
+      shouldTestDevicePerformance:
+          jsonResponse['shouldTestDevicePerformance'] == null
+              ? true
+              : jsonResponse['shouldTestDevicePerformance'] as bool,
     );
 
     //set the incoming setting
@@ -101,6 +149,14 @@ class UserPrefs with ChangeNotifier {
       _tempUserPrefs.showFavs = userPref;
     } else if (setting == 'showOnboarding') {
       _tempUserPrefs.showOnboarding = userPref;
+    } else if (setting == 'glassEffects') {
+      _tempUserPrefs.glassEffects = userPref;
+    } else if (setting == 'backgroundImage') {
+      _tempUserPrefs.lowPowerMode = userPref;
+    } else if (setting == 'lowPowerMode') {
+      _tempUserPrefs.lowPowerMode = userPref;
+    } else if (setting == 'shouldTestDevicePerformance') {
+      _tempUserPrefs.shouldTestDevicePerformance = userPref;
     }
 
     // set it in memory
@@ -114,7 +170,12 @@ class UserPrefs with ChangeNotifier {
       'wolofalVerseEnabled': _tempUserPrefs.wolofalVerseEnabled,
       'showFavs': _tempUserPrefs.showFavs,
       'showOnboarding': _tempUserPrefs.showOnboarding,
+      'glassEffects': _tempUserPrefs.glassEffects,
+      'backgroundImage': _tempUserPrefs.backgroundImage,
+      'lowPowerMode': _tempUserPrefs.lowPowerMode,
+      'shouldTestDevicePerformance': _tempUserPrefs.shouldTestDevicePerformance,
     });
     prefs.setString('userPrefs', _userPrefsData);
+    notifyListeners();
   }
 }

@@ -191,5 +191,6 @@ class Months with ChangeNotifier {
     _dates = loadedDateData;
 
     notifyListeners();
+    return;
   }
 }
