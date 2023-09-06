@@ -16,6 +16,10 @@ pubspec.lock
 .buildlog/
 .history
 .svn/
+/build/
+ios/build/
+
+
 
 # IntelliJ related
 *.iml
@@ -37,7 +41,7 @@ pubspec.lock
 .packages
 .pub-cache/
 .pub/
-/build/
+
 
 # Web related
 

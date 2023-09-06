@@ -25,7 +25,7 @@ class _MainDrawerState extends State<MainDrawer> {
   @override
   Widget build(BuildContext context) {
     UserPrefs userPrefs =
-        Provider.of<UserPrefs>(context, listen: true).userPrefs;
+        Provider.of<UserPrefs>(context, listen: false).userPrefs;
 
     TextStyle whitetitleLarge = Theme.of(context).textTheme.titleLarge!;
 

@@ -107,7 +107,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "clickHereToReadMore": "Bësal fii ngir yokk sa njàng: ",
+  "clickHereToReadMore": "Bësal fii ngir yokk sa njàng",
   "@clickHereToReadMore": {
     "description": "clickHereToReadMore",
     "type": "text",
@@ -197,15 +197,21 @@
     "type": "text",
     "placeholders": {}
   },
-  "glassEffects": "Lu mel ni ver",
+  "glassEffects": "Lu mel ni palanteer",
   "@glassEffects": {
     "description": "Glass Effects on",
     "type": "text",
     "placeholders": {}
   },
-  "backgroundImage": "Image ci ganaaw",
+  "backgroundImage": "Foto ci ganaaw",
   "@backgroundImage": {
     "description": "More apps",
+    "type": "text",
+    "placeholders": {}
+  },
+  "changeThemeColorWithBackground": "Na kulëër ànd ak foto",
+  "@changeThemeColorWithBackground": {
+    "description": "changeThemeColorWithBackground",
     "type": "text",
     "placeholders": {}
   }

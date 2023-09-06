@@ -16,7 +16,7 @@ class UserPrefs with ChangeNotifier {
   bool? showOnboarding;
   bool? glassEffects;
   bool? backgroundImage;
-  bool? lowPowerMode;
+  bool? changeThemeColorWithBackground;
   bool? shouldTestDevicePerformance;
 
   UserPrefs(
@@ -28,7 +28,7 @@ class UserPrefs with ChangeNotifier {
       this.showOnboarding,
       this.glassEffects,
       this.backgroundImage,
-      this.lowPowerMode,
+      this.changeThemeColorWithBackground,
       this.shouldTestDevicePerformance});
 
   late UserPrefs _userPrefs;
@@ -53,7 +53,7 @@ class UserPrefs with ChangeNotifier {
         showOnboarding: true,
         glassEffects: true,
         backgroundImage: true,
-        lowPowerMode: false,
+        changeThemeColorWithBackground: false,
         shouldTestDevicePerformance: true);
 
     if (!prefs.containsKey('userPrefs')) {
@@ -69,7 +69,7 @@ class UserPrefs with ChangeNotifier {
         'showOnboarding': true,
         'glassEffects': true,
         'backgroundImage': true,
-        'lowPowerMode': false,
+        'changeThemeColorWithBackground': false,
         'shouldTestDevicePerformance': true
       });
       prefs.setString('userPrefs', _defaultUserPrefs);
@@ -91,9 +91,10 @@ class UserPrefs with ChangeNotifier {
           backgroundImage: jsonResponse['backgroundImage'] == null
               ? true
               : jsonResponse['backgroundImage'] as bool,
-          lowPowerMode: jsonResponse['lowPowerMode'] == null
-              ? true
-              : jsonResponse['lowPowerMode'] as bool,
+          changeThemeColorWithBackground:
+              jsonResponse['changeThemeColorWithBackground'] == null
+                  ? true
+                  : jsonResponse['changeThemeColorWithBackground'] as bool,
           shouldTestDevicePerformance:
               jsonResponse['shouldTestDevicePerformance'] == null
                   ? true
@@ -127,9 +128,10 @@ class UserPrefs with ChangeNotifier {
       backgroundImage: jsonResponse['backgroundImage'] == null
           ? true
           : jsonResponse['backgroundImage'] as bool,
-      lowPowerMode: jsonResponse['lowPowerMode'] == null
-          ? true
-          : jsonResponse['lowPowerMode'] as bool,
+      changeThemeColorWithBackground:
+          jsonResponse['changeThemeColorWithBackground'] == null
+              ? true
+              : jsonResponse['changeThemeColorWithBackground'] as bool,
       shouldTestDevicePerformance:
           jsonResponse['shouldTestDevicePerformance'] == null
               ? true
@@ -152,9 +154,9 @@ class UserPrefs with ChangeNotifier {
     } else if (setting == 'glassEffects') {
       _tempUserPrefs.glassEffects = userPref;
     } else if (setting == 'backgroundImage') {
-      _tempUserPrefs.lowPowerMode = userPref;
-    } else if (setting == 'lowPowerMode') {
-      _tempUserPrefs.lowPowerMode = userPref;
+      _tempUserPrefs.backgroundImage = userPref;
+    } else if (setting == 'changeThemeColorWithBackground') {
+      _tempUserPrefs.changeThemeColorWithBackground = userPref;
     } else if (setting == 'shouldTestDevicePerformance') {
       _tempUserPrefs.shouldTestDevicePerformance = userPref;
     }
@@ -172,7 +174,8 @@ class UserPrefs with ChangeNotifier {
       'showOnboarding': _tempUserPrefs.showOnboarding,
       'glassEffects': _tempUserPrefs.glassEffects,
       'backgroundImage': _tempUserPrefs.backgroundImage,
-      'lowPowerMode': _tempUserPrefs.lowPowerMode,
+      'changeThemeColorWithBackground':
+          _tempUserPrefs.changeThemeColorWithBackground,
       'shouldTestDevicePerformance': _tempUserPrefs.shouldTestDevicePerformance,
     });
     prefs.setString('userPrefs', _userPrefsData);

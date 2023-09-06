@@ -208,5 +208,11 @@
     "description": "More apps",
     "type": "text",
     "placeholders": {}
+  },
+  "changeThemeColorWithBackground": "Dynamic Theme Color",
+  "@changeThemeColorWithBackground": {
+    "description": "changeThemeColorWithBackground",
+    "type": "text",
+    "placeholders": {}
   }
 }
