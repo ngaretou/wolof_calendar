@@ -18,7 +18,9 @@
 		<string>fr</string>
 	</array>
 	<key>CFBundleName</key>
-	<string>Arminaatu Wolof</string>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundleDisplayName</key>
+	<string>$(PRODUCT_NAME)</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>

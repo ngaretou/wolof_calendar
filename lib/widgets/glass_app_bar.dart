@@ -18,34 +18,35 @@ PreferredSize glassAppBar(
     child: ClipRRect(
       child: BackdropFilter(
         filter: userPrefs.glassEffects!
-            ? ImageFilter.blur(sigmaX: 25, sigmaY: 25)
+            ? ImageFilter.blur(sigmaX: 50, sigmaY: 50)
             : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
-        child: Container(
-          color: Theme.of(context).brightness == Brightness.light
-              ? Colors.white10
-              : Colors.black38,
-          child: Column(
-            children: [
-              AppBar(
-                  // status bar w/clock/wifi connectivity etc
-                  systemOverlayStyle:
-                      Theme.of(context).brightness == Brightness.light
-                          ? SystemUiOverlayStyle.dark
-                          : SystemUiOverlayStyle.light,
-                  foregroundColor:
-                      Theme.of(context).brightness == Brightness.light
-                          ? Colors.black87
-                          : Colors.white70,
-                  elevation: 0.0,
-                  backgroundColor: userPrefs.glassEffects!
-                      ? Colors.transparent
-                      : Theme.of(context).colorScheme.secondaryContainer,
-                  title: Text(title),
-                  actions: actions),
-              if (extraRow != null) extraRow
-            ],
-          ),
+        // child:
+        // Container(
+        // color: Theme.of(context).brightness == Brightness.light
+        //     ? Colors.white10
+        //     : Colors.black38,
+        child: Column(
+          children: [
+            AppBar(
+                // status bar w/clock/wifi connectivity etc
+                systemOverlayStyle:
+                    Theme.of(context).brightness == Brightness.light
+                        ? SystemUiOverlayStyle.dark
+                        : SystemUiOverlayStyle.light,
+                // foregroundColor:
+                //     Theme.of(context).brightness == Brightness.light
+                //         ? Colors.black87
+                //         : Colors.white70,
+                elevation: 0.0,
+                backgroundColor: userPrefs.glassEffects!
+                    ? Colors.transparent
+                    : Theme.of(context).colorScheme.secondaryContainer,
+                title: Text(title),
+                actions: actions),
+            if (extraRow != null) extraRow
+          ],
         ),
+        // ),
       ),
     ),
   );

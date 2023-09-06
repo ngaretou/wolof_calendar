@@ -5,7 +5,9 @@ import 'package:provider/provider.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wolof_calendar/widgets/glass_app_bar.dart';
+
 import '../providers/theme.dart';
+import '../providers/locale.dart';
 import '../providers/user_prefs.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -26,14 +28,16 @@ class SettingsScreenState extends State<SettingsScreen> {
     final userThemeName =
         Provider.of<ThemeModel>(context, listen: false).userThemeName;
     final themeProvider = Provider.of<ThemeModel>(context, listen: false);
-    Locale? userLocale =
-        Provider.of<ThemeModel>(context, listen: false).userLocale;
-    UserPrefs userPrefs = Provider.of<UserPrefs>(context, listen: true);
-    final wolof = userPrefs.userPrefs.wolofVerseEnabled;
-    final wolofal = userPrefs.userPrefs.wolofalVerseEnabled;
-    final glassEffects = userPrefs.userPrefs.glassEffects;
-    final backgroundImage = userPrefs.userPrefs.backgroundImage;
-    final lowPowerMode = userPrefs.userPrefs.lowPowerMode;
+    final localeProvider = Provider.of<LocaleProvider>(context, listen: false);
+    final Locale? userLocale = localeProvider.userLocale;
+    final UserPrefs prefsProvider =
+        Provider.of<UserPrefs>(context, listen: true);
+    final wolof = prefsProvider.userPrefs.wolofVerseEnabled;
+    final wolofal = prefsProvider.userPrefs.wolofalVerseEnabled;
+    final glassEffects = prefsProvider.userPrefs.glassEffects;
+    final backgroundImage = prefsProvider.userPrefs.backgroundImage;
+    final changeThemeColorWithBackground =
+        prefsProvider.userPrefs.changeThemeColorWithBackground;
 
     final darkMode = userThemeName == 'darkTheme';
 
@@ -175,12 +179,13 @@ class SettingsScreenState extends State<SettingsScreen> {
         labelText = Text(AppLocalizations.of(context)!.backgroundImage,
             style: Theme.of(context).textTheme.titleMedium);
         switchValue = backgroundImage!;
-      } else if (kind == 'lowPowerMode') {
-        labelText = Text('lowPowerMode',
+      } else if (kind == 'changeThemeColorWithBackground') {
+        labelText = Text(
+            AppLocalizations.of(context)!.changeThemeColorWithBackground,
             style: Theme.of(context).textTheme.titleMedium);
-        switchValue = lowPowerMode!;
+        switchValue = changeThemeColorWithBackground!;
       }
-      // else if (kind == 'lowPowerMode') {
+      // else if (kind == 'changeThemeColorWithBackground') {
       //   labelText = Text(AppLocalizations.of(context)!.backgroundImage,
       //       style: Theme.of(context).textTheme.titleMedium);
       //   switchValue = backgroundImage!;
@@ -223,18 +228,26 @@ class SettingsScreenState extends State<SettingsScreen> {
                     themeProvider.setLightTheme();
                   }
                 } else if (kind == 'glassEffects') {
-                  userPrefs.savePref('glassEffects', !switchValue);
+                  prefsProvider.savePref('glassEffects', !switchValue);
                 } else if (kind == 'backgroundImage') {
-                  userPrefs.savePref('backgroundImage', !switchValue);
-                } else if (kind == 'lowPowerMode') {
-                  userPrefs.savePref('lowPowerMode', !switchValue);
+                  prefsProvider.savePref('backgroundImage', !switchValue);
+                  if (prefsProvider.userPrefs.changeThemeColorWithBackground ==
+                      true) {
+                    prefsProvider.savePref(
+                        'changeThemeColorWithBackground', false);
+                  }
+                } else if (kind == 'changeThemeColorWithBackground') {
+                  if (prefsProvider.userPrefs.backgroundImage == true) {
+                    prefsProvider.savePref(
+                        'changeThemeColorWithBackground', !switchValue);
+                  }
                 } else if (kind == 'arabic') {
                   setState(() {
-                    userPrefs.savePref('wolofalVerseEnabled', !wolofal!);
+                    prefsProvider.savePref('wolofalVerseEnabled', !wolofal!);
                   });
                 } else if (kind == 'roman') {
                   setState(() {
-                    userPrefs.savePref('wolofVerseEnabled', !wolof!);
+                    prefsProvider.savePref('wolofVerseEnabled', !wolof!);
                   });
                 }
               },
@@ -312,7 +325,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                 // backgroundColor: Theme.of(context).primaryColor,
 
                 onSelected: (bool selected) {
-                  themeProvider.setLocale('fr_CH');
+                  localeProvider.setLocale('fr_CH');
                 },
               ),
               ChoiceChip(
@@ -326,7 +339,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                 // backgroundColor: Theme.of(context).primaryColor,
                 // selectedColor: Theme.of(context).accentColor,
                 onSelected: (bool selected) {
-                  themeProvider.setLocale('fr');
+                  localeProvider.setLocale('fr');
                   print(AppLocalizations.of(context)!.addHolidays);
                 },
               ),
@@ -341,7 +354,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                 // backgroundColor: Theme.of(context).primaryColor,
                 // selectedColor: Theme.of(context).accentColor,
                 onSelected: (bool selected) {
-                  themeProvider.setLocale('en');
+                  localeProvider.setLocale('en');
                 },
               ),
             ],
@@ -353,7 +366,7 @@ class SettingsScreenState extends State<SettingsScreen> {
 ///////////////////////////////
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: userPrefs.userPrefs.glassEffects!
+      backgroundColor: prefsProvider.userPrefs.glassEffects!
           ? Colors.transparent
           : Theme.of(context).canvasColor,
 
@@ -369,13 +382,13 @@ class SettingsScreenState extends State<SettingsScreen> {
             ? Colors.white12
             : Colors.black12,
         child: BackdropFilter(
-          filter: userPrefs.userPrefs.glassEffects!
+          filter: prefsProvider.userPrefs.glassEffects!
               ? ImageFilter.blur(sigmaX: 75, sigmaY: 75)
               : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
           child: Container(
             height: double.infinity,
             width: double.infinity,
-            color: userPrefs.userPrefs.glassEffects!
+            color: prefsProvider.userPrefs.glassEffects!
                 ? Colors.transparent
                 : Theme.of(context).canvasColor,
             child: MediaQuery.of(context).size.width >= 730
@@ -387,7 +400,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                         settingPicker('brightness'),
                         settingPicker('glassEffects'),
                         settingPicker('backgroundImage'),
-                        settingPicker('lowPowerMode'),
+                        settingPicker('changeThemeColorWithBackground'),
                         const Divider(),
                         // settingRow(backgroundTitle(), backgroundSettings()),
                         // Divider(),
@@ -411,7 +424,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                       settingPicker('brightness'),
                       settingPicker('glassEffects'),
                       settingPicker('backgroundImage'),
-                      settingPicker('lowPowerMode'),
+                      settingPicker('changeThemeColorWithBackground'),
                       const Divider(),
                       // settingColumn(backgroundTitle(), backgroundSettings()),
                       // settingColumn(directionTitle(), directionSettings()),

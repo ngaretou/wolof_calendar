@@ -11,33 +11,25 @@ import 'month_header.dart';
 
 class DateTile extends StatelessWidget {
   final Date currentDate;
-  const DateTile({Key? key, required this.currentDate}) : super(key: key);
+  final double contentColWidth;
+  final double headerImageHeight;
+  final EdgeInsets adaptiveMargin;
+  final bool isPhone;
+  const DateTile({
+    Key? key,
+    required this.currentDate,
+    required this.contentColWidth,
+    required this.headerImageHeight,
+    required this.adaptiveMargin,
+    required this.isPhone,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // print('date tile build');
+    print('date tile build');
     //viewing setup
-    final screenwidth = MediaQuery.of(context).size.width;
-    final screenheight = MediaQuery.of(context).size.height;
-    final bool isPhone = (screenwidth + screenheight) <= 1400;
+
     ScrollController holidayScrollController = ScrollController();
-
-    // Column width for the name row
-    late double contentColWidth;
-
-    late double headerImageHeight;
-    late EdgeInsets adaptiveMargin;
-
-    if (!isPhone) {
-      contentColWidth = 600;
-      headerImageHeight = screenheight / 3;
-      adaptiveMargin = EdgeInsets.symmetric(
-          horizontal: (screenwidth - contentColWidth) / 2, vertical: 0);
-    } else if (isPhone) {
-      contentColWidth = screenwidth - 10;
-      headerImageHeight = 200;
-      adaptiveMargin = const EdgeInsets.symmetric(horizontal: 5, vertical: 5);
-    }
 
     final monthData = Provider.of<Months>(context, listen: false)
         .months
@@ -142,9 +134,10 @@ class DateTile extends StatelessWidget {
                 contentColWidth: contentColWidth,
                 headerImageHeight: headerImageHeight,
                 adaptiveMargin: adaptiveMargin,
-                screenWidth: screenwidth,
                 isPhone: isPhone,
-                kIsWeb: kIsWeb)
+                kIsWeb: kIsWeb,
+                scriptureOnly: false,
+                showCardBackground: true)
             : const SizedBox(
                 height: 0,
               ),

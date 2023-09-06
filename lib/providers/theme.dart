@@ -32,31 +32,6 @@ class ThemeModel extends ChangeNotifier {
   ThemeType? _themeType;
   String? userThemeName;
   ThemeData? currentTheme;
-  Locale? userLocale;
-
-  Future<void> setLocale(String incomingLocale) async {
-    switch (incomingLocale) {
-      case 'en':
-        userLocale = const Locale('en', '');
-        notifyListeners();
-        break;
-      case 'fr':
-        userLocale = const Locale('fr', '');
-        notifyListeners();
-        break;
-      case 'fr_CH':
-        userLocale = const Locale('fr', 'CH');
-        notifyListeners();
-        break;
-      default:
-    }
-
-    //get prefs from disk
-    final prefs = await SharedPreferences.getInstance();
-    //save userLang to disk
-    String userLang = json.encode(incomingLocale);
-    prefs.setString('userLang', userLang);
-  }
 
   Future<void> initialSetupAsync(context) async {
     await Provider.of<Months>(context, listen: false).getData();
@@ -119,6 +94,7 @@ class ThemeModel extends ChangeNotifier {
   }
 
   void setThemeColor(Color color) {
+    print('setting new color in provider theme.dart');
     currentTheme = ThemeData(
         useMaterial3: true,
         fontFamily: 'Lato',
