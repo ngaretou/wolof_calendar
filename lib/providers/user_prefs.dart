@@ -53,7 +53,7 @@ class UserPrefs with ChangeNotifier {
         showOnboarding: true,
         glassEffects: true,
         backgroundImage: true,
-        changeThemeColorWithBackground: false,
+        changeThemeColorWithBackground: true,
         shouldTestDevicePerformance: true);
 
     if (!prefs.containsKey('userPrefs')) {
@@ -69,7 +69,7 @@ class UserPrefs with ChangeNotifier {
         'showOnboarding': true,
         'glassEffects': true,
         'backgroundImage': true,
-        'changeThemeColorWithBackground': false,
+        'changeThemeColorWithBackground': true,
         'shouldTestDevicePerformance': true
       });
       prefs.setString('userPrefs', _defaultUserPrefs);

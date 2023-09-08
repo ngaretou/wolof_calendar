@@ -49,10 +49,14 @@ class MonthHeaderState extends State<MonthHeader> {
 
   @override
   Widget build(BuildContext context) {
+    //Overlay color for the image
     final Color overlayColor = Theme.of(context).brightness == Brightness.dark
         ? Colors.black
         : Colors.white;
+
+    //Styling that gets reused a few times
     const double headerBorderRadius = 20;
+
     //Text Styles
     TextStyle headerStyle = TextStyle(
         fontFamily: "Harmattan",
@@ -74,11 +78,12 @@ class MonthHeaderState extends State<MonthHeader> {
     ui.TextDirection ltrText = ui.TextDirection.ltr;
     //End text styles
 
-    var userPrefs = Provider.of<UserPrefs>(context, listen: false).userPrefs;
+    UserPrefs userPrefs =
+        Provider.of<UserPrefs>(context, listen: false).userPrefs;
 
     /* Fall 2021 Flutter 2.5.1, the AS text boxes get squished by Flutter only on web. 
     Assuming this will get fixed in a future release. 
-    This rtlTextFixer hacks any RTL text with a space on either side only if on web. 
+    This rtlTextFixer hacks any RTL text with a space on either side only if on web, which fixes it. 
      */
     String rtlTextFixer(String textToFix) {
       late String correctedText;
@@ -128,6 +133,7 @@ class MonthHeaderState extends State<MonthHeader> {
       //     thickness: 2,
       //   ),
     ];
+
     //scripture related info
     List<Widget> scriptureWidgets = [
       //Begin verses: Wolofal first, then Roman
@@ -180,32 +186,33 @@ class MonthHeaderState extends State<MonthHeader> {
       Container(
         padding: widget.isPhone
             ? const EdgeInsets.symmetric(horizontal: 10)
-            : EdgeInsets.symmetric(
-                horizontal: widget.adaptiveMargin.left + 150),
-        child: FilledButton(
-          child: Text(
-            AppLocalizations.of(context)!.clickHereToReadMore,
+            : EdgeInsets.symmetric(horizontal: widget.adaptiveMargin.left),
+        child: Center(
+          child: FilledButton(
+            child: Text(
+              AppLocalizations.of(context)!.clickHereToReadMore,
+            ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   crossAxisAlignment: CrossAxisAlignment.center,
+            //   children: [
+            //     Expanded(
+            //       child:
+            //     ),
+            //     // const Icon(
+            //     //   Icons.arrow_forward,
+            //     // ),
+            //   ],
+            // ),
+            onPressed: () async {
+              const url = 'https://sng.al/chrono';
+              if (await canLaunchUrl(Uri.parse(url))) {
+                await launchUrl(Uri.parse(url));
+              } else {
+                throw 'Could not launch $url';
+              }
+            },
           ),
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.center,
-          //   crossAxisAlignment: CrossAxisAlignment.center,
-          //   children: [
-          //     Expanded(
-          //       child:
-          //     ),
-          //     // const Icon(
-          //     //   Icons.arrow_forward,
-          //     // ),
-          //   ],
-          // ),
-          onPressed: () async {
-            const url = 'https://sng.al/chrono';
-            if (await canLaunchUrl(Uri.parse(url))) {
-              await launchUrl(Uri.parse(url));
-            } else {
-              throw 'Could not launch $url';
-            }
-          },
         ),
       ),
       const SizedBox(
@@ -261,6 +268,7 @@ class MonthHeaderState extends State<MonthHeader> {
                     top: 10.0, bottom: 10, left: 20, right: 20),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children:
                       widget.scriptureOnly ? scriptureWidgets : dateWidgets,
                 ),
