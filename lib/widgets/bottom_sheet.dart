@@ -234,15 +234,23 @@ class _MonthBottomSheetState extends State<MonthBottomSheet> {
                                             //and if you call set State during it it doesn't like it
                                             useMaterial3: false,
                                           ),
-                                          child: SingleChildScrollView(
-                                            controller:
-                                                scriptureScrollController,
-                                            physics: bodyHeightNotifier.value ==
-                                                    maxHeight
-                                                ? const ClampingScrollPhysics()
-                                                : const NeverScrollableScrollPhysics(),
-                                            child: versesComposer(),
-                                          ),
+                                          child: ScrollConfiguration(
+                                              //The 2.8 Flutter behavior is to not have mice grabbing and dragging - but we do want this in the web version of the app, so the custom scroll behavior here
+                                              behavior:
+                                                  MyCustomScrollBehavior(),
+                                              child: MouseRegion(
+                                                cursor: SystemMouseCursors.grab,
+                                                child: SingleChildScrollView(
+                                                  controller:
+                                                      scriptureScrollController,
+                                                  physics: bodyHeightNotifier
+                                                              .value ==
+                                                          maxHeight
+                                                      ? const ClampingScrollPhysics()
+                                                      : const NeverScrollableScrollPhysics(),
+                                                  child: versesComposer(),
+                                                ),
+                                              )),
                                         ),
                                       ),
                                     ),
@@ -274,7 +282,8 @@ class _MonthBottomSheetState extends State<MonthBottomSheet> {
                   );
                 }),
           )
-        //TODO here is the area working on
+
+        //verses display for widescreen
         : Stack(children: [
             ScrollConfiguration(
               //The 2.8 Flutter behavior is to not have mice grabbing and dragging - but we do want this in the web version of the app, so the custom scroll behavior here

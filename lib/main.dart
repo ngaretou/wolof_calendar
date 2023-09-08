@@ -99,7 +99,7 @@ class MyAppState extends State<MyApp> {
                 ? const Center(child: CircularProgressIndicator())
                 : const DateScreen(),
       ),
-      theme: Provider.of<ThemeModel>(context, listen: true).currentTheme,
+      theme: Provider.of<ThemeModel>(context, listen: false).currentTheme,
       routes: {
         SettingsScreen.routeName: (ctx) => const SettingsScreen(),
         AboutScreen.routeName: (ctx) => const AboutScreen(),
