@@ -26,7 +26,7 @@ class DateTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('date tile build');
+    // print('date tile build');
     //viewing setup
 
     ScrollController holidayScrollController = ScrollController();

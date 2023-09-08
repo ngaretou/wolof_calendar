@@ -91,6 +91,7 @@ class DateScreenState extends State<DateScreen> {
 
   @override
   void initState() {
+    print('date screen initState');
     UserPrefs prefsProvider = Provider.of<UserPrefs>(context, listen: false);
     userPrefs = prefsProvider.userPrefs;
 
@@ -178,19 +179,17 @@ class DateScreenState extends State<DateScreen> {
     appBarWolofalMonth.value = datesToDisplay[index].wolofMonthAS;
 
     currentMonthFirstDate.addListener(() {
-      print('currentMonthFirstDate.addListener');
+      print('currentMonthFirstDate listener fired');
+      /* if the changeThemeColorWithBackground is off but backgroundImage on,
+      the valuelistenablebuilder will trigger that change. 
+      If the theme should change this triggers that 
+      */
+
       if (Provider.of<UserPrefs>(context, listen: false)
           .userPrefs
           .changeThemeColorWithBackground!) {
         // setColor will refresh back to main.dart, so will automatically update the bg image, not setState necessary
         setColor();
-      }
-      // if the changeThemeColorWithBackground is off but backgroundImage on,
-      //this will trigger the background change and is also needed even if
-      //backgroundImage off to renew the verse info.
-      else {
-        print('setState in currentMonthFirstDate listener');
-        setState(() {});
       }
     });
 
@@ -304,6 +303,11 @@ class DateScreenState extends State<DateScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('date_screen build');
+
+    //Because using custom appbar
+    GlobalKey<ScaffoldState> scaffoldStateKey = GlobalKey();
+
     UserPrefs userPrefsListenTrue =
         Provider.of<UserPrefs>(context, listen: true).userPrefs;
 
@@ -337,8 +341,6 @@ class DateScreenState extends State<DateScreen> {
       headerImageHeight = 200;
       adaptiveMargin = const EdgeInsets.symmetric(horizontal: 5, vertical: 5);
     }
-
-    print('date_screen build');
 
     // var themeProvider = Provider.of<ThemeModel>(context, listen: false);
 
@@ -470,6 +472,7 @@ class DateScreenState extends State<DateScreen> {
     }
 
     void moveMonths(String direction) {
+      print('moveMonths');
       //We use this to move one month forward or backward to the first of the month
       //wiht the arrow buttons in the app title bar.
       //Just feed in the direction forward or backward as a string.
@@ -532,6 +535,7 @@ class DateScreenState extends State<DateScreen> {
     }
 
     Future pickDateToShow() async {
+      print('pickDateToShow');
       DateTime lastDate = DateTime(
           int.parse(datesToDisplay.last.year),
           int.parse(datesToDisplay.last.month),
@@ -616,85 +620,97 @@ class DateScreenState extends State<DateScreen> {
       return Container(
           padding: isPhone
               ? const EdgeInsets.symmetric(horizontal: 8)
-              : EdgeInsets.only(left: (size.width * .6) + 8, right: 8),
-          color: userPrefsListenTrue.glassEffects!
-              ? Colors.transparent
-              : Theme.of(context).colorScheme.secondaryContainer,
+              : EdgeInsets.only(left: (size.width * .6) + 16, right: 8),
+          color: Colors.transparent,
+          // color: userPrefsListenTrue.glassEffects!
+          //     ? Colors.transparent
+          //     : Theme.of(context).colorScheme.secondaryContainer,
           child: row);
     }
 
     Widget datesSection() {
-      return SmoothAnimatedContainer(
-        duration: const Duration(seconds: 2),
-        curve: Curves.ease,
-        height: double.infinity,
-        width: double.infinity,
-        decoration: userPrefsListenTrue.backgroundImage!
-            ? BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(
-                      'assets/images/${currentMonthFirstDate.value.month.toString()}.jpg'),
-                  fit: BoxFit.cover,
+      return MouseRegion(
+        cursor: SystemMouseCursors.grab,
+        child: NotificationListener(
+          onNotification: (dynamic notification) {
+            if (notification is ScrollEndNotification) {
+              updateAfterNavigation();
+            }
+            return true;
+          },
+          child: Column(
+            children: [
+              Expanded(
+                child: ScrollConfiguration(
+                  //The 2.8 Flutter behavior is to not have mice grabbing and dragging - but we do want this in the web version of the app, so the custom scroll behavior here
+                  behavior:
+                      MyCustomScrollBehavior().copyWith(scrollbars: false),
+                  child: ScrollablePositionedList.builder(
+                    itemScrollController: itemScrollController,
+                    itemPositionsListener: itemPositionsListener,
+                    physics: const BouncingScrollPhysics(),
+                    initialScrollIndex: initialScrollIndex!,
+                    itemBuilder: (ctx, i) => DateTile(
+                      currentDate: datesToDisplay[i],
+                      contentColWidth: contentColWidth,
+                      headerImageHeight: headerImageHeight,
+                      adaptiveMargin: adaptiveMargin,
+                      isPhone: isPhone,
+                    ),
+                    itemCount: datesToDisplay.length,
+                  ),
                 ),
-              )
-            : BoxDecoration(color: Theme.of(context).highlightColor),
-        child: BackdropFilter(
-          // This is not exactly as I want it, this is for the bg image - but in
-          // widescreen view it makes the verses blurry.
-          filter: isPhone
-              ? ImageFilter.blur(sigmaX: 1, sigmaY: 5)
-              : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
-          child: Container(
-            decoration: userPrefs.backgroundImage!
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    Widget imageBackdrop({required Widget child}) {
+      //TODO wrap this with valuelistenablebuilder
+      return ValueListenableBuilder(
+        valueListenable: currentMonthFirstDate,
+        child: child,
+        builder: (context, value, child) {
+          return SmoothAnimatedContainer(
+            duration: const Duration(seconds: 2),
+            curve: Curves.ease,
+            height: double.infinity,
+            width: double.infinity,
+            decoration: userPrefsListenTrue.backgroundImage!
                 ? BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.bottomRight,
-                      colors: [
-                        overlayColor.withOpacity(.7),
-                        overlayColor.withOpacity(.3)
-                      ],
-                      stops: const [0.1, .9],
+                    image: DecorationImage(
+                      image: AssetImage(
+                          'assets/images/${currentMonthFirstDate.value.month.toString()}.jpg'),
+                      fit: BoxFit.cover,
                     ),
                   )
                 : BoxDecoration(color: Theme.of(context).highlightColor),
-            child: MouseRegion(
-              cursor: SystemMouseCursors.grab,
-              child: NotificationListener(
-                onNotification: (dynamic notification) {
-                  if (notification is ScrollEndNotification) {
-                    updateAfterNavigation();
-                  }
-                  return true;
-                },
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: ScrollConfiguration(
-                        //The 2.8 Flutter behavior is to not have mice grabbing and dragging - but we do want this in the web version of the app, so the custom scroll behavior here
-                        behavior: MyCustomScrollBehavior()
-                            .copyWith(scrollbars: false),
-                        child: ScrollablePositionedList.builder(
-                          itemScrollController: itemScrollController,
-                          itemPositionsListener: itemPositionsListener,
-                          physics: const BouncingScrollPhysics(),
-                          initialScrollIndex: initialScrollIndex!,
-                          itemBuilder: (ctx, i) => DateTile(
-                            currentDate: datesToDisplay[i],
-                            contentColWidth: contentColWidth,
-                            headerImageHeight: headerImageHeight,
-                            adaptiveMargin: adaptiveMargin,
-                            isPhone: isPhone,
-                          ),
-                          itemCount: datesToDisplay.length,
+            child: BackdropFilter(
+              // This is not exactly as I want it, this is for the bg image - but in
+              // widescreen view it makes the verses blurry.
+              filter: isPhone
+                  ? ImageFilter.blur(sigmaX: 1, sigmaY: 5)
+                  : ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+              child: Container(
+                decoration: userPrefs.backgroundImage!
+                    ? BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.bottomLeft,
+                          colors: [
+                            overlayColor.withOpacity(.7),
+                            overlayColor.withOpacity(.4)
+                          ],
+                          stops: const [0.1, .9],
                         ),
-                      ),
-                    ),
-                  ],
-                ),
+                      )
+                    : BoxDecoration(color: Theme.of(context).highlightColor),
+                child: child,
               ),
             ),
-          ),
-        ),
+          );
+        },
       );
     }
 
@@ -711,9 +727,12 @@ class DateScreenState extends State<DateScreen> {
     }
 
     return Scaffold(
+      key: scaffoldStateKey,
       extendBodyBehindAppBar: isPhone ? true : false,
       //Theme + BackdropFilter gets the glass theme on the drawer
-      drawerScrimColor: Colors.transparent,
+      drawerScrimColor: Theme.of(context).brightness == Brightness.light
+          ? Colors.white.withOpacity(.1)
+          : Colors.black.withOpacity(.1),
       drawer: Theme(
         data: Theme.of(context).copyWith(
           useMaterial3:
@@ -732,6 +751,7 @@ class DateScreenState extends State<DateScreen> {
       ),
 
       appBar: glassAppBar(
+          scaffoldStateKey: scaffoldStateKey,
           context: context,
           title: formattedAppBarTitle.value,
           height: 89.0,
@@ -768,13 +788,15 @@ class DateScreenState extends State<DateScreen> {
           extraRow: monthRow()),
       body: isPhone
           ? Stack(
-              children: [datesSection(), versesSection()],
+              children: [imageBackdrop(child: datesSection()), versesSection()],
             )
-          : Row(
-              children: [
-                Container(width: size.width * .6, child: versesSection()),
-                Container(width: size.width * .4, child: datesSection()),
-              ],
+          : imageBackdrop(
+              child: Row(
+                children: [
+                  Container(width: size.width * .6, child: versesSection()),
+                  Container(width: size.width * .4, child: datesSection()),
+                ],
+              ),
             ),
     );
   }

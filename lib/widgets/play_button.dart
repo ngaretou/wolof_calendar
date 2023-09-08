@@ -145,9 +145,10 @@ class PlayButtonState extends State<PlayButton> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     print('building play button for ${widget.file}');
-    // if (_player.playing) {
-    //   _player.stop();
-    // }
+    if (_player.playing) {
+      // _player.stop();
+      gracefulStop();
+    }
     return StreamBuilder<PlayerState>(
       stream: _player.playerStateStream,
       builder: (context, snapshot) {

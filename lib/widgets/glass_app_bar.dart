@@ -7,11 +7,62 @@ import '../providers/user_prefs.dart';
 
 PreferredSize glassAppBar(
     {required BuildContext context,
+    GlobalKey<ScaffoldState>? scaffoldStateKey,
     required String title,
     double height = 56, //56 normal app bar height but is overrideable
     required List<Widget> actions,
     Widget? extraRow}) {
+  late Widget appBarToUse;
+
   UserPrefs userPrefs = Provider.of<UserPrefs>(context, listen: true).userPrefs;
+
+  // This creates a custom appBar from a Row for color continuity when using an extra row
+  if (scaffoldStateKey != null) {
+    Theme.of(context).brightness == Brightness.light
+        ? SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark)
+        : SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
+
+    List<Widget> replacementAppBarButtons = [
+      IconButton(
+          padding: const EdgeInsets.all(16),
+          onPressed: () => scaffoldStateKey.currentState!.openDrawer(),
+          //TODO open drawer
+          icon: const Icon(Icons.menu)),
+      Text(
+        title,
+        style: Theme.of(context).textTheme.titleLarge,
+      ),
+      const Expanded(
+          child: SizedBox(
+        width: 10,
+      ))
+    ];
+
+    replacementAppBarButtons.addAll(actions);
+
+    appBarToUse = SafeArea(
+      child: Column(
+        children: [
+          Expanded(child: Row(children: replacementAppBarButtons)),
+          if (extraRow != null) extraRow
+        ],
+      ),
+    );
+  } else {
+    // This creates a normal appBar when not using an extra row
+    appBarToUse = AppBar(
+        // status bar w/clock/wifi connectivity etc
+        systemOverlayStyle: Theme.of(context).brightness == Brightness.light
+            ? SystemUiOverlayStyle.dark
+            : SystemUiOverlayStyle.light,
+        foregroundColor: Theme.of(context).brightness == Brightness.light
+            ? Colors.black
+            : Colors.white,
+        elevation: 0.0,
+        backgroundColor: Colors.transparent,
+        title: Text(title),
+        actions: actions);
+  }
 
   return PreferredSize(
     preferredSize: Size(double.infinity, height),
@@ -20,26 +71,11 @@ PreferredSize glassAppBar(
         filter: userPrefs.glassEffects!
             ? ImageFilter.blur(sigmaX: 50, sigmaY: 50)
             : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
-        child: Column(
-          children: [
-            AppBar(
-                // status bar w/clock/wifi connectivity etc
-                systemOverlayStyle:
-                    Theme.of(context).brightness == Brightness.light
-                        ? SystemUiOverlayStyle.dark
-                        : SystemUiOverlayStyle.light,
-                foregroundColor:
-                    Theme.of(context).brightness == Brightness.light
-                        ? Colors.black
-                        : Colors.white,
-                elevation: 0.0,
-                backgroundColor: userPrefs.glassEffects!
-                    ? Colors.transparent
-                    : Theme.of(context).colorScheme.secondaryContainer,
-                title: Text(title),
-                actions: actions),
-            if (extraRow != null) extraRow
-          ],
+        child: Container(
+          color: userPrefs.glassEffects!
+              ? Colors.transparent
+              : Theme.of(context).colorScheme.secondaryContainer,
+          child: appBarToUse,
         ),
       ),
     ),
