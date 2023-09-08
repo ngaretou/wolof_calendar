@@ -1,19 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:audio_session/audio_session.dart';
-import 'dart:typed_data';
-import 'package:flutter/services.dart' show rootBundle;
+// import 'dart:typed_data';
+// import 'package:flutter/services.dart' show rootBundle;
+
+import 'bottom_sheet.dart';
 
 class PlayButton extends StatefulWidget {
   final String file;
+  final ChildController childController; //child method called via this
 
-  const PlayButton({Key? key, required this.file}) : super(key: key);
+  const PlayButton(
+      {Key? key, required this.file, required this.childController})
+      : super(key: key);
 
   @override
-  PlayButtonState createState() => PlayButtonState();
+  // ignore: no_logic_in_create_state
+  PlayButtonState createState() => PlayButtonState(childController);
 }
 
 class PlayButtonState extends State<PlayButton> with WidgetsBindingObserver {
+  PlayButtonState(ChildController childController) {
+    childController.childMethod = stopFromParent;
+  }
+
   final _player = AudioPlayer();
   List<AudioSource> source = [];
 
@@ -32,33 +42,40 @@ class PlayButtonState extends State<PlayButton> with WidgetsBindingObserver {
   Future _loadAudio() async {
     print('loading local audio ${widget.file.toString()}');
 
-    Future<void> checkAndAddAudioSource(String path) async {
-      late bool fileExists;
-      try {
-        //rootBundle.load gives an error if the file does not exist, and that gives you false
-        // ignore: unused_local_variable
-        ByteData bytes = await rootBundle.load('assets/audio/$path');
-        fileExists = true;
-        print(' fileExists = true;');
-      } catch (e) {
-        fileExists = false;
-        print(' fileExists = false;');
-      }
-
-      if (fileExists) {
-        // source.clear();
-        // source.add(AudioSource.uri(Uri.parse("asset:///assets/audio/$path")));
-
-        try {
-          _player.setAudioSource(
-              AudioSource.uri(Uri.parse("asset:///assets/audio/$path")));
-        } catch (e) {
-          print('an error occurred loading audio: ${e.toString()}');
-        }
-      }
+    try {
+      await _player.setAudioSource(AudioSource.uri(
+          Uri.parse("asset:///assets/audio/${widget.file}.mp3")));
+    } catch (e) {
+      print('an error occurred loading audio: ${e.toString()}');
     }
 
-    await checkAndAddAudioSource('${widget.file}.mp3');
+    // Future<void> checkAndAddAudioSource(String path) async {
+    //   late bool fileExists;
+    //   try {
+    //     //rootBundle.load gives an error if the file does not exist, and that gives you false
+    //     // ignore: unused_local_variable
+    //     ByteData bytes = await rootBundle.load('assets/audio/$path');
+    //     fileExists = true;
+    //     print(' fileExists = true;');
+    //   } catch (e) {
+    //     fileExists = false;
+    //     print(' fileExists = false;');
+    //   }
+
+    //   if (fileExists) {
+    //     // source.clear();
+    //     // source.add(AudioSource.uri(Uri.parse("asset:///assets/audio/$path")));
+
+    //     try {
+    //       await _player.setAudioSource(
+    //           AudioSource.uri(Uri.parse("asset:///assets/audio/$path")));
+    //     } catch (e) {
+    //       print('an error occurred loading audio: ${e.toString()}');
+    //     }
+    //   }
+    // }
+
+    // await checkAndAddAudioSource('${widget.file}.mp3');
 
     // try {
     //   await _player.setAudioSource(
@@ -88,12 +105,24 @@ class PlayButtonState extends State<PlayButton> with WidgetsBindingObserver {
   }
 
   Future<void> gracefulStop() async {
-    print('gracefulStop');
-    for (var i = 10; i >= 0; i--) {
-      _player.setVolume(i / 10);
-      await Future.delayed(const Duration(milliseconds: 100));
+    if (_player.playing) {
+      // print('gracefulStop');
+      for (var i = 10; i >= 0; i--) {
+        _player.setVolume(i / 10);
+        await Future.delayed(const Duration(milliseconds: 50));
+      }
+      await _player.stop();
+      _player.seek(Duration.zero);
     }
-    _player.stop();
+  }
+
+  void stopFromParent() {
+    if (_player.playing) {
+      // print('stopFromParent');
+
+      // _player.stop();
+      gracefulStop();
+    }
   }
 
   @override
@@ -108,6 +137,7 @@ class PlayButtonState extends State<PlayButton> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     //If the user presses home then the audio will stop gracefully
     if (state == AppLifecycleState.paused) {
+      // _player.stop();
       gracefulStop();
     }
   }
@@ -115,22 +145,22 @@ class PlayButtonState extends State<PlayButton> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     print('building play button for ${widget.file}');
-    if (_player.playing) {
-      _player.stop();
-    }
+    // if (_player.playing) {
+    //   _player.stop();
+    // }
     return StreamBuilder<PlayerState>(
       stream: _player.playerStateStream,
       builder: (context, snapshot) {
         final playerState = snapshot.data;
         final processingState = playerState?.processingState;
-        final playing = playerState?.playing;
+        bool? playing = playerState?.playing;
 
         if (playing != true) {
           return IconButton.filled(
               icon: const Icon(Icons.play_arrow),
-              onPressed: () async {
-                await _loadAudio();
-
+              onPressed: () {
+                _loadAudio();
+                _player.setVolume(1);
                 _player.play();
               });
         } else if (processingState != ProcessingState.completed) {
@@ -140,6 +170,7 @@ class PlayButtonState extends State<PlayButton> with WidgetsBindingObserver {
                 _player.pause();
               });
         } else {
+          print(_player.playing);
           return IconButton.filled(
             icon: const Icon(Icons.play_arrow),
             onPressed: () {

@@ -8,7 +8,7 @@ import '../providers/user_prefs.dart';
 PreferredSize glassAppBar(
     {required BuildContext context,
     required String title,
-    double height = 56,
+    double height = 56, //56 normal app bar height but is overrideable
     required List<Widget> actions,
     Widget? extraRow}) {
   UserPrefs userPrefs = Provider.of<UserPrefs>(context, listen: true).userPrefs;
@@ -20,11 +20,6 @@ PreferredSize glassAppBar(
         filter: userPrefs.glassEffects!
             ? ImageFilter.blur(sigmaX: 50, sigmaY: 50)
             : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
-        // child:
-        // Container(
-        // color: Theme.of(context).brightness == Brightness.light
-        //     ? Colors.white10
-        //     : Colors.black38,
         child: Column(
           children: [
             AppBar(
@@ -33,10 +28,10 @@ PreferredSize glassAppBar(
                     Theme.of(context).brightness == Brightness.light
                         ? SystemUiOverlayStyle.dark
                         : SystemUiOverlayStyle.light,
-                // foregroundColor:
-                //     Theme.of(context).brightness == Brightness.light
-                //         ? Colors.black87
-                //         : Colors.white70,
+                foregroundColor:
+                    Theme.of(context).brightness == Brightness.light
+                        ? Colors.black
+                        : Colors.white,
                 elevation: 0.0,
                 backgroundColor: userPrefs.glassEffects!
                     ? Colors.transparent
@@ -46,7 +41,6 @@ PreferredSize glassAppBar(
             if (extraRow != null) extraRow
           ],
         ),
-        // ),
       ),
     ),
   );

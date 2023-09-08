@@ -1,3 +1,5 @@
+// ignore_for_file: sized_box_for_whitespace
+
 import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +10,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../providers/user_prefs.dart';
 import '../providers/months.dart';
+
+import '../screens/date_screen.dart';
 
 import 'month_header.dart';
 import 'play_button.dart';
@@ -39,13 +43,16 @@ class MonthBottomSheet extends StatefulWidget {
 }
 
 class _MonthBottomSheetState extends State<MonthBottomSheet> {
-  ScrollController scriptureScrollController = ScrollController();
-  double headerHeight = 140.0;
+  final ScrollController scriptureScrollController = ScrollController();
+  final ChildController childController = ChildController();
+  final double headerHeight = 140.0;
   double maxHeight = 600.0;
-  bool isDragUp = true;
-  double bodyHeight = 0.0;
+  // bool isDragUp = true;
+  // double bodyHeight = 0.0;
 
-  final double dragAmountBeforePop = 50;
+  ValueNotifier<double> bodyHeightNotifier = ValueNotifier(0);
+
+  final double dragAmountBeforePop = 175;
 
   @override
   Widget build(BuildContext context) {
@@ -57,305 +64,242 @@ class _MonthBottomSheetState extends State<MonthBottomSheet> {
         .toList();
     maxHeight = widget.size.height - 200;
 
-    bool buttonsVisible = bodyHeight == maxHeight;
-
-    return Positioned(
-      bottom: 0.0,
-      child: AnimatedContainer(
-        decoration: BoxDecoration(
-          color: userPrefs.glassEffects!
-              ? Theme.of(context).colorScheme.secondaryContainer.withOpacity(.2)
-              : Theme.of(context).colorScheme.secondaryContainer,
-          borderRadius: const BorderRadius.only(
-            topRight: Radius.circular(20.0),
-            topLeft: Radius.circular(20.0),
+    Widget buttonsRow() {
+      return Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          IconButton.filled(
+              icon: const Icon(Icons.share),
+              onPressed: () {
+                //Grab the months data, which contains the verse data
+                Month monthData = (Provider.of<Months>(context, listen: false)
+                    .months
+                    .where((element) =>
+                        element.monthID == widget.currentDate.month)
+                    .toList()[0]);
+                //the [0] grabs the first in the list, which will be the only one
+                triggerSharing(context, kIsWeb, monthData);
+              }),
+          // const Expanded(
+          //     child: SizedBox(
+          //   width: 1,
+          // )),
+          PlayButton(
+            file: widget.currentDate.month,
+            childController: childController,
           ),
-        ),
-        constraints: BoxConstraints(
-          maxHeight: maxHeight,
-          minHeight: headerHeight,
-          maxWidth: widget.size.width,
-        ),
-        curve: Curves.easeOut,
-        height: bodyHeight,
-        duration: const Duration(milliseconds: 500),
-        child: GestureDetector(
-          onVerticalDragUpdate: (DragUpdateDetails data) {
-            // print(data.globalPosition.dy);
-            double draggedAmount = widget.size.height - data.globalPosition.dy;
-            if (isDragUp) {
-              if (draggedAmount < dragAmountBeforePop) {
-                bodyHeight = draggedAmount;
-              } else if (draggedAmount > dragAmountBeforePop) {
-                bodyHeight = maxHeight;
-              }
-            }
-            // else {
-            //   /// the _draggedAmount cannot be higher than maxHeight b/c maxHeight is _dragged Amount + header Height
-            //   double downDragged = maxHeight - draggedAmount;
-            //   if (downDragged < dragAmountBeforePop) {
-            //     bodyHeight = draggedAmount;
-            //   } else if (downDragged > dragAmountBeforePop) {
-            //     bodyHeight = 0.0;
-            //   }
-            // }
-            setState(() {
-              // if drawer is closed
-              if (bodyHeight == 0.0) {
-                scriptureScrollController.animateTo(0,
-                    duration: const Duration(milliseconds: 1000),
-                    curve: Curves.decelerate);
-              }
-            });
-          },
-          // onVerticalDragUpdate: (DragUpdateDetails data) {
-          //   double draggedAmount = widget.size.height - data.globalPosition.dy;
-          //   setState(() {
-          //     bodyHeight = draggedAmount;
-          //   });
-          // },
-          onVerticalDragEnd: (DragEndDetails data) {
-            print('drag end isDragUp $isDragUp');
+        ],
+      );
+    }
 
-            if (isDragUp) {
-              isDragUp = false;
-            } else {
-              isDragUp = true;
-            }
-            setState(() {});
-          },
-          child: ClipRRect(
-            borderRadius: const BorderRadius.only(
-              topRight: Radius.circular(20.0),
-              topLeft: Radius.circular(20.0),
-            ),
-            child: BackdropFilter(
-              filter: userPrefs.glassEffects!
-                  ? ImageFilter.blur(sigmaX: 50, sigmaY: 50)
-                  : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
-              child: Stack(
-                children: [
-                  Column(
-                    children: [
-                      const Icon(Icons.drag_handle_rounded),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child:
-                              //Month header
-                              NotificationListener(
-                            onNotification: (dynamic notification) {
-                              if (notification is OverscrollNotification) {
-                                if (notification.overscroll < 0) {
-                                  setState(() {
-                                    bodyHeight = 0;
-                                    isDragUp = true;
-                                  });
-                                }
-                              }
-                              return true;
-                            },
-                            child: Theme(
-                              data: Theme.of(context).copyWith(
-                                //another spot that can't use Material 3 - the stretch overscroll is an animation
-                                //and if you call setState during it it doesn't like it
-                                useMaterial3: false,
+    Widget versesComposer() {
+      return MonthHeader(
+        currentDate: widget.currentDate,
+        monthData: monthData,
+        contentColWidth: widget.contentColWidth,
+        headerImageHeight: widget.headerImageHeight,
+        adaptiveMargin: widget.adaptiveMargin,
+        isPhone: widget.isPhone,
+        kIsWeb: widget.kIsWeb,
+        scriptureOnly: true,
+        showCardBackground: false,
+      );
+    }
+
+    return widget.isPhone
+        ? Positioned(
+            bottom: 0.0,
+            child: ValueListenableBuilder(
+                valueListenable: bodyHeightNotifier,
+                child: buttonsRow(),
+                builder: (context, double value, child) {
+                  childController.childMethod();
+                  return AnimatedContainer(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: userPrefs.glassEffects!
+                          ? Theme.of(context)
+                              .colorScheme
+                              .secondaryContainer
+                              .withOpacity(.2)
+                          : Theme.of(context).colorScheme.secondaryContainer,
+                      borderRadius: const BorderRadius.only(
+                        topRight: Radius.circular(20.0),
+                        topLeft: Radius.circular(20.0),
+                      ),
+                    ),
+                    constraints: BoxConstraints(
+                      maxHeight: maxHeight,
+                      minHeight: headerHeight,
+                      maxWidth: widget.size.width,
+                    ),
+                    curve: Curves.easeOut,
+                    // height: bodyHeight,
+                    height: bodyHeightNotifier.value,
+                    duration: const Duration(milliseconds: 500),
+                    child: GestureDetector(
+                      onVerticalDragUpdate: (DragUpdateDetails data) {
+                        // print(data.delta.direction);
+                        double draggedAmount =
+                            widget.size.height - data.globalPosition.dy;
+                        /* 
+                        data.delta.direction < 0 is UP
+                        data.delta.direction < 0 is DOWN
+                        (data.delta.direction == 0 is STILL)
+                        */
+                        if (data.delta.direction < 0) {
+                          print('dragging UP');
+                          if (draggedAmount < dragAmountBeforePop) {
+                            // bodyHeight = draggedAmount;
+                            bodyHeightNotifier.value = draggedAmount;
+                          } else if (draggedAmount > dragAmountBeforePop) {
+                            // bodyHeight = maxHeight;
+                            bodyHeightNotifier.value = maxHeight;
+                          }
+                        } else if (data.delta.direction > 0) {
+                          print('dragging DOWN');
+
+                          /// the _draggedAmount cannot be higher than maxHeight b/c maxHeight is _dragged Amount + header Height
+                          double downDragged = maxHeight - draggedAmount;
+                          if (downDragged < dragAmountBeforePop) {
+                            // bodyHeight = draggedAmount;
+                            bodyHeightNotifier.value = draggedAmount;
+                          } else if (downDragged > dragAmountBeforePop) {
+                            // bodyHeight = 0.0;
+                            bodyHeightNotifier.value = 0.0;
+                          }
+                        }
+                        // setState(() {
+                        // if drawer is closed
+                        if (bodyHeightNotifier.value == 0.0) {
+                          scriptureScrollController.animateTo(0,
+                              duration: const Duration(milliseconds: 1000),
+                              curve: Curves.decelerate);
+                        }
+                        // });
+                      },
+                      // onVerticalDragUpdate: (DragUpdateDetails data) {
+                      //   double draggedAmount = widget.size.height - data.globalPosition.dy;
+                      //   setState(() {
+                      //     bodyHeight = draggedAmount;
+                      //   });
+                      // },
+                      // onVerticalDragEnd: (DragEndDetails data) {
+                      //   print('drag end isDragUp $isDragUp');
+
+                      //   if (isDragUp) {
+                      //     isDragUp = false;
+                      //   } else {
+                      //     isDragUp = true;
+                      //   }
+                      //   setState(() {});
+                      // },
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(20.0),
+                          topLeft: Radius.circular(20.0),
+                        ),
+                        child: BackdropFilter(
+                          filter: userPrefs.glassEffects!
+                              ? ImageFilter.blur(sigmaX: 50, sigmaY: 50)
+                              : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
+                          child: Stack(
+                            children: [
+                              Column(
+                                children: [
+                                  const Icon(Icons.drag_handle_rounded),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10.0),
+                                      child:
+                                          //Month header
+                                          NotificationListener(
+                                        onNotification: (dynamic notification) {
+                                          if (notification
+                                              is OverscrollNotification) {
+                                            if (notification.overscroll < 0) {
+                                              // setState(() {
+                                              // bodyHeight = 0;
+                                              bodyHeightNotifier.value = 0;
+                                              // });
+                                            }
+                                          }
+                                          return true;
+                                        },
+                                        child: Theme(
+                                          data: Theme.of(context).copyWith(
+                                            //another spot that can't use Material 3 - the stretch overscroll is an animation
+                                            //and if you call set State during it it doesn't like it
+                                            useMaterial3: false,
+                                          ),
+                                          child: SingleChildScrollView(
+                                            controller:
+                                                scriptureScrollController,
+                                            physics: bodyHeightNotifier.value ==
+                                                    maxHeight
+                                                ? const ClampingScrollPhysics()
+                                                : const NeverScrollableScrollPhysics(),
+                                            child: versesComposer(),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              child: SingleChildScrollView(
-                                controller: scriptureScrollController,
-                                physics: bodyHeight == maxHeight
-                                    ? const ClampingScrollPhysics()
-                                    : const NeverScrollableScrollPhysics(),
-                                child: MonthHeader(
-                                  currentDate: widget.currentDate,
-                                  monthData: monthData,
-                                  contentColWidth: widget.contentColWidth,
-                                  headerImageHeight: widget.headerImageHeight,
-                                  adaptiveMargin: widget.adaptiveMargin,
-                                  isPhone: widget.isPhone,
-                                  kIsWeb: widget.kIsWeb,
-                                  scriptureOnly: true,
-                                  showCardBackground: false,
+
+                              // The animated opactiy buttons row
+                              Positioned(
+                                left: 0,
+                                bottom: 20,
+                                child: AnimatedOpacity(
+                                  duration: const Duration(milliseconds: 500),
+                                  // opacity: buttonsVisible ? 1 : 0,
+                                  opacity:
+                                      bodyHeightNotifier.value == 0 ? 0 : 1,
+                                  child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20),
+                                      width: widget.size.width,
+                                      child: child),
                                 ),
                               ),
-                            ),
+                            ],
                           ),
                         ),
                       ),
-                    ],
-                  ),
-
-                  // The animated opactiy buttons row
-                  Positioned(
-                    left: 0,
-                    bottom: 20,
-                    child: AnimatedOpacity(
-                      duration: const Duration(milliseconds: 500),
-                      opacity: buttonsVisible ? 1 : 0,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        width: widget.size.width,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            IconButton.filled(
-                                icon: const Icon(Icons.share),
-                                onPressed: () {
-                                  //Grab the months data, which contains the verse data
-                                  Month monthData = (Provider.of<Months>(
-                                          context,
-                                          listen: false)
-                                      .months
-                                      .where((element) =>
-                                          element.monthID ==
-                                          widget.currentDate.month)
-                                      .toList()[0]);
-                                  //the [0] grabs the first in the list, which will be the only one
-                                  triggerSharing(context, kIsWeb, monthData);
-                                }),
-                            const Expanded(
-                              child: SizedBox(
-                                width: 10,
-                              ),
-                            ),
-                            PlayButton(
-                              file: widget.currentDate.month,
-                            ),
-                          ],
-                        ),
-                      ),
                     ),
-                  ),
-                ],
+                  );
+                }),
+          )
+        //TODO here is the area working on
+        : Stack(children: [
+            ScrollConfiguration(
+              //The 2.8 Flutter behavior is to not have mice grabbing and dragging - but we do want this in the web version of the app, so the custom scroll behavior here
+              behavior: MyCustomScrollBehavior(),
+              child: MouseRegion(
+                cursor: SystemMouseCursors.grab,
+                child: SingleChildScrollView(
+                  // physics: const AlwaysScrollableScrollPhysics(),
+                  child: versesComposer(),
+                ),
               ),
-              // child: Container(
-              //   decoration: BoxDecoration(
-              //     color: userPrefs.glassEffects!
-              //         ? Theme.of(context)
-              //             .colorScheme
-              //             .secondaryContainer
-              //             .withOpacity(.6)
-              //         : Theme.of(context).colorScheme.secondaryContainer,
-              //     borderRadius: const BorderRadius.only(
-              //       topRight: Radius.circular(20.0),
-              //       topLeft: Radius.circular(20.0),
-              //     ),
-              //     // boxShadow: <BoxShadow>[
-              //     //   BoxShadow(
-              //     //       color: Colors.black,
-              //     //       spreadRadius: 2.0,
-              //     //       blurRadius: 4.0),
-              //     // ],
-              //   ),
-              //   child: Column(
-              //     children: [
-              //       Container(
-              //         padding: const EdgeInsets.symmetric(horizontal: 9),
-              //         width: widget.size.width,
-              //         alignment: Alignment.center,
-              //         // decoration: BoxDecoration(
-              //         //   color: Theme.of(context).brightness == Brightness.light
-              //         //       ? Colors.white70
-              //         //       : Colors.black38,
-              //         // borderRadius: const BorderRadius.only(
-              //         //   topRight: Radius.circular(20.0),
-              //         //   topLeft: Radius.circular(20.0),
-              //         // ),
-              //         // boxShadow: <BoxShadow>[
-              //         //   BoxShadow(
-              //         //       color: Colors.black,
-              //         //       spreadRadius: 2.0,
-              //         //       blurRadius: 4.0),
-              //         // ],
-              //         // ),
-              //         height: headerHeight,
-              //         child: Column(
-              //           children: [
-              //             const Icon(Icons.drag_handle_rounded),
-              //             // Row(
-              //             //   children: [
-              //             //     IconButton.filled(
-              //             //         icon: const Icon(Icons.share),
-              //             //         onPressed: () {
-              //             //           //Grab the months data, which contains the verse data
-              //             //           Month monthData = (Provider.of<Months>(
-              //             //                   context,
-              //             //                   listen: false)
-              //             //               .months
-              //             //               .where((element) =>
-              //             //                   element.monthID ==
-              //             //                   widget.currentDate.month)
-              //             //               .toList()[0]);
-              //             //           //the [0] grabs the first in the list, which will be the only one
-              //             //           triggerSharing(context, kIsWeb, monthData);
-              //             //         }),
-              //             // Expanded(
-              //             //     flex: 1,
-              //             //     child: Container(
-              //             //       // margin: const EdgeInsets.only(top: 10),
-              //             //       height: headerHeight - 24,
-              //             //       width: double.infinity,
-              //             //       decoration: BoxDecoration(
-              //             //         image: DecorationImage(
-              //             //           alignment: Alignment.center,
-              //             //           fit: BoxFit.cover,
-              //             //           image: AssetImage(
-              //             //               "assets/images/backgrounds/${widget.currentDate.month}.jpg"),
-              //             //         ),
-              //             //       ),
-              //             //       child: Container(
-              //             //         decoration: BoxDecoration(
-              //             //           gradient: LinearGradient(
-              //             //             begin: Alignment.bottomRight,
-              //             //             colors: [
-              //             //               Colors.black.withOpacity(.7),
-              //             //               Colors.black.withOpacity(.0)
-              //             //             ],
-              //             //           ),
-              //             //         ),
-              //             //       ),
-              //             //     )),
-              //             // const PlayButton(
-              //             //   file: '1',
-              //             // )
-              //             //   ],
-              //             // )
-              //           ],
-              //         ),
-              //       ),
-              //       Expanded(
-              //           child: Padding(
-              //               padding:
-              //                   const EdgeInsets.symmetric(horizontal: 10.0),
-              //               child:
-              //                   //Month header
-              //                   SingleChildScrollView(
-              //                 child: MonthHeader(
-              //                   currentDate: widget.currentDate,
-              //                   monthData: monthData,
-              //                   contentColWidth: widget.contentColWidth,
-              //                   headerImageHeight: widget.headerImageHeight,
-              //                   adaptiveMargin: widget.adaptiveMargin,
-              //                   isPhone: widget.isPhone,
-              //                   kIsWeb: widget.kIsWeb,
-              //                   scriptureOnly: true,
-              //                 ),
-              //               ))),
-              //     ],
-              //   ),
-              // ),
             ),
-          ),
-        ),
-      ),
-    );
+            Positioned(
+                left: 20,
+                bottom: 20,
+                child: Container(
+                    width: (widget.size.width * .6) - 40, child: buttonsRow()))
+          ]);
   }
 }
 
 void triggerSharing(BuildContext context, bool kIsWeb, Month monthData) {
   void adaptiveShare(String script) async {
     String versesToShare = '';
-    late String lineBreak, vs, ref, name;
+    late String lineBreak, vs, ref;
 
     kIsWeb ? lineBreak = '%0d%0a' : lineBreak = '\n';
 
@@ -366,18 +310,10 @@ void triggerSharing(BuildContext context, bool kIsWeb, Month monthData) {
         // yallaMooy = 'Yàlla mooy ';
         vs = element.verseRS;
         ref = element.verseRefRS;
-        monthData.wolofName != null
-            ? name = monthData.wolofName.toString()
-            // ignore: unnecessary_statements
-            : null;
       } else if (script == 'arabic') {
         // yallaMooy = 'يࣵلَّ مࣷويْ ';
         vs = element.verseAS;
         ref = element.verseRefAS;
-        monthData.wolofalName != null
-            ? name = monthData.wolofalName.toString()
-            // ignore: unnecessary_statements
-            : null;
       }
 
       versesToShare =
@@ -385,8 +321,7 @@ void triggerSharing(BuildContext context, bool kIsWeb, Month monthData) {
     }
 
     //Put together the whole sharing string
-    final String textToShare =
-        '$name: $lineBreak $lineBreak $versesToShare https://sng.al/cal';
+    final String textToShare = '${versesToShare}https://sng.al/cal';
 
     //if it's not the web app, share using the device share function
     if (!kIsWeb) {
@@ -436,4 +371,9 @@ void triggerSharing(BuildContext context, bool kIsWeb, Month monthData) {
       );
     },
   );
+}
+
+//For calling the child method from the parent - follow the childController text through this and player_button.dart
+class ChildController {
+  void Function() childMethod = () {};
 }

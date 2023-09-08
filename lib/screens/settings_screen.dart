@@ -32,6 +32,7 @@ class SettingsScreenState extends State<SettingsScreen> {
     final Locale? userLocale = localeProvider.userLocale;
     final UserPrefs prefsProvider =
         Provider.of<UserPrefs>(context, listen: true);
+
     final wolof = prefsProvider.userPrefs.wolofVerseEnabled;
     final wolofal = prefsProvider.userPrefs.wolofalVerseEnabled;
     final glassEffects = prefsProvider.userPrefs.glassEffects;
@@ -242,13 +243,22 @@ class SettingsScreenState extends State<SettingsScreen> {
                         'changeThemeColorWithBackground', !switchValue);
                   }
                 } else if (kind == 'arabic') {
-                  setState(() {
+                  //if wolof/roman is on, then go ahead and switch it on or off.
+                  if (wolof!) {
                     prefsProvider.savePref('wolofalVerseEnabled', !wolofal!);
-                  });
+                    //but if wolof is not on and you're trying to turn of wolofal, turn on wolof.
+                  } else if (!wolof && wolofal!) {
+                    prefsProvider.savePref('wolofalVerseEnabled', false);
+                    prefsProvider.savePref('wolofVerseEnabled', true);
+                  }
                 } else if (kind == 'roman') {
-                  setState(() {
+                  if (wolofal!) {
                     prefsProvider.savePref('wolofVerseEnabled', !wolof!);
-                  });
+                    //but if wolof is not on and you're trying to turn of wolofal, turn on wolof.
+                  } else if (!wolofal && wolof!) {
+                    prefsProvider.savePref('wolofVerseEnabled', false);
+                    prefsProvider.savePref('wolofalVerseEnabled', true);
+                  }
                 }
               },
             ),

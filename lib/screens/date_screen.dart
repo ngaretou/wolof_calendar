@@ -1,3 +1,5 @@
+// ignore_for_file: sized_box_for_whitespace
+
 import 'dart:ui';
 import 'dart:async';
 import 'dart:math';
@@ -322,11 +324,14 @@ class DateScreenState extends State<DateScreen> {
     late double headerImageHeight;
     late EdgeInsets adaptiveMargin;
 
+    //if big screen
     if (!isPhone) {
       contentColWidth = 600;
       headerImageHeight = screenheight / 3;
-      adaptiveMargin = EdgeInsets.symmetric(
-          horizontal: (screenwidth - contentColWidth) / 2, vertical: 0);
+      // adaptiveMargin = EdgeInsets.symmetric(
+      //     horizontal: (screenwidth - contentColWidth) / 2, vertical: 0);
+      adaptiveMargin = const EdgeInsets.symmetric(horizontal: 5, vertical: 5);
+      //small screen
     } else if (isPhone) {
       contentColWidth = screenwidth - 10;
       headerImageHeight = 200;
@@ -574,51 +579,139 @@ class DateScreenState extends State<DateScreen> {
     Widget monthRow() {
       late Row row;
 
-      if (screenwidth > 344) {
-        //larger screen
-        row = Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            monthNames(appBarWesternMonthFR, TextAlign.left),
-            Text(
-              '/',
-              style: appBarMonthsStyle,
-            ),
-            monthNames(appBarWesternMonthAS, TextAlign.right),
-            const Expanded(
-                child: SizedBox(
-              width: 1,
-            )),
-            monthNames(appBarWolofMonth, TextAlign.left),
-            Text(
-              '/',
-              style: appBarMonthsStyle,
-            ),
-            monthNames(appBarWolofalMonth, TextAlign.right),
-          ],
-        );
+      List<Widget> monthNameWidgets = [];
+
+      double spaceAvailable = isPhone ? screenwidth : (size.width * .4) - 16;
+
+      if (spaceAvailable > 360) {
+        monthNameWidgets = [
+          monthNames(appBarWesternMonthFR, TextAlign.left),
+          Text(
+            '/',
+            style: appBarMonthsStyle,
+          ),
+          monthNames(appBarWesternMonthAS, TextAlign.right),
+          const Expanded(
+              child: SizedBox(
+            width: 1,
+          )),
+          monthNames(appBarWolofMonth, TextAlign.left),
+          Text(
+            '/',
+            style: appBarMonthsStyle,
+          ),
+          monthNames(appBarWolofalMonth, TextAlign.right),
+        ];
       } else {
-        //smaller screen
-        row = Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            monthNames(appBarWolofMonth, TextAlign.left),
-            const Text('/'),
-            monthNames(appBarWolofalMonth, TextAlign.right)
-          ],
-        );
+        monthNameWidgets = [
+          monthNames(appBarWesternMonthFR, TextAlign.left),
+          monthNames(appBarWolofalMonth, TextAlign.right)
+        ];
       }
 
+      row = Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: monthNameWidgets);
+
       return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
+          padding: isPhone
+              ? const EdgeInsets.symmetric(horizontal: 8)
+              : EdgeInsets.only(left: (size.width * .6) + 8, right: 8),
           color: userPrefsListenTrue.glassEffects!
               ? Colors.transparent
               : Theme.of(context).colorScheme.secondaryContainer,
           child: row);
     }
 
+    Widget datesSection() {
+      return SmoothAnimatedContainer(
+        duration: const Duration(seconds: 2),
+        curve: Curves.ease,
+        height: double.infinity,
+        width: double.infinity,
+        decoration: userPrefsListenTrue.backgroundImage!
+            ? BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(
+                      'assets/images/${currentMonthFirstDate.value.month.toString()}.jpg'),
+                  fit: BoxFit.cover,
+                ),
+              )
+            : BoxDecoration(color: Theme.of(context).highlightColor),
+        child: BackdropFilter(
+          // This is not exactly as I want it, this is for the bg image - but in
+          // widescreen view it makes the verses blurry.
+          filter: isPhone
+              ? ImageFilter.blur(sigmaX: 1, sigmaY: 5)
+              : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
+          child: Container(
+            decoration: userPrefs.backgroundImage!
+                ? BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.bottomRight,
+                      colors: [
+                        overlayColor.withOpacity(.7),
+                        overlayColor.withOpacity(.3)
+                      ],
+                      stops: const [0.1, .9],
+                    ),
+                  )
+                : BoxDecoration(color: Theme.of(context).highlightColor),
+            child: MouseRegion(
+              cursor: SystemMouseCursors.grab,
+              child: NotificationListener(
+                onNotification: (dynamic notification) {
+                  if (notification is ScrollEndNotification) {
+                    updateAfterNavigation();
+                  }
+                  return true;
+                },
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: ScrollConfiguration(
+                        //The 2.8 Flutter behavior is to not have mice grabbing and dragging - but we do want this in the web version of the app, so the custom scroll behavior here
+                        behavior: MyCustomScrollBehavior()
+                            .copyWith(scrollbars: false),
+                        child: ScrollablePositionedList.builder(
+                          itemScrollController: itemScrollController,
+                          itemPositionsListener: itemPositionsListener,
+                          physics: const BouncingScrollPhysics(),
+                          initialScrollIndex: initialScrollIndex!,
+                          itemBuilder: (ctx, i) => DateTile(
+                            currentDate: datesToDisplay[i],
+                            contentColWidth: contentColWidth,
+                            headerImageHeight: headerImageHeight,
+                            adaptiveMargin: adaptiveMargin,
+                            isPhone: isPhone,
+                          ),
+                          itemCount: datesToDisplay.length,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    Widget versesSection() {
+      return MonthBottomSheet(
+          currentDate: currentMonthFirstDate.value,
+          monthData: allMonths,
+          contentColWidth: contentColWidth,
+          headerImageHeight: headerImageHeight,
+          adaptiveMargin: adaptiveMargin,
+          size: size,
+          isPhone: isPhone,
+          kIsWeb: kIsWeb);
+    }
+
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      extendBodyBehindAppBar: isPhone ? true : false,
       //Theme + BackdropFilter gets the glass theme on the drawer
       drawerScrimColor: Colors.transparent,
       drawer: Theme(
@@ -633,7 +726,7 @@ class DateScreenState extends State<DateScreen> {
         ),
         child: BackdropFilter(
             filter: userPrefs.glassEffects!
-                ? ImageFilter.blur(sigmaX: 20, sigmaY: 20)
+                ? ImageFilter.blur(sigmaX: 50, sigmaY: 50)
                 : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
             child: const MainDrawer()),
       ),
@@ -655,56 +748,11 @@ class DateScreenState extends State<DateScreen> {
             //         ? const Icon(Icons.light_mode)
             //         : const Icon(Icons.dark_mode)),
 
-            //Share button
-            // AnimatedOpacity(
-            //   opacity: showMonthHeaderButtons ? 1.0 : 0.0,
-            //   duration: Duration(milliseconds: fadeInSpeed),
-            //   child: IconButton(
-            //       icon: const Icon(Icons.share),
-            //       onPressed: showMonthHeaderButtons
-            //           ? () {
-            //               showDialog(
-            //                 context: context,
-            //                 builder: (BuildContext context) {
-            //                   return AlertDialog(
-            //                     title: Text(
-            //                       AppLocalizations.of(context)!.sharingTitle,
-            //                     ),
-            //                     content: Text(
-            //                         AppLocalizations.of(context)!.sharingMsg),
-            //                     actions: [
-            //                       TextButton(
-            //                           child: const Text("Wolof"),
-            //                           onPressed: () async {
-            //                             Navigator.of(context).pop();
-            //                             adaptiveShare('roman');
-            //                           }),
-            //                       TextButton(
-            //                           child: const Text(" وࣷلࣷفَلْ ",
-            //                               style: TextStyle(
-            //                                   fontFamily: "Harmattan",
-            //                                   fontSize: 22)),
-            //                           onPressed: () {
-            //                             Navigator.of(context).pop();
-            //                             adaptiveShare('arabic');
-            //                           }),
-            //                       TextButton(
-            //                           child: Text(
-            //                             AppLocalizations.of(context)!.cancel,
-            //                           ),
-            //                           onPressed: () {
-            //                             Navigator.of(context).pop();
-            //                           }),
-            //                     ],
-            //                   );
-            //                 },
-            //               );
-            //             }
-            //           : () {}),
-            // ),
             //Navigate one month back
             IconButton(
-                icon: const Icon(Icons.arrow_back_ios),
+                icon: const Icon(
+                  Icons.arrow_back_ios,
+                ),
                 onPressed: () => moveMonths('backward')),
             //Date picker
 
@@ -718,89 +766,16 @@ class DateScreenState extends State<DateScreen> {
                 onPressed: () => moveMonths('forward')),
           ],
           extraRow: monthRow()),
-      body: Stack(
-        children: [
-          SmoothAnimatedContainer(
-            duration: const Duration(seconds: 2),
-            curve: Curves.ease,
-            height: double.infinity,
-            width: double.infinity,
-            decoration: userPrefsListenTrue.backgroundImage!
-                ? BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(
-                          'assets/images/${currentMonthFirstDate.value.month.toString()}.jpg'),
-                      fit: BoxFit.cover,
-                    ),
-                  )
-                : BoxDecoration(color: Theme.of(context).highlightColor),
-            child: BackdropFilter(
-              filter: userPrefs.glassEffects!
-                  ? ImageFilter.blur(sigmaX: 1, sigmaY: 5)
-                  : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
-              child: Container(
-                decoration: userPrefs.backgroundImage!
-                    ? BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.bottomRight,
-                          colors: [
-                            overlayColor.withOpacity(.7),
-                            overlayColor.withOpacity(.3)
-                          ],
-                          stops: const [0.1, .9],
-                        ),
-                      )
-                    : BoxDecoration(color: Theme.of(context).highlightColor),
-                child: MouseRegion(
-                  cursor: SystemMouseCursors.grab,
-                  child: NotificationListener(
-                    onNotification: (dynamic notification) {
-                      if (notification is ScrollEndNotification) {
-                        updateAfterNavigation();
-                      }
-                      return true;
-                    },
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: ScrollConfiguration(
-                            //The 2.8 Flutter behavior is to not have mice grabbing and dragging - but we do want this in the web version of the app, so the custom scroll behavior here
-                            behavior: MyCustomScrollBehavior()
-                                .copyWith(scrollbars: false),
-                            child: ScrollablePositionedList.builder(
-                              itemScrollController: itemScrollController,
-                              itemPositionsListener: itemPositionsListener,
-                              physics: const BouncingScrollPhysics(),
-                              initialScrollIndex: initialScrollIndex!,
-                              itemBuilder: (ctx, i) => DateTile(
-                                currentDate: datesToDisplay[i],
-                                contentColWidth: contentColWidth,
-                                headerImageHeight: headerImageHeight,
-                                adaptiveMargin: adaptiveMargin,
-                                isPhone: isPhone,
-                              ),
-                              itemCount: datesToDisplay.length,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+      body: isPhone
+          ? Stack(
+              children: [datesSection(), versesSection()],
+            )
+          : Row(
+              children: [
+                Container(width: size.width * .6, child: versesSection()),
+                Container(width: size.width * .4, child: datesSection()),
+              ],
             ),
-          ),
-          MonthBottomSheet(
-              currentDate: currentMonthFirstDate.value,
-              monthData: allMonths,
-              contentColWidth: contentColWidth,
-              headerImageHeight: headerImageHeight,
-              adaptiveMargin: adaptiveMargin,
-              size: size,
-              isPhone: isPhone,
-              kIsWeb: kIsWeb)
-        ],
-      ),
     );
   }
 }
