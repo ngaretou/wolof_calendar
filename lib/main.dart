@@ -95,11 +95,11 @@ class MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    print('main.dart build');
+    // print('main.dart build');
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Arminaat Wolof',
+      title: 'Arminaatu Wolof',
       home: FutureBuilder(
           future: init,
           builder: (ctx, snapshot) {

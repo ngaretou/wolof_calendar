@@ -107,7 +107,7 @@ class UserPrefs with ChangeNotifier {
       }
     }
     print('setting up user prefs done');
-    print(_userPrefs.backgroundImage);
+
     return;
   }
 

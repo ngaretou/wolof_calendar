@@ -4,7 +4,7 @@ class SplashScreen extends StatelessWidget {
   const SplashScreen({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    print('splash screen');
+    // print('splash screen');
     return const Center(child: CircularProgressIndicator());
   }
 }

@@ -11,7 +11,7 @@ class LocaleProvider extends ChangeNotifier {
   Locale? userLocale;
 
   Future<void> setLocale(String incomingLocale) async {
-    print('setLocale in theme.dart');
+    // print('setLocale in theme.dart');
     switch (incomingLocale) {
       case 'en':
         userLocale = const Locale('en', '');

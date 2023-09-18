@@ -24,6 +24,7 @@
       "request": "launch",
       "type": "dart",
       "flutterMode": "debug"
+      // "args": ["-v"]
     }
   ]
 }

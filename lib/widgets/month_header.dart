@@ -220,8 +220,7 @@ class MonthHeaderState extends State<MonthHeader> {
       ),
     ];
 
-
-    //this is all about getting the spacing right going between the phone and widescreen versions. 
+    //this is all about getting the spacing right going between the phone and widescreen versions.
     late EdgeInsetsGeometry headerPadding;
     if (widget.isPhone || !widget.scriptureOnly) {
       headerPadding = widget.adaptiveMargin;
@@ -256,8 +255,8 @@ class MonthHeaderState extends State<MonthHeader> {
                       gradient: LinearGradient(
                         begin: Alignment.bottomRight,
                         colors: [
-                          overlayColor.withOpacity(.8),
-                          overlayColor.withOpacity(.5)
+                          overlayColor.withOpacity(.6),
+                          overlayColor.withOpacity(.3)
                         ],
                         stops: const [0, .9],
                       ),

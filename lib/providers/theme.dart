@@ -94,7 +94,7 @@ class ThemeModel extends ChangeNotifier {
   }
 
   void setThemeColor(Color color) {
-    print('setting new color in provider theme.dart');
+    // print('setting new color in provider theme.dart');
     currentTheme = ThemeData(
         useMaterial3: true,
         fontFamily: 'Lato',
