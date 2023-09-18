@@ -1,5 +1,3 @@
-// ignore_for_file: sized_box_for_whitespace
-
 import 'dart:ui';
 import 'dart:async';
 import 'dart:math';
@@ -7,11 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'package:intl/intl.dart';
-// import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-// import 'package:share/share.dart';
 import 'package:palette_generator/palette_generator.dart';
-// import 'package:url_launcher/url_launcher.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:animated_box_decoration/animated_box_decoration.dart';
 
@@ -22,10 +17,9 @@ import '../providers/theme.dart';
 import '../providers/fps.dart';
 
 import '../widgets/drawer.dart';
-// import '../widgets/play_button.dart';
 import '../widgets/date_tile.dart';
 import '../widgets/glass_app_bar.dart';
-import '../widgets/bottom_sheet.dart';
+import '../widgets/scripture_panel.dart';
 
 //To adapt to new Flutter 2.8 behavior that does not allow mice to drag - which is our desired behavior here
 class MyCustomScrollBehavior extends ScrollBehavior {
@@ -49,10 +43,14 @@ class DateScreen extends StatefulWidget {
 }
 
 class DateScreenState extends State<DateScreen> {
+  //Because using custom appbar have to use this to connect the drawer to it
+  GlobalKey<ScaffoldState> scaffoldStateKey = GlobalKey();
+
   //For the ScrollablePositionedList
   ItemPositionsListener itemPositionsListener = ItemPositionsListener.create();
   ItemScrollController itemScrollController = ItemScrollController();
 
+  //default theme that can be changed
   Color themeColor = Colors.teal;
 
   //count of these two events - a danger zone event is less than the given fps rate - a fpsWorking event is when the callback reports a good frame rate.
@@ -64,15 +62,12 @@ class DateScreenState extends State<DateScreen> {
   late List<Date> datesToDisplay;
   late List<Month> allMonths;
   late UserPrefs userPrefs;
+
   //This is used just for the initial navigation on open
   int? initialScrollIndex;
+
   //Holders for the app bar title info that gets refreshed as the user navigates
-  // String formattedAppBarTitle = "";
-  // String appBarWesternMonthFR = "";
-  // String appBarWesternMonthRS = "";
-  // String appBarWesternMonthAS = "";
-  // String appBarWolofMonth = "";
-  // String appBarWolofalMonth = "";
+  //Doing this with valuenotifiers saves lots of rebuilds
   ValueNotifier<String> formattedAppBarTitle = ValueNotifier("");
   ValueNotifier<String> appBarWesternMonthFR = ValueNotifier("");
   ValueNotifier<String> appBarWesternMonthRS = ValueNotifier("");
@@ -91,7 +86,7 @@ class DateScreenState extends State<DateScreen> {
 
   @override
   void initState() {
-    print('date screen initState');
+    // print('date screen initState');
     UserPrefs prefsProvider = Provider.of<UserPrefs>(context, listen: false);
     userPrefs = prefsProvider.userPrefs;
 
@@ -99,18 +94,21 @@ class DateScreenState extends State<DateScreen> {
     datesToDisplay = Provider.of<Months>(context, listen: false).dates;
     allMonths = Provider.of<Months>(context, listen: false).months;
 
-    // currentMonthFirstDate = ValueNotifier(datesToDisplay[0]);
-
     //If already on low power setting, don't bother checking;
     //Also if user has one time chosen a power setting and knows where it is, don't check anymore
 
     // enableFpsMonitoring(); //for testing, always turns on fps monitoring
     if (userPrefs.shouldTestDevicePerformance!) enableFpsMonitoring();
 
+    /*
+    //   In the initial version of the app we arrived here with route arguments.
+    //   Following the 2020 version we're going to this screen being the intial screen,
+    //   but leaving the logic in case in the future we want to navigate back to this screen
+    //   using route args. A bit confusing reading through for the current version.
+    //   */
     late DateScreenArgs args;
 
     // When first opening, there are no arguments, so go to current date using the argument format
-    // if (ModalRoute.of(context)?.settings.arguments == null) {
     DateTime now = DateTime.now();
     String currentDate = DateFormat('d', 'fr_FR').format(now);
     String currentMonthString = DateFormat('M', 'fr_FR').format(now);
@@ -129,7 +127,6 @@ class DateScreenState extends State<DateScreen> {
       //Get the last entry in the list
       Date lastDateInData = datesToDisplay.last;
       //and set our routargs to that date.
-      //It gives a little bounce and you can't scroll any further down.
       args = DateScreenArgs(
           date: lastDateInData.westernDate,
           month: lastDateInData.month,
@@ -137,7 +134,6 @@ class DateScreenState extends State<DateScreen> {
     }
 
     //This initializes with a value the month we initially open to.
-    //If it's a 1, it will display the buttons, but if not, it will not show anyway
     int firstOfCurrentMonthIndex = datesToDisplay.indexWhere((element) =>
         element.year == args.year &&
         element.month == args.month &&
@@ -148,16 +144,20 @@ class DateScreenState extends State<DateScreen> {
 
     //This is the index of the initial date to show in that infinite list
     //This sets up the first date you see as that initialDateIndex but will be changed as we scroll
-    initialScrollIndex = (datesToDisplay.indexWhere((element) =>
-        args.year == element.year &&
-        args.month == element.month &&
-        args.date == element.westernDate)).toInt();
+    //important if it's a scroll body behind app bar situation with glass app bar that it be -1 to account for
+    //the tile under the app bar
+    initialScrollIndex = ((datesToDisplay.indexWhere((element) =>
+                args.year == element.year &&
+                args.month == element.month &&
+                args.date == element.westernDate)) -
+            1)
+        .toInt();
 
     //Get the initialDate as a DateTime
     initialDateTime = DateFormat('yyyy M d', 'fr_FR')
         .parse('${args.year} ${args.month} ${args.date}');
     //Then make it nice for the initial appBarTitle
-    //To change format of title bar change both in didChangeDependencies & in main build
+    //To change format of title bar change both in initState & in main build
     formattedAppBarTitle.value = args.year!;
 
     Month currentMonth = (Provider.of<Months>(context, listen: false)
@@ -172,17 +172,20 @@ class DateScreenState extends State<DateScreen> {
       index--;
     }
 
+    //set up the initial values for these month headers
     appBarWesternMonthFR.value = currentMonth.monthFR;
     appBarWesternMonthRS.value = currentMonth.monthRS;
     appBarWesternMonthAS.value = currentMonth.monthAS;
     appBarWolofMonth.value = datesToDisplay[index].wolofMonthRS;
     appBarWolofalMonth.value = datesToDisplay[index].wolofMonthAS;
 
+    //Listen to this valuenotifier for changes
     currentMonthFirstDate.addListener(() {
-      print('currentMonthFirstDate listener fired');
+      // print('currentMonthFirstDate listener fired');
+
       /* if the changeThemeColorWithBackground is off but backgroundImage on,
       the valuelistenablebuilder will trigger that change. 
-      If the theme should change this triggers that 
+      If the theme should change this triggers it: 
       */
 
       if (Provider.of<UserPrefs>(context, listen: false)
@@ -196,28 +199,8 @@ class DateScreenState extends State<DateScreen> {
     super.initState();
   }
 
-  // @override
-  // void didChangeDependencies() {
-  //   print('didChangeDependencies');
-  //   @override
-
-  //   //We need context several places here so using this method rather than initState,
-  //       //where there is no context - didChangeDependencies is initState with context
-
-  //       /*
-  //   In the initial version of the app we arrived here with route arguments.
-  //   Following the 2020 version we're going to this screen being the intial screen,
-  //   but leaving the logic in case in the future we want to navigate back to this screen
-  //   using route args. A bit confusing reading through for the current version.
-  //   So the below is the incoming args from the Navigator.of command
-  //   from wherever we've arrived from, or possibly null.
-  //   */
-
-  //   super.didChangeDependencies();
-  // }
-
   Future<void> enableFpsMonitoring() async {
-    debugPrint('starting fps test');
+    // debugPrint('starting fps test');
     Fps.instance!.start();
 
     Fps.instance!.addFpsCallback((fpsInfo) {
@@ -244,15 +227,13 @@ class DateScreenState extends State<DateScreen> {
   }
 
   Future<void> enableLightAnimation() async {
-    debugPrint('FPS consistently low: ask to enableLightAnimation');
+    debugPrint('FPS consistently low: ask to enable Light Animation');
     Fps.instance!.stop();
     //Set the preference
     Provider.of<UserPrefs>(context, listen: false)
         .savePref('changeThemeColorWithBackground', false);
     Provider.of<UserPrefs>(context, listen: false)
         .savePref('shouldTestDevicePerformance', false);
-
-    // setState(() {});
 
     //Give the user a message and a chance to cancel
     // ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -277,11 +258,12 @@ class DateScreenState extends State<DateScreen> {
   }
 
   Future<void> setColor() async {
-    print('setColor fired');
-    // Image img = Image.network(currentChannel.image);
-    String monthAsString = currentMonthFirstDate.value.month.toString();
+    // print('setColor fired');
+
+    String monthAsString = currentMonthFirstDate.value.month;
     ImageProvider myBackground = AssetImage('assets/images/$monthAsString.jpg');
 
+    //the magic
     PaletteGenerator paletteGenerator =
         await PaletteGenerator.fromImageProvider(myBackground);
 
@@ -303,27 +285,37 @@ class DateScreenState extends State<DateScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('date_screen build');
-
-    //Because using custom appbar
-    GlobalKey<ScaffoldState> scaffoldStateKey = GlobalKey();
+    // print('date_screen build');
 
     UserPrefs userPrefsListenTrue =
         Provider.of<UserPrefs>(context, listen: true).userPrefs;
 
-    late int navigateToDateIndex; //this is for later on when the user navigates
-    // int lastIndex = datesToDisplay.length - 1;
+    //this is for later on when the user navigates
+    late int navigateToDateIndex;
+
     final Size size = MediaQuery.of(context).size;
     final screenwidth = size.width;
     final screenheight = size.height;
+    print(screenwidth);
 
+    //set up the column proportions for widescreen view
+
+    // final double datePanelWidth = max(screenwidth * .4, 1);
+    // final double scripturePanelWidth = screenwidth - datePanelWidth;
+
+    //set up the column proportions for widescreen view
+    final double datePanelWidth = max(screenwidth * .4, 350);
+    final double scripturePanelWidth = screenwidth - datePanelWidth;
+
+    //overlay color for widgets that will have a gradient over them
     final Color overlayColor = Theme.of(context).brightness == Brightness.dark
         ? Colors.black
         : Colors.white;
 
-    final bool isPhone = (screenwidth + screenheight) <= 1400;
+    final bool isPhone =
+        ((screenwidth + screenheight) <= 1400) || screenwidth < 750;
 
-    // Column width for the name row
+    // Column width
     late double contentColWidth;
     late double headerImageHeight;
     late EdgeInsets adaptiveMargin;
@@ -331,7 +323,8 @@ class DateScreenState extends State<DateScreen> {
     //if big screen
     if (!isPhone) {
       contentColWidth = 600;
-      headerImageHeight = screenheight / 3;
+      headerImageHeight = min(screenheight, screenwidth) / 3;
+
       // adaptiveMargin = EdgeInsets.symmetric(
       //     horizontal: (screenwidth - contentColWidth) / 2, vertical: 0);
       adaptiveMargin = const EdgeInsets.symmetric(horizontal: 5, vertical: 5);
@@ -341,8 +334,6 @@ class DateScreenState extends State<DateScreen> {
       headerImageHeight = 200;
       adaptiveMargin = const EdgeInsets.symmetric(horizontal: 5, vertical: 5);
     }
-
-    // var themeProvider = Provider.of<ThemeModel>(context, listen: false);
 
     Color appBarItemColor = Theme.of(context).brightness == Brightness.light
         ? Colors.black87
@@ -463,16 +454,18 @@ class DateScreenState extends State<DateScreen> {
       currentMonthFirstDate.value = datesToDisplay[firstOfCurrentMonthIndex];
     }
 
+    //This magically finds the index we want given a year, month, and date
     int getDateIndex(String goToYear, String goToMonth, String goToDate) {
-      //This magically finds the index we want
-      return navigateToDateIndex = (datesToDisplay.indexWhere((element) =>
+      var me = (datesToDisplay.indexWhere((element) =>
           element.year == goToYear &&
           element.month == goToMonth &&
           element.westernDate == goToDate)).toInt();
+
+      return me;
     }
 
     void moveMonths(String direction) {
-      print('moveMonths');
+      // print('moveMonths');
       //We use this to move one month forward or backward to the first of the month
       //wiht the arrow buttons in the app title bar.
       //Just feed in the direction forward or backward as a string.
@@ -516,26 +509,31 @@ class DateScreenState extends State<DateScreen> {
       }
 
       navigateToDateIndex = getDateIndex(goToYear, goToMonth, '1');
+      print('line 504 $navigateToDateIndex');
 
       //getDateIndex returns -1 if [element] is not found.
       //Here you've requested a date not in the data set, so go to beginning or end of set
       if (navigateToDateIndex < 0) {
         if (direction == 'forward') {
-          navigateToDateIndex = datesToDisplay.length + 1;
+          //lenght starts 1, 2, 3; indexes start 0, 1, 2; so that's why the -1 here
+          navigateToDateIndex = datesToDisplay.length - 1;
+          print('line 511 ${datesToDisplay.length}');
         } else if (direction == 'backward') {
-          navigateToDateIndex = 0;
+          navigateToDateIndex = 1;
         }
       }
 
       //Adjust for the glass app bar
       navigateToDateIndex = navigateToDateIndex - 1;
+      print('line 518 $navigateToDateIndex');
+
       //This uses the scrollcontroller to whisk us to the desired date
       itemScrollController.jumpTo(index: navigateToDateIndex);
       updateAfterNavigation(navigatedIndex: navigateToDateIndex);
     }
 
     Future pickDateToShow() async {
-      print('pickDateToShow');
+      // print('pickDateToShow');
       DateTime lastDate = DateTime(
           int.parse(datesToDisplay.last.year),
           int.parse(datesToDisplay.last.month),
@@ -548,6 +546,7 @@ class DateScreenState extends State<DateScreen> {
         lastDate: lastDate,
         locale: const Locale("fr", "FR"),
       );
+
       if (chosenDate == null) {
         return;
       }
@@ -566,6 +565,7 @@ class DateScreenState extends State<DateScreen> {
       updateAfterNavigation(navigatedIndex: navigateToIndex);
     }
 
+    //The widget that is used for all the month headers
     Widget monthNames(ValueNotifier<String> notifier, TextAlign textAlign) {
       return ValueListenableBuilder(
           valueListenable: notifier,
@@ -580,13 +580,17 @@ class DateScreenState extends State<DateScreen> {
           });
     }
 
+    //the row of month names in the app bar
     Widget monthRow() {
       late Row row;
 
       List<Widget> monthNameWidgets = [];
 
-      double spaceAvailable = isPhone ? screenwidth : (size.width * .4) - 16;
+      //this pushes the month names over to the right in widescreen view
+      double spaceAvailable = isPhone ? screenwidth : (datePanelWidth) - 16;
 
+      //for larger screens we can show more month names:
+      //western month in RS and AS, then wolof in RS and AS
       if (spaceAvailable > 360) {
         monthNameWidgets = [
           monthNames(appBarWesternMonthFR, TextAlign.left),
@@ -607,6 +611,7 @@ class DateScreenState extends State<DateScreen> {
           monthNames(appBarWolofalMonth, TextAlign.right),
         ];
       } else {
+        //if not a large screen just show western month in RS, then wolof in AS
         monthNameWidgets = [
           monthNames(appBarWesternMonthFR, TextAlign.left),
           monthNames(appBarWolofalMonth, TextAlign.right)
@@ -620,11 +625,8 @@ class DateScreenState extends State<DateScreen> {
       return Container(
           padding: isPhone
               ? const EdgeInsets.symmetric(horizontal: 8)
-              : EdgeInsets.only(left: (size.width * .6) + 16, right: 8),
+              : EdgeInsets.only(left: (scripturePanelWidth) + 16, right: 8),
           color: Colors.transparent,
-          // color: userPrefsListenTrue.glassEffects!
-          //     ? Colors.transparent
-          //     : Theme.of(context).colorScheme.secondaryContainer,
           child: row);
     }
 
@@ -667,8 +669,8 @@ class DateScreenState extends State<DateScreen> {
       );
     }
 
+    //this image backdrop goes behind the whole screen if widescreen and just date panel if phone
     Widget imageBackdrop({required Widget child}) {
-      //TODO wrap this with valuelistenablebuilder
       return ValueListenableBuilder(
         valueListenable: currentMonthFirstDate,
         child: child,
@@ -715,11 +717,12 @@ class DateScreenState extends State<DateScreen> {
     }
 
     Widget versesSection() {
-      return MonthBottomSheet(
+      return ScripturePanel(
           currentDate: currentMonthFirstDate.value,
           monthData: allMonths,
           contentColWidth: contentColWidth,
           headerImageHeight: headerImageHeight,
+          scripturePanelWidth: scripturePanelWidth,
           adaptiveMargin: adaptiveMargin,
           size: size,
           isPhone: isPhone,
@@ -728,7 +731,7 @@ class DateScreenState extends State<DateScreen> {
 
     return Scaffold(
       key: scaffoldStateKey,
-      extendBodyBehindAppBar: isPhone ? true : false,
+      extendBodyBehindAppBar: true,
       //Theme + BackdropFilter gets the glass theme on the drawer
       drawerScrimColor: Theme.of(context).brightness == Brightness.light
           ? Colors.white.withOpacity(.1)
@@ -774,12 +777,13 @@ class DateScreenState extends State<DateScreen> {
                   Icons.arrow_back_ios,
                 ),
                 onPressed: () => moveMonths('backward')),
-            //Date picker
 
+            //Date picker
             IconButton(
               icon: const Icon(Icons.date_range),
               onPressed: () => pickDateToShow(),
             ),
+
             //one month forward
             IconButton(
                 icon: const Icon(Icons.arrow_forward_ios),
@@ -793,8 +797,8 @@ class DateScreenState extends State<DateScreen> {
           : imageBackdrop(
               child: Row(
                 children: [
-                  Container(width: size.width * .6, child: versesSection()),
-                  Container(width: size.width * .4, child: datesSection()),
+                  SizedBox(width: scripturePanelWidth, child: versesSection()),
+                  SizedBox(width: datePanelWidth, child: datesSection()),
                 ],
               ),
             ),

@@ -385,7 +385,7 @@ class SettingsScreenState extends State<SettingsScreen> {
           title: AppLocalizations.of(context)!.settingsTitle,
           actions: []),
 
-      //If the width of the screen is greater or equal to 730 (whether or not _isPhone is true)
+      //If the width of the screen is greater or equal to 730 (whether or not is Phone is true)
       //show the wide view
       body: Container(
         color: Theme.of(context).brightness == Brightness.light

@@ -1,7 +1,9 @@
 2.2.0
 New data for 2024
 App bar now includes month info
-* New theming
+New dynamic theming
+Glass effects
+Scripture now always visible
 
 2.1.0
 New data for 2023

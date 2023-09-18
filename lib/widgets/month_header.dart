@@ -220,78 +220,79 @@ class MonthHeaderState extends State<MonthHeader> {
       ),
     ];
 
+
+    //this is all about getting the spacing right going between the phone and widescreen versions. 
+    late EdgeInsetsGeometry headerPadding;
+    if (widget.isPhone || !widget.scriptureOnly) {
+      headerPadding = widget.adaptiveMargin;
+    } else {
+      headerPadding = widget.adaptiveMargin.copyWith(top: 90);
+    }
+
     //Now build the month header
-    return Column(
-      children: [
-        Padding(
-          padding: widget.adaptiveMargin,
-          //   padding: const EdgeInsets.all(0),
-
-          child: Stack(
-            alignment: Alignment.bottomCenter,
-            children: [
-              //Image header
-              !widget.scriptureOnly
-                  ? Container(
-                      margin: const EdgeInsets.only(top: 10),
-                      height: widget.headerImageHeight,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(headerBorderRadius),
-                        image: DecorationImage(
-                          alignment: Alignment.center,
-                          fit: BoxFit.cover,
-                          image: AssetImage(
-                              "assets/images/${widget.monthData[0].monthID}.jpg"),
-                        ),
-                      ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius:
-                              BorderRadius.circular(headerBorderRadius),
-                          gradient: LinearGradient(
-                            begin: Alignment.bottomRight,
-                            colors: [
-                              overlayColor.withOpacity(.8),
-                              overlayColor.withOpacity(.5)
-                            ],
-                            stops: const [0, .9],
-                          ),
-                        ),
-                      ),
-                    )
-                  : const SizedBox(
-                      width: 10,
+    return Padding(
+      padding: headerPadding,
+      child: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          //Image header
+          !widget.scriptureOnly
+              ? Container(
+                  margin: const EdgeInsets.only(top: 10),
+                  height: widget.headerImageHeight,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(headerBorderRadius),
+                    image: DecorationImage(
+                      alignment: Alignment.center,
+                      fit: BoxFit.cover,
+                      image: AssetImage(
+                          "assets/images/${widget.monthData[0].monthID}.jpg"),
                     ),
-              Padding(
-                padding: const EdgeInsets.only(
-                    top: 10.0, bottom: 10, left: 20, right: 20),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children:
-                      widget.scriptureOnly ? scriptureWidgets : dateWidgets,
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(headerBorderRadius),
+                      gradient: LinearGradient(
+                        begin: Alignment.bottomRight,
+                        colors: [
+                          overlayColor.withOpacity(.8),
+                          overlayColor.withOpacity(.5)
+                        ],
+                        stops: const [0, .9],
+                      ),
+                    ),
+                  ),
+                )
+              : const SizedBox(
+                  width: 10,
                 ),
-              ),
-              // Container(
-              //   decoration: BoxDecoration(
-              //     color: widget.showCardBackground
-              //         ? Theme.of(context).colorScheme.primaryContainer
-              //         : Colors.transparent,
-              //     borderRadius: const BorderRadius.only(
-              //         bottomLeft: Radius.circular(40),
-              //         bottomRight: Radius.circular(40)),
-              //   ),
-
-              //   // GlassCard(
-              //   // showGradient: false,
-              //   // borderColor: Theme.of(context).cardColor.withOpacity(.2),
-              //   child:
-              // ),
-            ],
+          Padding(
+            padding: const EdgeInsets.only(
+                top: 10.0, bottom: 10, left: 20, right: 20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: widget.scriptureOnly ? scriptureWidgets : dateWidgets,
+            ),
           ),
-        )
-      ],
+          // Container(
+          //   decoration: BoxDecoration(
+          //     color: widget.showCardBackground
+          //         ? Theme.of(context).colorScheme.primaryContainer
+          //         : Colors.transparent,
+          //     borderRadius: const BorderRadius.only(
+          //         bottomLeft: Radius.circular(40),
+          //         bottomRight: Radius.circular(40)),
+          //   ),
+
+          //   // GlassCard(
+          //   // showGradient: false,
+          //   // borderColor: Theme.of(context).cardColor.withOpacity(.2),
+          //   child:
+          // ),
+        ],
+      ),
     );
   }
 }
