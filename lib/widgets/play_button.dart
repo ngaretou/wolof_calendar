@@ -4,11 +4,12 @@ import 'package:audio_session/audio_session.dart';
 // import 'dart:typed_data';
 // import 'package:flutter/services.dart' show rootBundle;
 
-import 'bottom_sheet.dart';
+import 'scripture_panel.dart';
 
 class PlayButton extends StatefulWidget {
   final String file;
-  final ChildController childController; //child method called via this
+  //child method called via this
+  final ChildController childController;
 
   const PlayButton(
       {Key? key, required this.file, required this.childController})
@@ -40,13 +41,13 @@ class PlayButtonState extends State<PlayButton> with WidgetsBindingObserver {
   }
 
   Future _loadAudio() async {
-    print('loading local audio ${widget.file.toString()}');
+    // print('loading local audio ${widget.file.toString()}');
 
     try {
       await _player.setAudioSource(AudioSource.uri(
           Uri.parse("asset:///assets/audio/${widget.file}.mp3")));
     } catch (e) {
-      print('an error occurred loading audio: ${e.toString()}');
+      debugPrint('an error occurred loading audio: ${e.toString()}');
     }
 
     // Future<void> checkAndAddAudioSource(String path) async {
@@ -127,7 +128,7 @@ class PlayButtonState extends State<PlayButton> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    print('disposing play button for ${widget.file}');
+    // print('disposing play button for ${widget.file}');
     WidgetsBinding.instance.removeObserver(this);
     _player.dispose();
     super.dispose();
@@ -144,7 +145,7 @@ class PlayButtonState extends State<PlayButton> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    print('building play button for ${widget.file}');
+    // print('building play button for ${widget.file}');
     if (_player.playing) {
       // _player.stop();
       gracefulStop();
@@ -171,7 +172,7 @@ class PlayButtonState extends State<PlayButton> with WidgetsBindingObserver {
                 _player.pause();
               });
         } else {
-          print(_player.playing);
+          // print(_player.playing);
           return IconButton.filled(
             icon: const Icon(Icons.play_arrow),
             onPressed: () {

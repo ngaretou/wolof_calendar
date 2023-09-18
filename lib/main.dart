@@ -1,11 +1,12 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import './providers/user_prefs.dart';
@@ -20,6 +21,13 @@ import './screens/about_screen.dart';
 import './screens/date_screen.dart';
 
 void main() {
+  if (kIsWeb) {
+//This is to preserve the splash screen til loading is done
+    WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+    FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  }
+
+  //now run app
   runApp(
     MultiProvider(
       providers: [
@@ -93,13 +101,24 @@ class MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'Arminaat Wolof',
       home: FutureBuilder(
-        future: init,
-        builder: (ctx, snapshot) =>
-            snapshot.connectionState == ConnectionState.waiting
-                ? const Center(child: CircularProgressIndicator())
-                : const DateScreen(),
-      ),
-      theme: Provider.of<ThemeModel>(context, listen: false).currentTheme,
+          future: init,
+          builder: (ctx, snapshot) {
+            // late Widget returnMe;
+
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return kIsWeb
+                  ? const Center(
+                      child: SizedBox(
+                      width: 10,
+                    ))
+                  : const Center(child: CircularProgressIndicator());
+            } else {
+              //remove the loading spinner for web
+              if (kIsWeb) FlutterNativeSplash.remove();
+              return const DateScreen();
+            }
+          }),
+      theme: Provider.of<ThemeModel>(context).currentTheme,
       routes: {
         SettingsScreen.routeName: (ctx) => const SettingsScreen(),
         AboutScreen.routeName: (ctx) => const AboutScreen(),

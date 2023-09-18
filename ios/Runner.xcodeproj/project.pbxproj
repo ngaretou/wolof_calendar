@@ -372,7 +372,7 @@
 				CODE_SIGN_ENTITLEMENTS = Runner/RunnerProfile.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 18;
+				CURRENT_PROJECT_VERSION = 21;
 				DEVELOPMENT_TEAM = RAJ3TA54HF;
 				ENABLE_BITCODE = NO;
 				EXCLUDED_ARCHS = "";
@@ -524,7 +524,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Runner/Arminaatu Wolof.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 18;
+				CURRENT_PROJECT_VERSION = 21;
 				DEVELOPMENT_TEAM = RAJ3TA54HF;
 				ENABLE_BITCODE = NO;
 				EXCLUDED_ARCHS = "";
@@ -567,7 +567,7 @@
 				CODE_SIGN_ENTITLEMENTS = Runner/RunnerRelease.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 18;
+				CURRENT_PROJECT_VERSION = 21;
 				DEVELOPMENT_TEAM = RAJ3TA54HF;
 				ENABLE_BITCODE = NO;
 				EXCLUDED_ARCHS = "";

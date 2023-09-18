@@ -26,7 +26,6 @@ PreferredSize glassAppBar(
       IconButton(
           padding: const EdgeInsets.all(16),
           onPressed: () => scaffoldStateKey.currentState!.openDrawer(),
-          //TODO open drawer
           icon: const Icon(Icons.menu)),
       Text(
         title,
@@ -69,7 +68,7 @@ PreferredSize glassAppBar(
     child: ClipRRect(
       child: BackdropFilter(
         filter: userPrefs.glassEffects!
-            ? ImageFilter.blur(sigmaX: 50, sigmaY: 50)
+            ? ImageFilter.blur(sigmaX: 40, sigmaY: 30)
             : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
         child: Container(
           color: userPrefs.glassEffects!

@@ -50,7 +50,7 @@ class ThemeModel extends ChangeNotifier {
     //if there's no userTheme, it's the first time they've run the app, so give them lightTheme
 
     if (!prefs.containsKey('userThemeName')) {
-      setLightTheme();
+      setDarkTheme();
     } else {
       userThemeName = json.decode(prefs.getString('userThemeName')!) as String?;
 

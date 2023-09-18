@@ -1,5 +1,3 @@
-// ignore_for_file: sized_box_for_whitespace
-
 import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -16,22 +14,24 @@ import '../screens/date_screen.dart';
 import 'month_header.dart';
 import 'play_button.dart';
 
-class MonthBottomSheet extends StatefulWidget {
+class ScripturePanel extends StatefulWidget {
   final Date currentDate;
   final List<Month> monthData;
   final double contentColWidth;
   final double headerImageHeight;
+  final double scripturePanelWidth;
   final EdgeInsets adaptiveMargin;
   final Size size;
   final bool isPhone;
   final bool kIsWeb;
 
-  const MonthBottomSheet(
+  const ScripturePanel(
       {Key? key,
       required this.currentDate,
       required this.monthData,
       required this.contentColWidth,
       required this.headerImageHeight,
+      required this.scripturePanelWidth,
       required this.adaptiveMargin,
       required this.size,
       required this.isPhone,
@@ -39,19 +39,26 @@ class MonthBottomSheet extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<MonthBottomSheet> createState() => _MonthBottomSheetState();
+  State<ScripturePanel> createState() => _ScripturePanelState();
 }
 
-class _MonthBottomSheetState extends State<MonthBottomSheet> {
+class _ScripturePanelState extends State<ScripturePanel> {
   final ScrollController scriptureScrollController = ScrollController();
-  final ChildController childController = ChildController();
-  final double headerHeight = 140.0;
-  double maxHeight = 600.0;
-  // bool isDragUp = true;
-  // double bodyHeight = 0.0;
 
+  // this is how the parent triggers a function in this child widget
+  final ChildController childController = ChildController();
+
+  //how high the bottom sheet should show above the bottom of screen
+  final double headerHeight = 140.0;
+
+  //Helps the drawer be a bit more sticky on drag down - see below
+  int numberOfOverscrollNotifications = 0;
+
+  //avoiding setState too much this helps with our bottom sheet's size
   ValueNotifier<double> bodyHeightNotifier = ValueNotifier(0);
 
+  //the sheet we only want to be all the way up or down; this is
+  //how much the sheet gets dragged up or down before going all the way up or down.
   final double dragAmountBeforePop = 175;
 
   @override
@@ -62,8 +69,11 @@ class _MonthBottomSheetState extends State<MonthBottomSheet> {
         .months
         .where((month) => month.monthID == widget.currentDate.month)
         .toList();
-    maxHeight = widget.size.height - 200;
 
+    //how high the bottom sheet should get -
+    final double maxHeight = widget.size.height - 200;
+
+    //this is the share and play buttons at bottom of scripture panel
     Widget buttonsRow() {
       return Row(
         mainAxisSize: MainAxisSize.max,
@@ -81,10 +91,6 @@ class _MonthBottomSheetState extends State<MonthBottomSheet> {
                 //the [0] grabs the first in the list, which will be the only one
                 triggerSharing(context, kIsWeb, monthData);
               }),
-          // const Expanded(
-          //     child: SizedBox(
-          //   width: 1,
-          // )),
           PlayButton(
             file: widget.currentDate.month,
             childController: childController,
@@ -107,6 +113,7 @@ class _MonthBottomSheetState extends State<MonthBottomSheet> {
       );
     }
 
+    //phone setup as bottom sheet
     return widget.isPhone
         ? Positioned(
             bottom: 0.0,
@@ -140,16 +147,20 @@ class _MonthBottomSheetState extends State<MonthBottomSheet> {
                     duration: const Duration(milliseconds: 500),
                     child: GestureDetector(
                       onVerticalDragUpdate: (DragUpdateDetails data) {
-                        // print(data.delta.direction);
+                        //the Gestur detector here has scrolling, and so does the scrollcontroller.
                         double draggedAmount =
                             widget.size.height - data.globalPosition.dy;
                         /* 
                         data.delta.direction < 0 is UP
                         data.delta.direction < 0 is DOWN
                         (data.delta.direction == 0 is STILL)
+
+                        Down only gets called if you actually grab ahold of the handle - 
+                        you can also drag it down with the overscroll notification from the scrollcontroller. 
                         */
+
                         if (data.delta.direction < 0) {
-                          print('dragging UP');
+                          // print('dragging UP');
                           if (draggedAmount < dragAmountBeforePop) {
                             // bodyHeight = draggedAmount;
                             bodyHeightNotifier.value = draggedAmount;
@@ -158,9 +169,8 @@ class _MonthBottomSheetState extends State<MonthBottomSheet> {
                             bodyHeightNotifier.value = maxHeight;
                           }
                         } else if (data.delta.direction > 0) {
-                          print('dragging DOWN');
+                          // print('dragging DOWN');
 
-                          /// the _draggedAmount cannot be higher than maxHeight b/c maxHeight is _dragged Amount + header Height
                           double downDragged = maxHeight - draggedAmount;
                           if (downDragged < dragAmountBeforePop) {
                             // bodyHeight = draggedAmount;
@@ -170,31 +180,14 @@ class _MonthBottomSheetState extends State<MonthBottomSheet> {
                             bodyHeightNotifier.value = 0.0;
                           }
                         }
-                        // setState(() {
+
                         // if drawer is closed
                         if (bodyHeightNotifier.value == 0.0) {
                           scriptureScrollController.animateTo(0,
                               duration: const Duration(milliseconds: 1000),
                               curve: Curves.decelerate);
                         }
-                        // });
                       },
-                      // onVerticalDragUpdate: (DragUpdateDetails data) {
-                      //   double draggedAmount = widget.size.height - data.globalPosition.dy;
-                      //   setState(() {
-                      //     bodyHeight = draggedAmount;
-                      //   });
-                      // },
-                      // onVerticalDragEnd: (DragEndDetails data) {
-                      //   print('drag end isDragUp $isDragUp');
-
-                      //   if (isDragUp) {
-                      //     isDragUp = false;
-                      //   } else {
-                      //     isDragUp = true;
-                      //   }
-                      //   setState(() {});
-                      // },
                       child: ClipRRect(
                         borderRadius: const BorderRadius.only(
                           topRight: Radius.circular(20.0),
@@ -217,13 +210,22 @@ class _MonthBottomSheetState extends State<MonthBottomSheet> {
                                           //Month header
                                           NotificationListener(
                                         onNotification: (dynamic notification) {
+                                          //This listens to the scroll of the scripture scroll view.
+                                          //if we get an OverscrollNotification less than zero that is scrolled back up to top after reading.
+                                          //If it pops back down too quickly it feels a bit slippery, so wait til you get 10 notifications of
+                                          //this type before popping down. That happens pretty quickly but it helps it feel a bit stickier.
+                                          //Adjust the numberOfOverscrollNotifications down if too sticky.
+
                                           if (notification
                                               is OverscrollNotification) {
                                             if (notification.overscroll < 0) {
-                                              // setState(() {
-                                              // bodyHeight = 0;
-                                              bodyHeightNotifier.value = 0;
-                                              // });
+                                              numberOfOverscrollNotifications++;
+                                              if (numberOfOverscrollNotifications >
+                                                  15) {
+                                                bodyHeightNotifier.value = 0;
+                                                numberOfOverscrollNotifications =
+                                                    0;
+                                              }
                                             }
                                           }
                                           return true;
@@ -231,7 +233,8 @@ class _MonthBottomSheetState extends State<MonthBottomSheet> {
                                         child: Theme(
                                           data: Theme.of(context).copyWith(
                                             //another spot that can't use Material 3 - the stretch overscroll is an animation
-                                            //and if you call set State during it it doesn't like it
+                                            //and if you call set State from the overscroll notification during that animation it doesn't like it
+
                                             useMaterial3: false,
                                           ),
                                           child: ScrollConfiguration(
@@ -283,24 +286,30 @@ class _MonthBottomSheetState extends State<MonthBottomSheet> {
                 }),
           )
 
-        //verses display for widescreen
+        //dates side by side with verses display for widescreen
         : Stack(children: [
-            ScrollConfiguration(
-              //The 2.8 Flutter behavior is to not have mice grabbing and dragging - but we do want this in the web version of the app, so the custom scroll behavior here
-              behavior: MyCustomScrollBehavior(),
-              child: MouseRegion(
-                cursor: SystemMouseCursors.grab,
-                child: SingleChildScrollView(
-                  // physics: const AlwaysScrollableScrollPhysics(),
-                  child: versesComposer(),
+            SizedBox(
+              height: double.infinity,
+              child: ScrollConfiguration(
+                //The 2.8 Flutter behavior is to not have mice grabbing and dragging - but we do want this in the web version of the app, so the custom scroll behavior here
+                behavior: MyCustomScrollBehavior(),
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.grab,
+                  child: Center(
+                    child: SingleChildScrollView(
+                      // physics: const AlwaysScrollableScrollPhysics(),
+                      child: versesComposer(),
+                    ),
+                  ),
                 ),
               ),
             ),
             Positioned(
                 left: 20,
                 bottom: 20,
-                child: Container(
-                    width: (widget.size.width * .6) - 40, child: buttonsRow()))
+                child: SizedBox(
+                    width: widget.scripturePanelWidth - 40,
+                    child: buttonsRow()))
           ]);
   }
 }
