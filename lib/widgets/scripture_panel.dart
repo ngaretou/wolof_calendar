@@ -1,9 +1,12 @@
 import 'dart:ui';
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:path_provider/path_provider.dart';
+
 import 'package:provider/provider.dart';
-import 'package:share/share.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../providers/user_prefs.dart';
@@ -315,21 +318,30 @@ class _ScripturePanelState extends State<ScripturePanel> {
 }
 
 void triggerSharing(BuildContext context, bool kIsWeb, Month monthData) {
+/*
+now sharing audio, but with a caveat. 
+See https://github.com/fluttercommunity/plus_plugins/issues/413
+Facebook has his own sharing SDK, which is problematic because it doesn't respect the native platform intents. 
+If you share text + audio to FB/WA etc, It only shares the audio file and not the text. 
+So we give the user three choices, audio, Arabic, or Roman. 
+If the user is sharing to Facebook, or WhatsApp, then everything works as intended. 
+If they are sharing audio, and not sharing to an FB product, they'll get the audio and the Roman script.
+This is a hack to get around FB's unneighborly behavior. 
+*/
+
+  //the function that runs after the user makes a choice below
   void adaptiveShare(String script) async {
     String versesToShare = '';
-    late String lineBreak, vs, ref;
-
-    kIsWeb ? lineBreak = '%0d%0a' : lineBreak = '\n';
+    String vs = '', ref = '';
+    String lineBreak = '\n';
 
     //Put together the verses to share. Do with forEach to take into account the multiple verse months.
     for (var element in monthData.verses) {
       // monthData.verses.forEach((element) {
-      if (script == 'roman') {
-        // yallaMooy = 'Yàlla mooy ';
+      if (script == 'roman' || script == 'audio') {
         vs = element.verseRS;
         ref = element.verseRefRS;
       } else if (script == 'arabic') {
-        // yallaMooy = 'يࣵلَّ مࣷويْ ';
         vs = element.verseAS;
         ref = element.verseRefAS;
       }
@@ -342,17 +354,33 @@ void triggerSharing(BuildContext context, bool kIsWeb, Month monthData) {
     final String textToShare = '${versesToShare}https://sng.al/cal';
 
     //if it's not the web app, share using the device share function
-    if (!kIsWeb) {
-      Share.share(textToShare);
-    } else {
-      //If it's the web app version best way to share is probably email, so put the text to share in an email
-      final String url = "mailto:?subject=Arminaatu Wolof&body=$textToShare";
+    // if (!kIsWeb) {
+    if (script == 'audio') {
+      try {
+        //The docs for this plugin say you should be able to just pass in the path directly, but can't get that to work.
+        //so do all this writing a temp file so as to be able to share the audio.
+        final dir = await getTemporaryDirectory();
+        final byte =
+            (await rootBundle.load('assets/audio/${monthData.monthID}.mp3'))
+                .buffer
+                .asUint8List(); // convert in to Uint8List
 
-      if (await canLaunchUrl(Uri.parse(url))) {
-        await launchUrl(Uri.parse(url));
-      } else {
-        throw 'Could not launch $url';
+        final file = File("${dir.path}/aaya.mp3"); // import 'dart:io'
+        await file.writeAsBytes(byte);
+        // Share
+        await Share.shareXFiles(
+          [XFile(file.path)],
+          text: textToShare,
+        );
+        //clean up the temp file
+        file.delete();
+      } catch (e) {
+        debugPrint(e.toString());
+        debugPrint('problem sharing audio file, sharing text only');
+        await Share.share(textToShare);
       }
+    } else {
+      await Share.share(textToShare);
     }
   }
 
@@ -365,19 +393,32 @@ void triggerSharing(BuildContext context, bool kIsWeb, Month monthData) {
         ),
         content: Text(AppLocalizations.of(context)!.sharingMsg),
         actions: [
-          TextButton(
-              child: const Text("Wolof"),
-              onPressed: () async {
-                Navigator.of(context).pop();
-                adaptiveShare('roman');
-              }),
-          TextButton(
-              child: const Text(" وࣷلࣷفَلْ ",
-                  style: TextStyle(fontFamily: "Harmattan", fontSize: 22)),
-              onPressed: () {
-                Navigator.of(context).pop();
-                adaptiveShare('arabic');
-              }),
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              if (!kIsWeb)
+                TextButton(
+                    child: Text(AppLocalizations.of(context)!.audio),
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                      adaptiveShare('audio');
+                    }),
+              TextButton(
+                  child: const Text("Wolof"),
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                    adaptiveShare('roman');
+                  }),
+              TextButton(
+                  child: const Text(" وࣷلࣷفَلْ ",
+                      style: TextStyle(fontFamily: "Harmattan", fontSize: 22)),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    adaptiveShare('arabic');
+                  }),
+            ],
+          ),
           TextButton(
               child: Text(
                 AppLocalizations.of(context)!.cancel,

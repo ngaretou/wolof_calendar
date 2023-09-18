@@ -95,7 +95,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "sharingMsg": "Ci ban mbindin nga bëgga séddoo?",
+  "sharingMsg": "Ban nga bëgga séddoo?",
   "@sharingMsg": {
     "description": "sharingMsg",
     "type": "text",
@@ -212,6 +212,12 @@
   "changeThemeColorWithBackground": "Na kulëër ànd ak foto",
   "@changeThemeColorWithBackground": {
     "description": "changeThemeColorWithBackground",
+    "type": "text",
+    "placeholders": {}
+  },
+  "audio": "Ojjo",
+  "@audio": {
+    "description": "Audio label for sharing dialog",
     "type": "text",
     "placeholders": {}
   }

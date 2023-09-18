@@ -95,7 +95,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "sharingMsg": "Choisissez le script dans lequel que vous souhaitez partager",
+  "sharingMsg": "Choisissez comment vous souhaitez partager",
   "@sharingMsg": {
     "description": "sharingMsg",
     "type": "text",
@@ -212,6 +212,12 @@
   "changeThemeColorWithBackground": "Couleur Dynamique",
   "@changeThemeColorWithBackground": {
     "description": "changeThemeColorWithBackground",
+    "type": "text",
+    "placeholders": {}
+  },
+  "audio": "Audio",
+  "@audio": {
+    "description": "Audio label for sharing dialog",
     "type": "text",
     "placeholders": {}
   }

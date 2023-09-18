@@ -2,9 +2,9 @@ flutter_native_splash:
   # This package generates native code to customize Flutter's default white native splash screen
   # with background color and splash image.
   # Customize the parameters below, and run the following command in the terminal:
-  # flutter pub run flutter_native_splash:create
+  # dart run flutter_native_splash:create
   # To restore Flutter's default white splash screen, run the following command in the terminal:
-  # flutter pub run flutter_native_splash:remove
+  # dart run flutter_native_splash:remove
 
   # color or background_image is the only required parameter.  Use color to set the background
   # of your splash screen to a solid color.  Use background_image to set the background of your
@@ -18,7 +18,7 @@ flutter_native_splash:
 
   # The image parameter allows you to specify an image used in the splash screen.  It must be a
   # png file and should be sized for 4x pixel density.
-  image: assets/images/loading/45.gif
+  # image: assets/images/loading/45.gif
 
   # The branding property allows you to specify an image used as branding in the splash screen.
   # It must be a png file. It is supported for Android < v12, iOS and the Web.
@@ -66,17 +66,17 @@ flutter_native_splash:
 
   # The android, ios and web parameters can be used to disable generating a splash screen on a given
   # platform.
-  #android: false
-  #ios: false
+  # android: false
+  # ios: false
   #web: false
 
   # Platform specific images can be specified with the following parameters, which will override
   # the respective image parameter.  You may specify all, selected, or none of these parameters:
-  #image_andriod: assets/splash-andriod.png
+  image_android: assets/icons/icon.png
   #image_dark_android: assets/splash-invert-android.png
-  #image_ios: assets/splash-ios.png
+  image_ios: assets/icons/icon.png
   #image_dark_ios: assets/splash-invert-ios.png
-  #image_web: assets/splash-web.png
+  image_web: assets/images/loading/45.gif
   #image_dark_web: assets/splash-invert-web.png
   #background_image_android: "assets/background-android.png"
   #background_image_dark_android: "assets/dark-background-android.png"

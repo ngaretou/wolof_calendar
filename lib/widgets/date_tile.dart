@@ -93,7 +93,7 @@ class DateTile extends StatelessWidget {
     //Set up whether or not to show the month header or not
     bool showMonth;
 
-    if (currentDate.westernDate == "1") {
+    if (currentDate.westernDate == "1" || currentDate.wolofDate == "1") {
       showMonth = true;
     } else {
       showMonth = false;

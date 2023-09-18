@@ -296,7 +296,7 @@ class DateScreenState extends State<DateScreen> {
     final Size size = MediaQuery.of(context).size;
     final screenwidth = size.width;
     final screenheight = size.height;
-    print(screenwidth);
+    // print(screenwidth);
 
     //set up the column proportions for widescreen view
 
@@ -509,7 +509,7 @@ class DateScreenState extends State<DateScreen> {
       }
 
       navigateToDateIndex = getDateIndex(goToYear, goToMonth, '1');
-      print('line 504 $navigateToDateIndex');
+      
 
       //getDateIndex returns -1 if [element] is not found.
       //Here you've requested a date not in the data set, so go to beginning or end of set
@@ -517,7 +517,7 @@ class DateScreenState extends State<DateScreen> {
         if (direction == 'forward') {
           //lenght starts 1, 2, 3; indexes start 0, 1, 2; so that's why the -1 here
           navigateToDateIndex = datesToDisplay.length - 1;
-          print('line 511 ${datesToDisplay.length}');
+          
         } else if (direction == 'backward') {
           navigateToDateIndex = 1;
         }
@@ -525,7 +525,7 @@ class DateScreenState extends State<DateScreen> {
 
       //Adjust for the glass app bar
       navigateToDateIndex = navigateToDateIndex - 1;
-      print('line 518 $navigateToDateIndex');
+      
 
       //This uses the scrollcontroller to whisk us to the desired date
       itemScrollController.jumpTo(index: navigateToDateIndex);
@@ -591,7 +591,7 @@ class DateScreenState extends State<DateScreen> {
 
       //for larger screens we can show more month names:
       //western month in RS and AS, then wolof in RS and AS
-      if (spaceAvailable > 360) {
+      if (spaceAvailable > 368) {
         monthNameWidgets = [
           monthNames(appBarWesternMonthFR, TextAlign.left),
           Text(
@@ -702,7 +702,7 @@ class DateScreenState extends State<DateScreen> {
                           begin: Alignment.bottomLeft,
                           colors: [
                             overlayColor.withOpacity(.7),
-                            overlayColor.withOpacity(.4)
+                            overlayColor.withOpacity(.3)
                           ],
                           stops: const [0.1, .9],
                         ),
