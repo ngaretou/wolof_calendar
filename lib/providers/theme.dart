@@ -47,7 +47,7 @@ class ThemeModel extends ChangeNotifier {
     }
     //get the prefs
     final prefs = await SharedPreferences.getInstance();
-    //if there's no userTheme, it's the first time they've run the app, so give them lightTheme
+    //if there's no userTheme, it's the first time they've run the app, so give them darkTheme
 
     if (!prefs.containsKey('userThemeName')) {
       setDarkTheme();
