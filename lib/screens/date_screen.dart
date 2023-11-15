@@ -211,7 +211,7 @@ class DateScreenState extends State<DateScreen> {
       //If the reported fps is under 10 fps, not good. Add one observation to danger list, otherwise add one to good list
       (fpsInfo.fps < 10) ? fpsDangerZone++ : fpsWorking++;
 
-      //If we've observed 10 bad fps settings:
+      //If we've observed 10 bad fps readings:
       if (fpsDangerZone > 5) enableLightAnimation();
       //If we've observed 15 reports of good working order:
       if (fpsWorking > 15) disableFpsMonitoring();

@@ -209,16 +209,13 @@ class SettingsScreenState extends State<SettingsScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // width: 250,
-            Row(
-              children: [
-                labelText,
-              ],
-            ),
 
-            const Expanded(
-                child: SizedBox(
-              width: 1,
-            )),
+            Expanded(child: labelText),
+
+            // const Expanded(
+            //     child: SizedBox(
+            //   width: 1,
+            // )),
             Switch(
               value: switchValue,
               onChanged: (_) {
@@ -340,7 +337,10 @@ class SettingsScreenState extends State<SettingsScreen> {
               ),
               ChoiceChip(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
-                selected: userLocale.toString() == 'fr' ? true : false,
+                selected: userLocale.toString() == 'fr' ||
+                        userLocale.toString() == 'fr_'
+                    ? true
+                    : false,
 
                 label: Text(
                   "Français",
@@ -350,13 +350,15 @@ class SettingsScreenState extends State<SettingsScreen> {
                 // selectedColor: Theme.of(context).accentColor,
                 onSelected: (bool selected) {
                   localeProvider.setLocale('fr');
-                  
                 },
               ),
               ChoiceChip(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
 
-                selected: userLocale.toString() == 'en' ? true : false,
+                selected: (userLocale.toString() == 'en' ||
+                        userLocale.toString() == 'en_')
+                    ? true
+                    : false,
                 label: Text(
                   "English",
                   style: Theme.of(context).textTheme.titleMedium,

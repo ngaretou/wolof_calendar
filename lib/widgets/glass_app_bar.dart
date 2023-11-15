@@ -12,6 +12,7 @@ PreferredSize glassAppBar(
     double height = 56, //56 normal app bar height but is overrideable
     required List<Widget> actions,
     Widget? extraRow}) {
+      
   late Widget appBarToUse;
 
   UserPrefs userPrefs = Provider.of<UserPrefs>(context, listen: true).userPrefs;

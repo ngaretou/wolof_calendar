@@ -1,11 +1,11 @@
 {
-  "settingsTitle": "Kërale yi",
+  "settingsTitle": "Ponki jekk-jekkal",
   "@settingsTitle": {
     "description": "Settings screen title",
     "type": "text",
     "placeholders": {}
   },
-  "settingsTheme": "Melow wërale bi",
+  "settingsTheme": "Meloy miir bi",
   "@settingsTheme": {
     "description": "settings: Theme section",
     "type": "text",
@@ -53,13 +53,13 @@
     "type": "text",
     "placeholders": {}
   },
-  "settingsVerseinWolofal": "Aaya yi ci Wolofal",
+  "settingsVerseinWolofal": "Aaya yi ci wolofal",
   "@settingsVerseinWolofal": {
     "description": "settingsVerseinWolofal",
     "type": "text",
     "placeholders": {}
   },
-  "settingsVerseinWolof": "Aaya yi ci Wolof",
+  "settingsVerseinWolof": "Aaya yi ci wolof",
   "@settingsVerseinWolof": {
     "description": "settingsVerseinWolof",
     "type": "text",
@@ -191,25 +191,25 @@
     "type": "text",
     "placeholders": {}
   },
-  "darkMode": "Melo bu lëndëm",
+  "darkMode": "Lëndëmal miir bi",
   "@darkMode": {
     "description": "Dark Mode on",
     "type": "text",
     "placeholders": {}
   },
-  "glassEffects": "Lu mel ni palanteer",
+  "glassEffects": "Melo miir bi mel ni lu ñu xoole ci kaas",
   "@glassEffects": {
     "description": "Glass Effects on",
     "type": "text",
     "placeholders": {}
   },
-  "backgroundImage": "Foto ci ganaaw",
+  "backgroundImage": "Nataal ba ca gannaaw",
   "@backgroundImage": {
     "description": "More apps",
     "type": "text",
     "placeholders": {}
   },
-  "changeThemeColorWithBackground": "Na kulëër ànd ak foto",
+  "changeThemeColorWithBackground": "Melo mi ànd ak nataalu miir bi",
   "@changeThemeColorWithBackground": {
     "description": "changeThemeColorWithBackground",
     "type": "text",

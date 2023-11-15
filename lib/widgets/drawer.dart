@@ -288,13 +288,12 @@ class _MainDrawerState extends State<MainDrawer> {
                       ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 200),
                         child: Text(
-                          packageInfo.appName,
+                          "Arminaatu wolof",
                           style: Theme.of(context).textTheme.headlineSmall,
                         ),
                       ),
                       Text(
                           'Version ${packageInfo.version} (${packageInfo.buildNumber})'),
-                      const Text('appli © 2023 Foundational'),
                     ],
                   )
                 ],
@@ -310,27 +309,26 @@ class _MainDrawerState extends State<MainDrawer> {
                         .textTheme
                         .bodyLarge!
                         .copyWith(fontStyle: FontStyle.italic),
-                    text: 'Kàddug Yàlla',
+                    text: 'Arminaatu Wolof',
                   ),
                   TextSpan(
                     style: Theme.of(context).textTheme.bodyLarge,
-                    text: ' copyright © 2023 La MBS.',
+                    text: ' produit par la MEAO. ',
                   ),
-                ],
-              )),
-              RichText(
-                  text: TextSpan(
-                children: [
                   TextSpan(
                     style: Theme.of(context)
                         .textTheme
                         .bodyLarge!
                         .copyWith(fontStyle: FontStyle.italic),
-                    text: 'Arminaatu Wolof',
+                    text: 'Kàddug Yàlla',
                   ),
                   TextSpan(
                     style: Theme.of(context).textTheme.bodyLarge,
-                    text: ' produit par la MEAO.',
+                    text: ' copyright © 2023 La MBS. ',
+                  ),
+                  TextSpan(
+                    style: Theme.of(context).textTheme.bodyLarge,
+                    text: 'Appli © 2023 Foundational LLC.',
                   ),
                 ],
               )),
