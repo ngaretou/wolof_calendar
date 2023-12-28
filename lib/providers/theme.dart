@@ -10,15 +10,13 @@ import './months.dart';
 import './user_prefs.dart';
 
 ThemeData darkTheme = ThemeData(
-  useMaterial3: true, //important!
-  fontFamily: 'Lato',
+    fontFamily: 'Lato',
   colorSchemeSeed: Colors.teal,
   brightness: Brightness.dark,
 );
 
 ThemeData lightTheme = ThemeData(
-  useMaterial3: true,
-  fontFamily: 'Lato',
+    fontFamily: 'Lato',
   colorSchemeSeed: Colors.teal,
   brightness: Brightness.light,
 );
@@ -96,8 +94,7 @@ class ThemeModel extends ChangeNotifier {
   void setThemeColor(Color color) {
     // print('setting new color in provider theme.dart');
     currentTheme = ThemeData(
-        useMaterial3: true,
-        fontFamily: 'Lato',
+                fontFamily: 'Lato',
         colorSchemeSeed: color,
         brightness:
             userThemeName == 'lightTheme' ? Brightness.light : Brightness.dark);

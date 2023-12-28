@@ -95,7 +95,7 @@ class MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    // print('main.dart build');
+    print('main.dart build');
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,

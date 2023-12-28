@@ -235,6 +235,8 @@ class MonthHeaderState extends State<MonthHeader> {
         alignment: Alignment.bottomCenter,
         children: [
           //Image header
+          //This is not smoothanimatedcontainer as it doesn't change
+          //when you move months, each one has its own widget
           !widget.scriptureOnly
               ? Container(
                   margin: const EdgeInsets.only(top: 10),
@@ -253,12 +255,14 @@ class MonthHeaderState extends State<MonthHeader> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(headerBorderRadius),
                       gradient: LinearGradient(
-                        begin: Alignment.bottomRight,
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
                         colors: [
-                          overlayColor.withOpacity(.6),
-                          overlayColor.withOpacity(.3)
+                          overlayColor.withOpacity(.0),
+                          overlayColor.withOpacity(.5),
+                          overlayColor.withOpacity(.7)
                         ],
-                        stops: const [0, .9],
+                        stops: const [0.1, .6, .9],
                       ),
                     ),
                   ),
