@@ -5,18 +5,19 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import './months.dart';
 import './user_prefs.dart';
 
 ThemeData darkTheme = ThemeData(
-    fontFamily: 'Lato',
+  fontFamily: 'Lato',
   colorSchemeSeed: Colors.teal,
   brightness: Brightness.dark,
 );
 
 ThemeData lightTheme = ThemeData(
-    fontFamily: 'Lato',
+  fontFamily: 'Lato',
   colorSchemeSeed: Colors.teal,
   brightness: Brightness.light,
 );
@@ -47,30 +48,55 @@ class ThemeModel extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     //if there's no userTheme, it's the first time they've run the app, so give them darkTheme
 
-    if (!prefs.containsKey('userThemeName')) {
-      setDarkTheme();
-    } else {
-      userThemeName = json.decode(prefs.getString('userThemeName')!) as String?;
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    // int currentBuildNumber = int.parse(packageInfo.buildNumber);
 
-      switch (userThemeName) {
-        case 'darkTheme':
-          {
-            currentTheme = darkTheme;
+    try {
+      if (!prefs.containsKey('lastBuildNumber')) {
+        setDarkTheme();
+      } else {
+        String lastBuildNumber =
+            json.decode(prefs.getString('lastBuildNumber')!) as String;
 
-            _themeType = ThemeType.dark;
-            break;
+        int lastSeenBuildNumber = int.parse(lastBuildNumber);
+
+        // if (currentBuildNumber > lastSeenBuildNumber) {
+        if (lastSeenBuildNumber < 24) {
+          setDarkTheme();
+        } else {
+          if (!prefs.containsKey('userThemeName')) {
+            setDarkTheme();
+          } else {
+            userThemeName =
+                json.decode(prefs.getString('userThemeName')!) as String?;
+
+            switch (userThemeName) {
+              case 'darkTheme':
+                {
+                  currentTheme = darkTheme;
+
+                  _themeType = ThemeType.dark;
+                  break;
+                }
+
+              case 'lightTheme':
+                {
+                  currentTheme = lightTheme;
+                  _themeType = ThemeType.light;
+                  break;
+                }
+            }
           }
-
-        case 'lightTheme':
-          {
-            currentTheme = lightTheme;
-            _themeType = ThemeType.light;
-            break;
-          }
+        }
       }
+    } catch (e) {
+      debugPrint(e.toString());
+      setDarkTheme();
     }
+
+    final _currentBuildNumber = json.encode(packageInfo.buildNumber);
+    prefs.setString('lastBuildNumber', _currentBuildNumber);
     notifyListeners();
-    return;
   }
 
   void setDarkTheme() {
@@ -94,7 +120,7 @@ class ThemeModel extends ChangeNotifier {
   void setThemeColor(Color color) {
     // print('setting new color in provider theme.dart');
     currentTheme = ThemeData(
-                fontFamily: 'Lato',
+        fontFamily: 'Lato',
         colorSchemeSeed: color,
         brightness:
             userThemeName == 'lightTheme' ? Brightness.light : Brightness.dark);
