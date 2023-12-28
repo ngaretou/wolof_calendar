@@ -31,6 +31,12 @@ class MyCustomScrollBehavior extends ScrollBehavior {
         // etc.
       };
 }
+
+enum NavType {
+  jumped,
+  scrolled,
+}
+
 /////////
 
 class DateScreen extends StatefulWidget {
@@ -83,6 +89,10 @@ class DateScreenState extends State<DateScreen> {
 
   //store the first day of the month that we'll use for monthly headers
   late ValueNotifier<Date> currentMonthFirstDate;
+
+  // when we navigate the backgroundimage changes slowly if scrolled but instantly if navigated to by a jumpTo.
+  // this stores what the last navigated type is.
+  late NavType lastNavigatedVia;
 
   @override
   void initState() {
@@ -196,6 +206,8 @@ class DateScreenState extends State<DateScreen> {
       }
     });
 
+    lastNavigatedVia = NavType.jumped;
+
     super.initState();
   }
 
@@ -280,6 +292,13 @@ class DateScreenState extends State<DateScreen> {
   @override
   void dispose() {
     currentMonthFirstDate.dispose();
+    formattedAppBarTitle.dispose();
+    appBarWesternMonthFR.dispose();
+    appBarWesternMonthRS.dispose();
+    appBarWesternMonthAS.dispose();
+    appBarWolofMonth.dispose();
+    appBarWolofalMonth.dispose();
+
     super.dispose();
   }
 
@@ -310,7 +329,7 @@ class DateScreenState extends State<DateScreen> {
     //overlay color for widgets that will have a gradient over them
     final Color overlayColor = Theme.of(context).brightness == Brightness.dark
         ? Colors.black
-        : Colors.white;
+        : Colors.grey;
 
     final bool isPhone =
         ((screenwidth + screenheight) <= 1400) || screenwidth < 750;
@@ -323,7 +342,8 @@ class DateScreenState extends State<DateScreen> {
     //if big screen
     if (!isPhone) {
       contentColWidth = 600;
-      headerImageHeight = min(screenheight, screenwidth) / 3;
+      // headerImageHeight = min(screenheight, screenwidth) / 3;
+      headerImageHeight = 275;
 
       // adaptiveMargin = EdgeInsets.symmetric(
       //     horizontal: (screenwidth - contentColWidth) / 2, vertical: 0);
@@ -331,7 +351,7 @@ class DateScreenState extends State<DateScreen> {
       //small screen
     } else if (isPhone) {
       contentColWidth = screenwidth - 10;
-      headerImageHeight = 200;
+      headerImageHeight = 275;
       adaptiveMargin = const EdgeInsets.symmetric(horizontal: 5, vertical: 5);
     }
 
@@ -345,7 +365,9 @@ class DateScreenState extends State<DateScreen> {
         .copyWith(fontFamily: "Harmattan", color: appBarItemColor);
 
     // Updates the appbar title with the month and shows or hides the play and share buttons
-    Future<void> updateAfterNavigation({int? navigatedIndex}) async {
+    Future<void> updateAfterNavigation(
+        {required NavType navType, int? navigatedIndex}) async {
+      lastNavigatedVia = navType;
       // print('updateAfterNavigation');
       late int topIndex;
       // int? bottomIndex;
@@ -464,7 +486,7 @@ class DateScreenState extends State<DateScreen> {
       return me;
     }
 
-    void moveMonths(String direction) {
+    void moveMonths(String direction) async {
       // print('moveMonths');
       //We use this to move one month forward or backward to the first of the month
       //wiht the arrow buttons in the app title bar.
@@ -472,7 +494,8 @@ class DateScreenState extends State<DateScreen> {
 
       //This gets the current index of the topmost date visible.
       //The + 1 is a hack accounting for the glass app bar
-      var topIndexShown =
+
+      int topIndexShown =
           itemPositionsListener.itemPositions.value.first.index + 1;
 
       //Grab these elements and initialize the vars
@@ -509,7 +532,6 @@ class DateScreenState extends State<DateScreen> {
       }
 
       navigateToDateIndex = getDateIndex(goToYear, goToMonth, '1');
-      
 
       //getDateIndex returns -1 if [element] is not found.
       //Here you've requested a date not in the data set, so go to beginning or end of set
@@ -517,7 +539,6 @@ class DateScreenState extends State<DateScreen> {
         if (direction == 'forward') {
           //lenght starts 1, 2, 3; indexes start 0, 1, 2; so that's why the -1 here
           navigateToDateIndex = datesToDisplay.length - 1;
-          
         } else if (direction == 'backward') {
           navigateToDateIndex = 1;
         }
@@ -525,11 +546,13 @@ class DateScreenState extends State<DateScreen> {
 
       //Adjust for the glass app bar
       navigateToDateIndex = navigateToDateIndex - 1;
-      
 
       //This uses the scrollcontroller to whisk us to the desired date
+
       itemScrollController.jumpTo(index: navigateToDateIndex);
-      updateAfterNavigation(navigatedIndex: navigateToDateIndex);
+
+      updateAfterNavigation(
+          navType: NavType.jumped, navigatedIndex: navigateToDateIndex);
     }
 
     Future pickDateToShow() async {
@@ -562,7 +585,8 @@ class DateScreenState extends State<DateScreen> {
       //then passes it to the scroll controlloer to get us there
       itemScrollController.jumpTo(index: navigateToIndex);
       //and then updates the interface to match the new date
-      updateAfterNavigation(navigatedIndex: navigateToIndex);
+      updateAfterNavigation(
+          navType: NavType.jumped, navigatedIndex: navigateToIndex);
     }
 
     //The widget that is used for all the month headers
@@ -636,7 +660,7 @@ class DateScreenState extends State<DateScreen> {
         child: NotificationListener(
           onNotification: (dynamic notification) {
             if (notification is ScrollEndNotification) {
-              updateAfterNavigation();
+              updateAfterNavigation(navType: NavType.scrolled);
             }
             return true;
           },
@@ -676,7 +700,9 @@ class DateScreenState extends State<DateScreen> {
         child: child,
         builder: (context, value, child) {
           return SmoothAnimatedContainer(
-            duration: const Duration(seconds: 2),
+            duration: lastNavigatedVia == NavType.jumped
+                ? const Duration(milliseconds: 0)
+                : const Duration(milliseconds: 2000),
             curve: Curves.ease,
             height: double.infinity,
             width: double.infinity,
@@ -684,7 +710,8 @@ class DateScreenState extends State<DateScreen> {
                 ? BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage(
-                          'assets/images/${currentMonthFirstDate.value.month.toString()}.jpg'),
+                          'assets/images/${currentMonthFirstDate.value.month.toString()}.jpg',
+                          bundle: DefaultAssetBundle.of(context)),
                       fit: BoxFit.cover,
                     ),
                   )
@@ -700,6 +727,7 @@ class DateScreenState extends State<DateScreen> {
                     ? BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.bottomLeft,
+                          end: Alignment.topCenter,
                           colors: [
                             overlayColor.withOpacity(.7),
                             overlayColor.withOpacity(.3)
@@ -736,22 +764,11 @@ class DateScreenState extends State<DateScreen> {
       drawerScrimColor: Theme.of(context).brightness == Brightness.light
           ? Colors.white.withOpacity(.1)
           : Colors.black.withOpacity(.1),
-      drawer: Theme(
-        data: Theme.of(context).copyWith(
-          useMaterial3:
-              false, //important! Material3 doesn't play nice with transparent drawers...
-          // Set the transparency here
-
-          canvasColor: Theme.of(context).brightness == Brightness.light
-              ? Colors.white.withOpacity(.5)
-              : Colors.black.withOpacity(.5),
-        ),
-        child: BackdropFilter(
-            filter: userPrefs.glassEffects!
-                ? ImageFilter.blur(sigmaX: 50, sigmaY: 50)
-                : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
-            child: const MainDrawer()),
-      ),
+      drawer: BackdropFilter(
+          filter: userPrefs.glassEffects!
+              ? ImageFilter.blur(sigmaX: 50, sigmaY: 50)
+              : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
+          child: const MainDrawer()),
 
       appBar: glassAppBar(
           scaffoldStateKey: scaffoldStateKey,

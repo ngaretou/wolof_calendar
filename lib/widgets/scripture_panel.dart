@@ -233,31 +233,22 @@ class _ScripturePanelState extends State<ScripturePanel> {
                                           }
                                           return true;
                                         },
-                                        child: Theme(
-                                          data: Theme.of(context).copyWith(
-                                            //another spot that can't use Material 3 - the stretch overscroll is an animation
-                                            //and if you call set State from the overscroll notification during that animation it doesn't like it
-
-                                            useMaterial3: false,
-                                          ),
-                                          child: ScrollConfiguration(
-                                              //The 2.8 Flutter behavior is to not have mice grabbing and dragging - but we do want this in the web version of the app, so the custom scroll behavior here
-                                              behavior:
-                                                  MyCustomScrollBehavior(),
-                                              child: MouseRegion(
-                                                cursor: SystemMouseCursors.grab,
-                                                child: SingleChildScrollView(
-                                                  controller:
-                                                      scriptureScrollController,
-                                                  physics: bodyHeightNotifier
-                                                              .value ==
-                                                          maxHeight
-                                                      ? const ClampingScrollPhysics()
-                                                      : const NeverScrollableScrollPhysics(),
-                                                  child: versesComposer(),
-                                                ),
-                                              )),
-                                        ),
+                                        child: ScrollConfiguration(
+                                            //The 2.8 Flutter behavior is to not have mice grabbing and dragging - but we do want this in the web version of the app, so the custom scroll behavior here
+                                            behavior: MyCustomScrollBehavior(),
+                                            child: MouseRegion(
+                                              cursor: SystemMouseCursors.grab,
+                                              child: SingleChildScrollView(
+                                                controller:
+                                                    scriptureScrollController,
+                                                physics: bodyHeightNotifier
+                                                            .value ==
+                                                        maxHeight
+                                                    ? const ClampingScrollPhysics()
+                                                    : const NeverScrollableScrollPhysics(),
+                                                child: versesComposer(),
+                                              ),
+                                            )),
                                       ),
                                     ),
                                   ),
@@ -418,6 +409,9 @@ This is a hack to get around FB's unneighborly behavior.
                     adaptiveShare('arabic');
                   }),
             ],
+          ),
+          const SizedBox(
+            height: 20,
           ),
           TextButton(
               child: Text(
