@@ -309,6 +309,7 @@ class _ScripturePanelState extends State<ScripturePanel> {
 }
 
 void triggerSharing(BuildContext context, bool kIsWeb, Month monthData) {
+  Size size = MediaQuery.of(context).size;
 /*
 now sharing audio, but with a caveat. 
 See https://github.com/fluttercommunity/plus_plugins/issues/413
@@ -347,31 +348,51 @@ This is a hack to get around FB's unneighborly behavior.
     //if it's not the web app, share using the device share function
     // if (!kIsWeb) {
     if (script == 'audio') {
-      try {
-        //The docs for this plugin say you should be able to just pass in the path directly, but can't get that to work.
-        //so do all this writing a temp file so as to be able to share the audio.
-        final dir = await getTemporaryDirectory();
-        final byte =
-            (await rootBundle.load('assets/audio/${monthData.monthID}.mp3'))
-                .buffer
-                .asUint8List(); // convert in to Uint8List
+      //The docs for this plugin say you should be able to just pass in the path directly, but can't get that to work.
+      //so do all this writing a temp file so as to be able to share the audio.
 
-        final file = File("${dir.path}/aaya.mp3"); // import 'dart:io'
-        await file.writeAsBytes(byte);
-        // Share
-        await Share.shareXFiles(
-          [XFile(file.path)],
-          text: textToShare,
-        );
-        //clean up the temp file
-        file.delete();
-      } catch (e) {
-        debugPrint(e.toString());
-        debugPrint('problem sharing audio file, sharing text only');
-        await Share.share(textToShare);
+      final byte =
+          (await rootBundle.load('assets/audio/${monthData.monthID}.mp3'))
+              .buffer
+              .asUint8List(); // convert in to Uint8List
+      if (kIsWeb) {
+        // https://github.com/fluttercommunity/plus_plugins/issues/1643
+        await XFile.fromData(
+          Uint8List.fromList(byte),
+          mimeType: 'audio/mpeg',
+        ).saveTo('aaya.mp3');
+      } else {
+        final dir = await getTemporaryDirectory();
+        try {
+          final file = File("${dir.path}/aaya.mp3"); // import 'dart:io'
+          await file.writeAsBytes(byte);
+
+          // Share
+          await Share.shareXFiles(
+            [XFile(file.path)],
+            text: textToShare,
+            sharePositionOrigin:
+                Rect.fromLTWH(0, 0, size.width, size.height * .33),
+          );
+
+          //clean up the temp file
+          file.delete();
+        } catch (e) {
+          debugPrint(e.toString());
+          debugPrint('problem sharing audio file, sharing text only');
+
+          await Share.share(
+            textToShare,
+            sharePositionOrigin:
+                Rect.fromLTWH(0, 0, size.width, size.height * .33),
+          );
+        }
       }
     } else {
-      await Share.share(textToShare);
+      await Share.share(
+        textToShare,
+        sharePositionOrigin: Rect.fromLTWH(0, 0, size.width, size.height * .33),
+      );
     }
   }
 
@@ -388,13 +409,12 @@ This is a hack to get around FB's unneighborly behavior.
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              if (!kIsWeb)
-                TextButton(
-                    child: Text(AppLocalizations.of(context)!.audio),
-                    onPressed: () async {
-                      Navigator.of(context).pop();
-                      adaptiveShare('audio');
-                    }),
+              TextButton(
+                  child: Text(AppLocalizations.of(context)!.audio),
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                    adaptiveShare('audio');
+                  }),
               TextButton(
                   child: const Text("Wolof"),
                   onPressed: () async {

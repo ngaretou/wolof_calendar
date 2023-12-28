@@ -286,7 +286,10 @@ class DateScreenState extends State<DateScreen> {
       themeColor = Colors.teal;
     }
     if (!mounted) return;
-    Provider.of<ThemeModel>(context, listen: false).setThemeColor(themeColor);
+    // hit a delay in here so the wallpaper changes, then the theme changes
+    Future.delayed(const Duration(milliseconds: 1000)).then((_) =>
+        Provider.of<ThemeModel>(context, listen: false)
+            .setThemeColor(themeColor));
   }
 
   @override
