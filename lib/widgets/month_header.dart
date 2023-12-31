@@ -27,7 +27,7 @@ class MonthHeader extends StatefulWidget {
   final bool showCardBackground;
 
   const MonthHeader(
-      {Key? key,
+      {super.key,
       required this.currentDate,
       required this.monthData,
       required this.contentColWidth,
@@ -36,8 +36,7 @@ class MonthHeader extends StatefulWidget {
       required this.isPhone,
       required this.kIsWeb,
       required this.scriptureOnly,
-      required this.showCardBackground})
-      : super(key: key);
+      required this.showCardBackground});
 
   @override
   MonthHeaderState createState() => MonthHeaderState();
@@ -312,8 +311,7 @@ class VerseBuilder extends StatelessWidget {
 
   const VerseBuilder(this.verse, this.ref, this.verseStyle, this.refStyle,
       this.direction, this.numItems, this.i, this.adaptiveMargin,
-      {Key? key})
-      : super(key: key);
+      {super.key});
 
   @override
   Widget build(BuildContext context) {
