@@ -15,7 +15,7 @@ import '../screens/about_screen.dart';
 import '../screens/settings_screen.dart';
 
 class MainDrawer extends StatefulWidget {
-  const MainDrawer({Key? key}) : super(key: key);
+  const MainDrawer({super.key});
 
   @override
   State<MainDrawer> createState() => _MainDrawerState();
@@ -24,6 +24,7 @@ class MainDrawer extends StatefulWidget {
 class _MainDrawerState extends State<MainDrawer> {
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     UserPrefs userPrefs =
         Provider.of<UserPrefs>(context, listen: false).userPrefs;
 
@@ -58,7 +59,7 @@ class _MainDrawerState extends State<MainDrawer> {
 
     return Drawer(
       child: Container(
-        width: MediaQuery.of(context).size.width * .8,
+        width: size.width * .8,
         //The color of the Drawer
         // color: Colors.transparent,
         color: userPrefs.glassEffects!
@@ -148,7 +149,11 @@ class _MainDrawerState extends State<MainDrawer> {
               () async {
                 Navigator.of(context).pop();
                 if (!kIsWeb) {
-                  Share.share('https://sng.al/cal');
+                  Share.share(
+                    'https://sng.al/cal',
+                    sharePositionOrigin:
+                        Rect.fromLTWH(0, 0, size.width, size.height * .33),
+                  );
                 } else {
                   const url =
                       "mailto:?subject=Arminaatu Wolof&body=Xoolal appli Arminaatu Wolof fii: https://sng.al/cal";
@@ -224,19 +229,33 @@ class _MainDrawerState extends State<MainDrawer> {
                 }
               },
             ),
-            drawerTitle(
-              AppLocalizations.of(context)!.contactFBMessenger,
-              FontAwesomeIcons.facebookMessenger,
-              () async {
-                const url = 'https://m.me/buleenragal/';
-                if (await canLaunchUrl(Uri.parse(url))) {
-                  await launchUrl(Uri.parse(url),
-                      mode: LaunchMode.externalApplication);
-                } else {
-                  throw 'Could not launch $url';
-                }
-              },
-            ),
+            /* TODO facebook messenger has two problems on mobile. 
+            If Android, it takes about 10 seconds on my Pixel to load
+            If iOS, it opens Messenger but not open to Buleen Ragal, so useless. 
+            Revisit to test in the future. 
+            */
+            if (kIsWeb)
+              drawerTitle(
+                AppLocalizations.of(context)!.contactFBMessenger,
+                FontAwesomeIcons.facebookMessenger,
+                () async {
+                  const url = 'https://m.me/buleenragal';
+                  // const url = "https://m.me/112787400906941";
+                  // const url = "https://www.messenger.com/t/112787400906941";
+
+                  LaunchMode launchMode = LaunchMode.externalApplication;
+                  print(url);
+                  print(launchMode.toString());
+                  if (await canLaunchUrl(Uri.parse(url))) {
+                    await launchUrl(
+                      Uri.parse(url),
+                      mode: launchMode,
+                    );
+                  } else {
+                    throw 'Could not launch $url';
+                  }
+                },
+              ),
             const Divider(
               thickness: 2,
             ),

@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -49,43 +50,47 @@ class ThemeModel extends ChangeNotifier {
     //if there's no userTheme, it's the first time they've run the app, so give them darkTheme
 
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    // int currentBuildNumber = int.parse(packageInfo.buildNumber);
+    int currentBuildNumber = int.parse(packageInfo.buildNumber);
 
     try {
+      // if no previous run set dark theme
       if (!prefs.containsKey('lastBuildNumber')) {
         setDarkTheme();
       } else {
+        //we've run it before - check last run build number
         String lastBuildNumber =
             json.decode(prefs.getString('lastBuildNumber')!) as String;
 
         int lastSeenBuildNumber = int.parse(lastBuildNumber);
 
-        // if (currentBuildNumber > lastSeenBuildNumber) {
-        if (lastSeenBuildNumber < 24) {
+        //this clears the cache on each build number increment, so each year it will clear the previous year's audio.
+        //Otherwise you have a caching problem where it doesn't get the new assets but uses cached mp3s.
+        if (currentBuildNumber > lastSeenBuildNumber) {
+          await AudioPlayer.clearAssetCache();
+        }
+
+        // get user stored theme if it exists.
+        if (!prefs.containsKey('userThemeName')) {
           setDarkTheme();
         } else {
-          if (!prefs.containsKey('userThemeName')) {
-            setDarkTheme();
-          } else {
-            userThemeName =
-                json.decode(prefs.getString('userThemeName')!) as String?;
+          userThemeName =
+              json.decode(prefs.getString('userThemeName')!) as String?;
 
-            switch (userThemeName) {
-              case 'darkTheme':
-                {
-                  currentTheme = darkTheme;
+          switch (userThemeName) {
+            case 'darkTheme':
+              {
+                currentTheme = darkTheme;
 
-                  _themeType = ThemeType.dark;
-                  break;
-                }
+                _themeType = ThemeType.dark;
+                break;
+              }
 
-              case 'lightTheme':
-                {
-                  currentTheme = lightTheme;
-                  _themeType = ThemeType.light;
-                  break;
-                }
-            }
+            case 'lightTheme':
+              {
+                currentTheme = lightTheme;
+                _themeType = ThemeType.light;
+                break;
+              }
           }
         }
       }
@@ -94,7 +99,8 @@ class ThemeModel extends ChangeNotifier {
       setDarkTheme();
     }
 
-    final _currentBuildNumber = json.encode(packageInfo.buildNumber);
+    //save the current build number for next time.
+    final _currentBuildNumber = json.encode(currentBuildNumber);
     prefs.setString('lastBuildNumber', _currentBuildNumber);
     notifyListeners();
   }

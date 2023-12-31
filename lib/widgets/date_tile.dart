@@ -16,13 +16,13 @@ class DateTile extends StatelessWidget {
   final EdgeInsets adaptiveMargin;
   final bool isPhone;
   const DateTile({
-    Key? key,
+    super.key,
     required this.currentDate,
     required this.contentColWidth,
     required this.headerImageHeight,
     required this.adaptiveMargin,
     required this.isPhone,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

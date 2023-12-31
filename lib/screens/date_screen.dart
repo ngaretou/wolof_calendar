@@ -40,7 +40,7 @@ enum NavType {
 /////////
 
 class DateScreen extends StatefulWidget {
-  const DateScreen({Key? key}) : super(key: key);
+  const DateScreen({super.key});
 
   static const routeName = '/date-screen';
 

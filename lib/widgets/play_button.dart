@@ -12,8 +12,7 @@ class PlayButton extends StatefulWidget {
   final ChildController childController;
 
   const PlayButton(
-      {Key? key, required this.file, required this.childController})
-      : super(key: key);
+      {super.key, required this.file, required this.childController});
 
   @override
   // ignore: no_logic_in_create_state

@@ -29,7 +29,7 @@ class ScripturePanel extends StatefulWidget {
   final bool kIsWeb;
 
   const ScripturePanel(
-      {Key? key,
+      {super.key,
       required this.currentDate,
       required this.monthData,
       required this.contentColWidth,
@@ -38,8 +38,7 @@ class ScripturePanel extends StatefulWidget {
       required this.adaptiveMargin,
       required this.size,
       required this.isPhone,
-      required this.kIsWeb})
-      : super(key: key);
+      required this.kIsWeb});
 
   @override
   State<ScripturePanel> createState() => _ScripturePanelState();
