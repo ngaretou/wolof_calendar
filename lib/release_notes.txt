@@ -1,3 +1,6 @@
+2.2.2
+caching mp3 files fix [await AudioPlayer.clearAssetCache();]
+
 2.2.0
 New data for 2024
 App bar now includes month info

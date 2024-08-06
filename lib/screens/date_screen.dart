@@ -269,6 +269,8 @@ class DateScreenState extends State<DateScreen> {
     // ));
   }
 
+
+  //TODO do it this way: https://api.flutter.dev/flutter/material/ColorScheme/fromImageProvider.html
   Future<void> setColor() async {
     // print('setColor fired');
 

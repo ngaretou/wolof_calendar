@@ -275,7 +275,7 @@ class _MainDrawerState extends State<MainDrawer> {
 
   void showAbout(BuildContext context) async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    if (!mounted) return;
+    if (!context.mounted) return;
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -343,11 +343,11 @@ class _MainDrawerState extends State<MainDrawer> {
                   ),
                   TextSpan(
                     style: Theme.of(context).textTheme.bodyLarge,
-                    text: ' copyright © 2023 La MBS. ',
+                    text: ' copyright © 2024 La MBS. ',
                   ),
                   TextSpan(
                     style: Theme.of(context).textTheme.bodyLarge,
-                    text: 'Appli © 2023 Foundational LLC.',
+                    text: 'Appli © 2024 Foundational LLC.',
                   ),
                 ],
               )),
