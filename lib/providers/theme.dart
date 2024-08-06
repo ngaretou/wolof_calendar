@@ -53,8 +53,9 @@ class ThemeModel extends ChangeNotifier {
     int currentBuildNumber = int.parse(packageInfo.buildNumber);
 
     try {
-      // if no previous run set dark theme
+      // if a build before about 24 where the build number was not saved then clear cache and set dark mode.
       if (!prefs.containsKey('lastBuildNumber')) {
+        await AudioPlayer.clearAssetCache();
         setDarkTheme();
       } else {
         //we've run it before - check last run build number
@@ -96,6 +97,7 @@ class ThemeModel extends ChangeNotifier {
       }
     } catch (e) {
       debugPrint(e.toString());
+      await AudioPlayer.clearAssetCache();
       setDarkTheme();
     }
 
