@@ -6,7 +6,6 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:palette_generator/palette_generator.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:animated_box_decoration/animated_box_decoration.dart';
 
@@ -269,29 +268,25 @@ class DateScreenState extends State<DateScreen> {
     // ));
   }
 
-
-  //TODO do it this way: https://api.flutter.dev/flutter/material/ColorScheme/fromImageProvider.html
   Future<void> setColor() async {
     // print('setColor fired');
 
     String monthAsString = currentMonthFirstDate.value.month;
     ImageProvider myBackground = AssetImage('assets/images/$monthAsString.jpg');
-
-    //the magic
-    PaletteGenerator paletteGenerator =
-        await PaletteGenerator.fromImageProvider(myBackground);
+    Brightness brightness = Theme.of(context).brightness;
 
     try {
-      themeColor = paletteGenerator.dominantColor!.color;
+      final newColorScheme = await ColorScheme.fromImageProvider(
+          provider: myBackground, brightness: brightness);
+
+      // hit a delay in here so the wallpaper changes, then the theme changes
+      // Future.delayed(const Duration(milliseconds: 0)).then((_) {
+      if (!mounted) return;
+      Provider.of<ThemeModel>(context, listen: false).setTheme(newColorScheme);
+      // });
     } catch (e) {
       debugPrint('problem setting palette generator color');
-      themeColor = Colors.teal;
     }
-    if (!mounted) return;
-    // hit a delay in here so the wallpaper changes, then the theme changes
-    Future.delayed(const Duration(milliseconds: 1000)).then((_) =>
-        Provider.of<ThemeModel>(context, listen: false)
-            .setThemeColor(themeColor));
   }
 
   @override
@@ -464,21 +459,25 @@ class DateScreenState extends State<DateScreen> {
       while (datesToDisplay[index].wolofMonthRS == "") {
         index--;
       }
+      if (!mounted) return;
+      try {
+        formattedAppBarTitle.value = topDate.year;
+        appBarWesternMonthFR.value = currentMonth.monthFR;
+        appBarWesternMonthRS.value = currentMonth.monthRS;
+        appBarWesternMonthAS.value = currentMonth.monthAS;
+        //this is the first record before the current topDate where a Wolof month is mentioned.
+        appBarWolofMonth.value = datesToDisplay[index].wolofMonthRS;
+        appBarWolofalMonth.value = datesToDisplay[index].wolofMonthAS;
 
-      formattedAppBarTitle.value = topDate.year;
-      appBarWesternMonthFR.value = currentMonth.monthFR;
-      appBarWesternMonthRS.value = currentMonth.monthRS;
-      appBarWesternMonthAS.value = currentMonth.monthAS;
-      //this is the first record before the current topDate where a Wolof month is mentioned.
-      appBarWolofMonth.value = datesToDisplay[index].wolofMonthRS;
-      appBarWolofalMonth.value = datesToDisplay[index].wolofMonthAS;
+        int firstOfCurrentMonthIndex = datesToDisplay.indexWhere((element) =>
+            element.year == topDate.year &&
+            element.month == topDate.month &&
+            element.westernDate == '1');
 
-      int firstOfCurrentMonthIndex = datesToDisplay.indexWhere((element) =>
-          element.year == topDate.year &&
-          element.month == topDate.month &&
-          element.westernDate == '1');
-
-      currentMonthFirstDate.value = datesToDisplay[firstOfCurrentMonthIndex];
+        currentMonthFirstDate.value = datesToDisplay[firstOfCurrentMonthIndex];
+      } catch (e) {
+        debugPrint('error: $e');
+      }
     }
 
     //This magically finds the index we want given a year, month, and date
@@ -664,7 +663,7 @@ class DateScreenState extends State<DateScreen> {
         cursor: SystemMouseCursors.grab,
         child: NotificationListener(
           onNotification: (dynamic notification) {
-            if (notification is ScrollEndNotification) {
+            if (notification is UserScrollNotification) {
               updateAfterNavigation(navType: NavType.scrolled);
             }
             return true;
@@ -701,13 +700,14 @@ class DateScreenState extends State<DateScreen> {
     //this image backdrop goes behind the whole screen if widescreen and just date panel if phone
     Widget imageBackdrop({required Widget child}) {
       return ValueListenableBuilder(
+        // this is what triggers changing the wallpaper
         valueListenable: currentMonthFirstDate,
         child: child,
         builder: (context, value, child) {
           return SmoothAnimatedContainer(
             duration: lastNavigatedVia == NavType.jumped
                 ? const Duration(milliseconds: 0)
-                : const Duration(milliseconds: 2000),
+                : const Duration(milliseconds: 500),
             curve: Curves.ease,
             height: double.infinity,
             width: double.infinity,

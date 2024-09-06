@@ -7,7 +7,13 @@ Track the Western and Wolof months together with Scripture passages in Roman scr
 Web version at http://cal.sng.al
 
 
-## What's new?dra
+## What's new?
+
+### 2.3
+
+- `ColorScheme.fromImageProvider` rather than `Palette Generator`
+- Making some animations go faster - from one background to another & colorscheme change and the drawer open/close animation.
+
 
 ### 2.2
 
@@ -16,3 +22,4 @@ Web version at http://cal.sng.al
 
 ## TODO
 - new photo thanks
+- Test FB Messenger on Android iOS web

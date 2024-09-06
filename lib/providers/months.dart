@@ -68,8 +68,8 @@ class Month {
   final String monthRS;
   final String monthAS;
 
-  final String? wolofName;
-  final String? wolofalName;
+  // final String? wolofName;
+  // final String? wolofalName;
   final List<Verses> verses;
 
   Month({
@@ -77,11 +77,66 @@ class Month {
     required this.monthFR,
     required this.monthRS,
     required this.monthAS,
-    this.wolofName,
-    this.wolofalName,
+    // this.wolofName,
+    // this.wolofalName,
     required this.verses,
   });
 }
+
+final List<dynamic> monthNames = [
+  {
+    "monthID": "1",
+    "monthFR": "Janvier",
+    "monthRS": "Samwiye",
+    "monthAS": "سَمْوِيࣹ"
+  },
+  {
+    "monthID": "2",
+    "monthFR": "Février",
+    "monthRS": "Fewriye",
+    "monthAS": "فࣹوْرِيࣹ"
+  },
+  {"monthID": "3", "monthFR": "Mars", "monthRS": "Màrs", "monthAS": "مࣵرسّ"},
+  {
+    "monthID": "4",
+    "monthFR": "Avril",
+    "monthRS": "Awril",
+    "monthAS": "اَوْرِلْ"
+  },
+  {"monthID": "5", "monthFR": "Mai", "monthRS": "Me", "monthAS": "مࣹ"},
+  {"monthID": "6", "monthFR": "Juin", "monthRS": "Suwen", "monthAS": "سُوࣹنْ"},
+  {
+    "monthID": "7",
+    "monthFR": "Juillet",
+    "monthRS": "Sulet",
+    "monthAS": "سُلࣹتْ"
+  },
+  {"monthID": "8", "monthFR": "Août", "monthRS": "Ut", "monthAS": "اُتْ"},
+  {
+    "monthID": "9",
+    "monthFR": "Septembre",
+    "monthRS": "Sàttumbar",
+    "monthAS": "سࣵتُّمْبَرْ"
+  },
+  {
+    "monthID": "10",
+    "monthFR": "Octobre",
+    "monthRS": "Oktoobar",
+    "monthAS": "اࣷڪْتࣷوبَرْ"
+  },
+  {
+    "monthID": "11",
+    "monthFR": "Novembre",
+    "monthRS": "Nowàmbar",
+    "monthAS": "نࣷوࣵمْبَرْ"
+  },
+  {
+    "monthID": "12",
+    "monthFR": "Décembre",
+    "monthRS": "Desàmbar",
+    "monthAS": "دࣹسࣵمْبَرْ"
+  }
+];
 
 class Months with ChangeNotifier {
   // You have two main data collections
@@ -124,10 +179,7 @@ class Months with ChangeNotifier {
     final List<Month> loadedMonthData = [];
     final List<Date> loadedDateData = [];
 
-    //Get the months from months.json file
-    String monthsJSON = await rootBundle.loadString("assets/months.json");
-    final monthsData = json.decode(monthsJSON) as List<dynamic>;
-
+    //Get the data from the json files
     String holidaysJSON = await rootBundle.loadString("assets/holidays.json");
     final holidaysData = json.decode(holidaysJSON) as List<dynamic>?;
 
@@ -139,7 +191,7 @@ class Months with ChangeNotifier {
 
     //So we have the info but it's in the wrong format - here map it to our class
 
-    for (var month in monthsData) {
+    for (var month in monthNames) {
       loadedMonthData.add(Month(
         monthID: month['monthID'],
         monthFR: month['monthFR'],
@@ -147,8 +199,8 @@ class Months with ChangeNotifier {
         monthAS: month['monthAS'],
         // arabicName: month['arabicName'],
         // arabicNameCode: month['arabicNameCode'],
-        wolofName: month['wolofName'],
-        wolofalName: month['wolofalName'],
+        // wolofName: month['wolofName'],
+        // wolofalName: month['wolofalName'],
         verses: versesData!
             .map((entry) => Verses(
                   monthID: entry['monthID'],

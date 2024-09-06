@@ -1,100 +1,86 @@
 ﻿[
   {
     "monthID": "1",
-    "verseRS": "Ñaanu Daawuda: Bàkkaar lañuy wax, seeni kàddu, bàkkaari neen. Yal nañu bew ba daanu, yooloo ko seeni saagaak seeni fen.",
-    "verseRefRS": "Taalifi cant, saar 59, aaya 13",
-    "verseAS": "ݧَانُ دَاوُدَ:‏‏ بࣵڪَّارْ لَݧُيْ وَخْ، سࣹينِ ڪࣵدُّ، بࣵڪَّارِ نࣹينْ؞ يَلْ نَݧُ بࣹوْ بَ دَانُ، يࣷولࣷو ڪࣷ سࣹينِ سَاگَاڪْ سࣹينِ فࣹنْ؞",
-    "verseRefAS": "تَالِفِ ݖَنتّ، سَارْ 59، آيَ 13"
+    "verseRS": "Boroom bi sa Yàlla, nanga ko soppe sa léppi xol ak sa léppi jëmm ak sa léppi doole ak sa léppi xel, te ni nga soppe sa bopp, nanga ko soppe sa moroom.",
+    "verseRefRS": "Luug, saar 10, aaya 27 ",
+    "verseAS": "بࣷرࣷومْ بِ سَ يࣵلَّ، نَنگَ ڪࣷ سࣷݒّࣹ سَ لࣺݒِّ خࣷلْ اَڪْ سَ لࣺݒِّ جࣴمّ اَڪْ سَ لࣺݒِّ دࣷولࣹ اَڪْ سَ لࣺݒِّ خࣹلْ، تࣹ نِ نگَ سࣷݒّࣹ سَ بࣷݒّ، نَنگَ ڪࣷ سࣷݒّࣹ سَ مࣷرࣷومْ؞",
+    "verseRefAS": "لُوگْ، سَارْ 10، آيَ 27 "
   },
   {
     "monthID": "2",
-    "verseRS": "Yeesu Almasi bi nee: Maa leen wax ne leen, gépp kàddug neen gu nit masa wax, dina ko layoo kera bés-pénc.",
-    "verseRefRS": "Macë, saar 12, aaya 36",
-    "verseAS": "عِيسَىٰ اَلْمَسِ بِ نࣹي:‏‏ مَا لࣹينْ وَخْ نࣹ لࣹينْ، گࣺݒّ ڪࣵدُّگْ نࣹينْ گُ نِتْ مَسَ وَخْ، دِنَ ڪࣷ لَيࣷو ڪࣹرَ بࣺسْ-ݒࣺنݖّ؞",
-    "verseRefAS": "مَݖࣴ، سَارْ 12، آيَ 36"
+    "verseRS": "Sàmmleen àqu néew-ji-dooleek jirim, tey àtte yoon ku ñàkk ak ku ndóol. Walluleen néew-ji-dooleek walaakaana, di leen xettali ci ku bon.",
+    "verseRefRS": "Taalifi cant, saar 82, aaya 3-4",
+    "verseAS": "سࣵمّلࣹينْ اࣵقُ نࣺيوْ-جِ-دࣷولࣹيڪْ جِرِمْ، تࣹيْ اࣵتّࣹ يࣷونْ ڪُ ݧࣵڪّ اَڪْ ڪُ ندٗولْ؞ وَلُّلࣹينْ نࣺيوْ-جِ-دࣷولࣹيڪْ وَلاَڪَانَ، دِ لࣹينْ خࣹتَّلِ ݖِ ڪُ بࣷنْ؞",
+    "verseRefAS": "تَالِفِ ݖَنتّ، سَارْ 82، آيَ 3‏-4"
   },
   {
     "monthID": "3",
-    "verseRS": "Éy Yàlla, ñaar laa la ñaan, ngalla may ma ko sama giiru dund: caaxaan aki fen, yal na ma sore, néewleek barele, bu ma ci may lenn, leel ma lu ma doy.",
-    "verseRefRS": "Kàddu yu xelu, saar 30, aaya 7-8",
-    "verseAS": "اࣺيْ يࣵلَّ، ݧَارْ لاَ لَ ݧَانْ، نگَلَّ مَيْ مَ ڪࣷ سَمَ گِيرُ دُندّ:‏‏ ݖَاخَانْ اَڪِ فࣹنْ، يَلْ نَ مَ سࣷرࣹ، نࣺيوْلࣹيڪْ بَرࣹلࣹ، بُ مَ ݖِ مَيْ لࣹنّ، لࣹيلْ مَ لُ مَ دࣷيْ؞",
-    "verseRefAS": "ڪࣵدُّ يُ خࣹلُ، سَارْ 30، آيَ 7‏-8"
+    "verseRS": "Boo dee waajal bernde kay, wool néew-doole yi ak làggi yi, ak ñiy soox ak silmaxa yi. Su boobaa ndokkalee yaw, nde amuñu sag pey, waaye dees na la fey, kera ndekkitel aji jub ñi.",
+    "verseRefRS": "Luug, saar 14, aaya 13-14",
+    "verseAS": "بࣷو دࣹي وَاجَلْ بࣹرْندࣹ ڪَيْ، وࣷولْ نࣺيوْ-دࣷولࣹ يِ اَڪْ لࣵگِّ يِ، اَڪْ ݧِيْ سࣷوخْ اَڪْ سِلْمَخَ يِ؞ سُ بࣷوبَا ندࣷڪَّلࣹي يَوْ، ندࣹ اَمُݧُ سَگْ ݒࣹيْ، وَايࣹ دࣹيسْ نَ لَ فࣹيْ، ڪࣹرَ ندࣹڪِّتࣹلْ اَجِ جُبْ ݧِ؞",
+    "verseRefAS": "لُوگْ، سَارْ 14، آيَ 13‏-14"
   },
   {
     "monthID": "4",
-    "verseRS": "Nit ku baax, dencub ngëneel ba ca biir xolam, ca lay jële lu baax la mu sàlloo; nit ku bon it, dencub safaan ba ca biir xolam, ca lay jële safaan ba mu sàlloo. Gémmiñ daal, la fees xolu boroom lay wax.",
-    "verseRefRS": "Luug, saar 6, aaya 45",
-    "verseAS": "نِتْ ڪُ بَاخْ، دࣹنݖُبْ نگࣴنࣹيلْ بَ ݖَ بِيرْ خࣷلَمْ، ݖَ لَيْ جࣴلࣹ لُ بَاخْ لَ مُ سࣵلّࣷو؛ نِتْ ڪُ بࣷنْ اِتْ، دࣹنݖُبْ سَفَانْ بَ ݖَ بِيرْ خࣷلَمْ، ݖَ لَيْ جࣴلࣹ سَفَانْ بَ مُ سࣵلّࣷو؞ گࣺمِّݧْ دَالْ، لَ فࣹيسْ خࣷلُ بࣷرࣷومْ لَيْ وَخْ؞",
-    "verseRefAS": "لُوگْ، سَارْ 6، آيَ 45"
+    "verseRS": "Bul xañ njekk ku ko yelloo, ndegam man nga ko. Bul ne say dëkk: «Demal ba beneen, ma jox la,» te fekk la yor.",
+    "verseRefRS": "Kàddu yu xelu ñeel Suleymaan, saar 3, aaya 27-28",
+    "verseAS": "بُلْ خَݧْ نجࣹڪّ ڪُ ڪࣷ يࣹلّࣷو، ندࣹگَمْ مَنْ نگَ ڪࣷ؞ بُلْ نࣹ سَيْ دࣴڪّ:‏ «دࣹمَلْ بَ بࣹنࣹينْ، مَ جࣷخْ لَ،» تࣹ فࣹڪّ لَ يࣷرْ؞",
+    "verseRefAS": "ڪࣵدُّ يُ خࣹلُ ݧࣹيلْ سُلࣹيْمَانْ، سَارْ 3، آيَ 27‏-28"
   },
   {
     "monthID": "5",
-    "verseRS": "Aji Sax ji, sama xol laa làq say wax, ngir bañ laa moy. Damaa seetlu sama jëfin, dëpp, topp sa kàdduy seede.",
-    "verseRefRS": "Taalifi cant, saar 119, aaya 11 ak 59",
-    "verseAS": "اَجِ سَخْ جِ، سَمَ خࣷلْ لاَ لࣵقْ سَيْ وَخْ، نگِرْ بَݧْ لاَ مࣷيْ؞ دَمَا سࣹيتْلُ سَمَ جࣴفِنْ، دࣴݒّ، تࣷݒّ سَ ڪࣵدُّيْ سࣹيدࣹ؞",
-    "verseRefAS": "تَالِفِ ݖَنتّ، سَارْ 119، آيَ 11 اَڪْ 59"
+    "verseRS": "Buleen def dara ci kaw wujje, mbaa réy-réylu, waaye woyofluleen, ba jàpp ne seeni moroom a leen gën. Bu kenn ci yeen xintewoo njariñal boppam, waaye na ku nekk bàyyi xel moroomam.",
+    "verseRefRS": "Filib, saar 2, aaya 3-4",
+    "verseAS": "بُلࣹينْ دࣹفْ دَرَ ݖِ ڪَوْ وُجّࣹ، مبَا رࣺيْ-رࣺيْلُ، وَايࣹ وࣷيࣷفْلُلࣹينْ، بَ جࣵݒّ نࣹ سࣹينِ مࣷرࣷومَ لࣹينْ گࣴنْ؞ بُ ڪࣹنّ ݖِ يࣹينْ خِنْتࣹوࣷو نجَرِݧَلْ بࣷݒَّمْ، وَايࣹ نَ ڪُ نࣹڪّ بࣵيِّ خࣹلْ مࣷرࣷومَمْ؞",
+    "verseRefAS": "فِلِبْ، سَارْ 2، آيَ 3‏-4"
   },
   {
     "monthID": "6",
-    "verseRS": "Lii lépp baleen ko: maanaam tàng xol ak mer mu ëpp ak coxor ak saaga ak wax ju ñaaw.",
-    "verseRefRS": "Kolos, saar 3, aaya 8",
-    "verseAS": "لِي لࣺݒّ بَلࣹينْ ڪࣷ:‏‏ مَانَامْ تࣵنگّ خࣷلْ اَڪْ مࣹرْ مُ اࣴݒّ اَڪْ ݖࣷخࣷرْ اَڪْ سَاگَ اَڪْ وَخْ جُ ݧَاوْ؞",
-    "verseRefAS": "ڪࣷلࣷسْ، سَارْ 3، آيَ 8"
+    "verseRS": "Yeesu Almasi bi nee: Bu la sa mbokk tooñee, yedd ko. Bu tuubee, baal ko. Su la tooñoon juróom ñaari yoon ci bés bi, te walbatiku juróom ñaari yoon, ne la: «Tuub naa ko,» baal ko rekk.",
+    "verseRefRS": "Luug, saar 17, aaya 3-4",
+    "verseAS": "عِيسَىٰ اَلْمَسِ بِ نࣹي:‏ بُ لَ سَ مبࣷڪّ تࣷوݧࣹي، يࣹدّ ڪࣷ؞ بُ تُوبࣹي، بَالْ ڪࣷ؞ سُ لَ تࣷوݧࣷونْ جُرٗومْ ݧَارِ يࣷونْ ݖِ بࣺسْ بِ، تࣹ وَلْبَتِڪُ جُرٗومْ ݧَارِ يࣷونْ، نࣹ لَ:‏ «تُوبْ نَا ڪࣷ،» بَالْ ڪࣷ رࣹڪّ؞",
+    "verseRefAS": "لُوگْ، سَارْ 17، آيَ 3‏-4"
   },
   {
     "monthID": "7",
-    "verseRS": "Bàyyileen fen, te ku nekk di wax sa moroom dëgg, ndax ku nekk ci yeen sab céru moroom nga.",
-    "verseRefRS": "Efes, saar 4, aaya 25",
-    "verseAS": "بࣵيِّلࣹينْ فࣹنْ، تࣹ ڪُ نࣹڪّ دِ وَخْ سَ مࣷرࣷومْ دࣴگّ، ندَخْ ڪُ نࣹڪّ ݖِ يࣹينْ سَبْ ݖࣺرُ مࣷرࣷومْ نگَ؞",
-    "verseRefAS": "اࣹفࣹسْ، سَارْ 4، آيَ 25"
+    "verseRS": "Buleen di feyantook seen mbokkum waa réew te buleen ko dencal mer. Ni ngeen soppe seen bopp nag, nangeen ko soppe seen moroom. Maay Aji Sax ji.",
+    "verseRefRS": "Sarxalkat yi, saar 19, aaya 18",
+    "verseAS": "بُلࣹينْ دِ فࣹيَنْتࣷوڪْ سࣹينْ مبࣷڪُّمْ وَا رࣺيوْ تࣹ بُلࣹينْ ڪࣷ دࣹنݖَلْ مࣹرْ؞ نِ نگࣹينْ سࣷݒّࣹ سࣹينْ بࣷݒّ نَگْ، نَنگࣹينْ ڪࣷ سࣷݒّࣹ سࣹينْ مࣷرࣷومْ؞ مَايْ اَجِ سَخْ جِ؞",
+    "verseRefAS": "سَرْخَلْڪَتْ يِ، سَارْ 19، آيَ 18"
   },
   {
     "monthID": "8",
-    "verseRS": "Yeesu Almasi bi nee: Na sa kàddu di waaw, soo waree ne waaw; mbaa déet, soo waree ne déet. Leneen lu ci tegu, ci ku bon ki la jóge.",
-    "verseRefRS": "Macë, saar 5, aaya 37",
-    "verseAS": "عِيسَىٰ اَلْمَسِ بِ نࣹي:‏‏ نَ سَ ڪࣵدُّ دِ وَاوْ، سࣷو وَرࣹي نࣹ وَاوْ؛ مبَا دࣺيتْ، سࣷو وَرࣹي نࣹ دࣺيتْ؞ لࣹنࣹينْ لُ ݖِ تࣹگُ، ݖِ ڪُ بࣷنْ ڪِ لَ جٗگࣹ؞",
-    "verseRefAS": "مَݖࣴ، سَارْ 5، آيَ 37"
+    "verseRS": "Yeesu Almasi bi nee: Yeen ñi may déglu, dama ne, seeni noon, soppleen leen, seeni bañ, defalleen leen lu baax. Ñi leen di móolu, yéeneleen leen lu baax, ñi leen di soxore, ñaanalleen leen.",
+    "verseRefRS": "Luug, saar 6, aaya 27-28",
+    "verseAS": "عِيسَىٰ اَلْمَسِ بِ نࣹي:‏ يࣹينْ ݧِ مَيْ دࣺگْلُ، دَمَ نࣹ، سࣹينِ نࣷونْ، سࣷݒّلࣹينْ لࣹينْ، سࣹينِ بَݧْ، دࣹفَلّࣹينْ لࣹينْ لُ بَاخْ؞ ݧِ لࣹينْ دِ مٗولُ، يࣺينࣹلࣹينْ لࣹينْ لُ بَاخْ، ݧِ لࣹينْ دِ سࣷخࣷرࣹ، ݧَانَلّࣹينْ لࣹينْ؞",
+    "verseRefAS": "لُوگْ، سَارْ 6، آيَ 27‏-28"
   },
   {
     "monthID": "9",
-    "verseRS": "Bu genn kàddu gu bon génne seen gémmiñ, xanaa su ko jaree ngeen wax lu baax, luy jariñe, te diw yiw ci ñi koy dégg.",
-    "verseRefRS": "Efes, saar 4, aaya 29",
-    "verseAS": "بُ گࣹنّ ڪࣵدُّ گُ بࣷنْ گࣺنّࣹ سࣹينْ گࣺمِّݧْ، خَنَا سُ ڪࣷ جَرࣹي نگࣹينْ وَخْ لُ بَاخْ، لُيْ جَرِݧࣹ، تࣹ دِوْ يِوْ ݖِ ݧِ ڪࣷيْ دࣺگّ؞",
-    "verseRefAS": "اࣹفࣹسْ، سَارْ 4، آيَ 29"
+    "verseRS": "Bu sab noon xiifee, jox ko mu lekk, bu maree, may ko mu naan, day rus ba mel ni koo yeni xal, te Aji Sax jee lay fey.",
+    "verseRefRS": "Kàddu yu xelu ñeel Suleymaan, saar 25, aaya 21-22",
+    "verseAS": "بُ سَبْ نࣷونْ خِيفࣹي، جࣷخْ ڪࣷ مُ لࣹڪّ، بُ مَرࣹي، مَيْ ڪࣷ مُ نَانْ، دَيْ رُسْ بَ مࣹلْ نِ ڪࣷو يࣹنِ خَلْ، تࣹ اَجِ سَخْ جࣹي لَيْ فࣹيْ؞",
+    "verseRefAS": "ڪࣵدُّ يُ خࣹلُ ݧࣹيلْ سُلࣹيْمَانْ، سَارْ 25، آيَ 21‏-22"
   },
   {
     "monthID": "10",
-    "verseRS": "Njàqare day jeexal xolu boroom, wax ju neex di tooyal xolam.",
-    "verseRefRS": "Kàddu yu xelu ñeel Suleymaan, saar 12, aaya 25",
-    "verseAS": "نجࣵقَرࣹ دَيْ جࣹيخَلْ خࣷلُ بࣷرࣷومْ، وَخْ جُ نࣹيخْ دِ تࣷويَلْ خࣷلَمْ؞",
-    "verseRefAS": "ڪࣵدُّ يُ خࣹلُ ݧࣹيلْ سُلࣹيْمَانْ، سَارْ 12، آيَ 25"
-  },
-  {
-    "monthID": "10",
-    "verseRS": "Tont lu neex day giifal, baat bu ñagas di jógal xol.",
-    "verseRefRS": "Kàddu yu xelu ñeel Suleymaan, saar 15, aaya 1",
-    "verseAS": "تࣷنتّ لُ نࣹيخْ دَيْ گِيفَلْ، بَاتْ بُ ݧَگَسْ دِ جٗگَلْ خࣷلْ؞",
-    "verseRefAS": "ڪࣵدُّ يُ خࣹلُ ݧࣹيلْ سُلࣹيْمَانْ، سَارْ 15، آيَ 1"
+    "verseRS": "Fexeleen ba kenn du feyantoo. Waaye lu baax, deeleen ko deflante ci seen biir, te di ko defal ñépp.",
+    "verseRefRS": "Tesalonig, bataaxal 1, saar 5, aaya 15",
+    "verseAS": "فࣹخࣹلࣹينْ بَ ڪࣹنّ دُ فࣹيَنْتࣷو؞ وَايࣹ لُ بَاخْ، دࣹيلࣹينْ ڪࣷ دࣹفْلَنْتࣹ ݖِ سࣹينْ بِيرْ، تࣹ دِ ڪࣷ دࣹفَلْ ݧࣺݒّ؞",
+    "verseRefAS": "تࣹسَلࣷنِگْ، بَتَاخَلْ 1، سَارْ 5، آيَ 15"
   },
   {
     "monthID": "11",
-    "verseRS": "Li ci des nag bokk yi, moo di lii: mboolem lu dëggu, ak mboolem lu tedd, ak mboolem luy njub, ak mboolem lu set, ak mboolem lu jekk, ak mboolem lees di rafetlu, ndegam lu nawlu la te yelloo ngërëm, na leen loola soxal.",
-    "verseRefRS": "Filib, saar 4, aaya 8",
-    "verseAS": "لِ ݖِ دࣹسْ نَگْ بࣷڪّ يِ، مࣷو دِ لِي:‏‏ مبࣷولࣹمْ لُ دࣴگُّ، اَڪْ مبࣷولࣹمْ لُ تࣹدّ، اَڪْ مبࣷولࣹمْ لُيْ نجُبْ، اَڪْ مبࣷولࣹمْ لُ سࣹتْ، اَڪْ مبࣷولࣹمْ لُ جࣹڪّ، اَڪْ مبࣷولࣹمْ لࣹيسْ دِ رَفࣹتْلُ، ندࣹگَمْ لُ نَوْلُ لَ تࣹ يࣹلّࣷو نگࣴرࣴمْ، نَ لࣹينْ لࣷولَ سࣷخَلْ؞",
-    "verseRefAS": "فِلِبْ، سَارْ 4، آيَ 8"
+    "verseRS": "Ndax ndigal yii kat: «Buleen njaaloo, buleen bóom, buleen sàcc, buleen xemmem,» ak leneen ndigal lu mu mana doon, ci genn kàddu gii la tënke: «Ni ngeen soppe seen bopp, nangeen ko soppe seen moroom.»",
+    "verseRefRS": "Room, saar 13, aaya 9",
+    "verseAS": "ندَخْ ندِگَلْ يِي ڪَتْ:‏ «بُلࣹينْ نجَالࣷو، بُلࣹينْ بٗومْ، بُلࣹينْ سࣵݖّ، بُلࣹينْ خࣹمّࣹمْ،» اَڪْ لࣹنࣹينْ ندِگَلْ لُ مُ مَنَ دࣷونْ، ݖِ گࣹنّ ڪࣵدُّ گِي لَ تࣴنڪࣹ:‏ «نِ نگࣹينْ سࣷݒّࣹ سࣹينْ بࣷݒّ، نَنگࣹينْ ڪࣷ سࣷݒّࣹ سࣹينْ مࣷرࣷومْ؞»",
+    "verseRefAS": "رࣷومْ، سَارْ 13، آيَ 9"
   },
   {
     "monthID": "12",
-    "verseRS": "Yàllaa mat. Kàddug Aji Sax jee wér te wóor. Mooy feg képp ku ko làqoo.",
-    "verseRefRS": "Taalifi cant, saar 18, aaya 31",
-    "verseAS": "يࣵلاَّ مَتْ؞ ڪࣵدُّگْ اَجِ سَخْ جࣹي وࣺرْ تࣹ وٗورْ؞ مࣷويْ فࣹگْ ڪࣺݒّ ڪُ ڪࣷ لࣵقࣷو؞",
-    "verseRefAS": "تَالِفِ ݖَنتّ، سَارْ 18، آيَ 31"
-  },
-  {
-    "monthID": "12",
-    "verseRS": "Simoŋ Piyeer ne Yeesu Almasi bi: Sang bi, ci kan lanu jëm? Kàddu giy texeel fàww, yaa ko yor!",
-    "verseRefRS": "Yowaan, saar 6, aaya 68",
-    "verseAS": "سِمࣷݝْ ݒِيࣹيرْ نࣹ عِيسَىٰ اَلْمَسِ بِ:‏‏ سَنگّ بِ، ݖِ ڪَنْ لَنُ جࣴمْ؟ ڪࣵدُّ گِيْ تࣹخࣹيلْ فࣵوّ، يَا ڪࣷ يࣷرْ!‏‏",
-    "verseRefAS": "يࣷوَانْ، سَارْ 6، آيَ 68"
+    "verseRS": "Mboolem ñi yaakaar seen jëf ju ñu sàmme yoonu Musaa, repp nañoo alku, nde bindees na ne: «Alku ñeel na ku saxoowul mboolem ndigal yi ñu bind ci téereb yoon wi, ngir di ko jëfe.» Li sàmm yoon taxul kenn jot àtteb ku jub fi kanam Yàlla sax, lu leer nàññ la, nde: «Ki ñu baaxe njub ndax ngëmam mooy dund.»",
+    "verseRefRS": "Galasi, saar 3, aaya 10-11",
+    "verseAS": "مبࣷولࣹمْ ݧِ يَاڪَارْ سࣹينْ جࣴفْ جُ ݧُ سࣵمّࣹ يࣷونُ مُوسَىٰ، رࣹݒّ نَݧࣷو اَلْڪُ، ندࣹ بِنْدࣹيسْ نَ نࣹ:‏ «اَلْڪُ ݧࣹيلْ نَ ڪُ سَخࣷووُلْ مبࣷولࣹمْ ندِگَلْ يِ ݧُ بِندّ ݖِ تࣺيرࣹبْ يࣷونْ وِ، نگِرْ دِ ڪࣷ جࣴفࣹ؞» لِ سࣵمّ يࣷونْ تَخُلْ ڪࣹنّ جࣷتْ اࣵتّࣹبْ ڪُ جُبْ فِ ڪَنَمْ يࣵلَّ سَخْ، لُ لࣹيرْ نࣵݧّ لَ، ندࣹ:‏ «ڪِ ݧُ بَاخࣹ نجُبْ ندَخْ نگࣴمَمْ مࣷويْ دُندّ؞»",
+    "verseRefAS": "گَلَسِ، سَارْ 3، آيَ 10‏-11"
   }
 ]

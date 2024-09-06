@@ -315,13 +315,18 @@ class VerseBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // words with hyphens don't look good broken - replace any hyphens with non-break hyphens
+    const nonBreakingHyphen = '\u2011';
+
+    String fixedVerse = verse.replaceAll('-', nonBreakingHyphen);
+
     return Padding(
       padding: adaptiveMargin,
       // padding: EdgeInsets.all(0),
       child: Column(
         children: [
           Text(
-            verse,
+            fixedVerse,
             style: verseStyle,
             textDirection: direction,
             textAlign: TextAlign.center,
