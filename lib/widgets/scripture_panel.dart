@@ -146,7 +146,9 @@ class _ScripturePanelState extends State<ScripturePanel> {
                     curve: Curves.easeOut,
                     // height: bodyHeight,
                     height: bodyHeightNotifier.value,
-                    duration: const Duration(milliseconds: 500),
+
+                    // how long the drawer open and close takes
+                    duration: const Duration(milliseconds: 200),
                     child: GestureDetector(
                       onVerticalDragUpdate: (DragUpdateDetails data) {
                         //the Gestur detector here has scrolling, and so does the scrollcontroller.
@@ -223,7 +225,7 @@ class _ScripturePanelState extends State<ScripturePanel> {
                                             if (notification.overscroll < 0) {
                                               numberOfOverscrollNotifications++;
                                               if (numberOfOverscrollNotifications >
-                                                  15) {
+                                                  5) {
                                                 bodyHeightNotifier.value = 0;
                                                 numberOfOverscrollNotifications =
                                                     0;

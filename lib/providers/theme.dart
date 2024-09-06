@@ -60,7 +60,7 @@ class ThemeModel extends ChangeNotifier {
       } else {
         //we've run it before - check last run build number
         String lastBuildNumber =
-            json.decode(prefs.getString('lastBuildNumber')!) as String;
+            json.decode(prefs.getString('lastBuildNumber')!).toString();
 
         int lastSeenBuildNumber = int.parse(lastBuildNumber);
 
@@ -125,13 +125,12 @@ class ThemeModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setThemeColor(Color color) {
+  void setTheme(ColorScheme colorScheme) {
     // print('setting new color in provider theme.dart');
     currentTheme = ThemeData(
-        fontFamily: 'Lato',
-        colorSchemeSeed: color,
-        brightness:
-            userThemeName == 'lightTheme' ? Brightness.light : Brightness.dark);
+      fontFamily: 'Lato',
+      colorScheme: colorScheme,
+    );
 
     notifyListeners();
   }

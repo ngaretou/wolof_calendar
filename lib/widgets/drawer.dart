@@ -234,28 +234,28 @@ class _MainDrawerState extends State<MainDrawer> {
             If iOS, it opens Messenger but not open to Buleen Ragal, so useless. 
             Revisit to test in the future. 
             */
-            if (kIsWeb)
-              drawerTitle(
-                AppLocalizations.of(context)!.contactFBMessenger,
-                FontAwesomeIcons.facebookMessenger,
-                () async {
-                  const url = 'https://m.me/buleenragal';
-                  // const url = "https://m.me/112787400906941";
-                  // const url = "https://www.messenger.com/t/112787400906941";
+            // if (kIsWeb)
+            drawerTitle(
+              AppLocalizations.of(context)!.contactFBMessenger,
+              FontAwesomeIcons.facebookMessenger,
+              () async {
+                const url = 'https://m.me/buleenragal';
+                // const url = "https://m.me/112787400906941";
+                // const url = "https://www.messenger.com/t/112787400906941";
 
-                  LaunchMode launchMode = LaunchMode.externalApplication;
-                  print(url);
-                  print(launchMode.toString());
-                  if (await canLaunchUrl(Uri.parse(url))) {
-                    await launchUrl(
-                      Uri.parse(url),
-                      mode: launchMode,
-                    );
-                  } else {
-                    throw 'Could not launch $url';
-                  }
-                },
-              ),
+                LaunchMode launchMode = LaunchMode.externalApplication;
+                print(url);
+                print(launchMode.toString());
+                if (await canLaunchUrl(Uri.parse(url))) {
+                  await launchUrl(
+                    Uri.parse(url),
+                    mode: launchMode,
+                  );
+                } else {
+                  throw 'Could not launch $url';
+                }
+              },
+            ),
             const Divider(
               thickness: 2,
             ),
