@@ -53,10 +53,16 @@ class ThemeModel extends ChangeNotifier {
     int currentBuildNumber = int.parse(packageInfo.buildNumber);
 
     try {
-      // if a build before about 24 where the build number was not saved then clear cache and set dark mode.
+      
+      // not just a new installation - if a build before about 2024 where
+      // the build number was not saved then clear cache and set dark mode.
       if (!prefs.containsKey('lastBuildNumber')) {
-        await AudioPlayer.clearAssetCache();
         setDarkTheme();
+        try {
+          await AudioPlayer.clearAssetCache();
+        } catch (e) {
+          debugPrint(e.toString());
+        }
       } else {
         //we've run it before - check last run build number
         String lastBuildNumber =
@@ -66,7 +72,7 @@ class ThemeModel extends ChangeNotifier {
 
         //this clears the cache on each build number increment, so each year it will clear the previous year's audio.
         //Otherwise you have a caching problem where it doesn't get the new assets but uses cached mp3s.
-        if (currentBuildNumber > lastSeenBuildNumber) {
+        if (currentBuildNumber != lastSeenBuildNumber) {
           await AudioPlayer.clearAssetCache();
         }
 

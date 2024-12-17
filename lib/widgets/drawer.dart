@@ -229,17 +229,45 @@ class _MainDrawerState extends State<MainDrawer> {
                 }
               },
             ),
-            /* TODO facebook messenger has two problems on mobile. 
+            /* facebook messenger had two problems on mobile. 
+            This fb-messenger is the key for mobile working correctly.
+            plus 
+
+            in AndroidManifest: 
+            <manifest ...>
+              <queries>
+                <package android:name="com.facebook.orca" />
+              </queries>
+            </manifest> 
+
+          and 
+
+          in Info.plist
+          <key>LSApplicationQueriesSchemes</key>
+          <array>
+              <string>fb-messenger</string>
+          </array> 
             If Android, it takes about 10 seconds on my Pixel to load
-            If iOS, it opens Messenger but not open to Buleen Ragal, so useless. 
-            Revisit to test in the future. 
+            this can be due to cold start: 
+            https://github.com/flutter/flutter/issues/139417
+
+            
+            
             */
-            // if (kIsWeb)
+            //if (kIsWeb)
             drawerTitle(
               AppLocalizations.of(context)!.contactFBMessenger,
               FontAwesomeIcons.facebookMessenger,
               () async {
-                const url = 'https://m.me/buleenragal';
+                String url = '';
+
+                if (kIsWeb) {
+                  url = 'https://m.me/buleenragal';
+                } else {
+                  url = "fb-messenger://user-thread/112787400906941";
+                }
+
+                // const url = 'https://m.me/buleenragal';
                 // const url = "https://m.me/112787400906941";
                 // const url = "https://www.messenger.com/t/112787400906941";
 
@@ -334,6 +362,11 @@ class _MainDrawerState extends State<MainDrawer> {
                     style: Theme.of(context).textTheme.bodyLarge,
                     text: ' produit par la MEAO. ',
                   ),
+                ],
+              )),
+              RichText(
+                  text: TextSpan(
+                children: [
                   TextSpan(
                     style: Theme.of(context)
                         .textTheme
@@ -345,6 +378,11 @@ class _MainDrawerState extends State<MainDrawer> {
                     style: Theme.of(context).textTheme.bodyLarge,
                     text: ' copyright © 2024 La MBS. ',
                   ),
+                ],
+              )),
+              RichText(
+                  text: TextSpan(
+                children: [
                   TextSpan(
                     style: Theme.of(context).textTheme.bodyLarge,
                     text: 'Appli © 2024 Foundational LLC.',

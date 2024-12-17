@@ -35,6 +35,7 @@
 		<array>
 			<string>https</string>
 			<string>http</string>
+			<string>fb-messenger</string>
 		</array>
 		<key>LSRequiresIPhoneOS</key>
 		<true/>

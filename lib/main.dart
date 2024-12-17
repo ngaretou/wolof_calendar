@@ -22,7 +22,7 @@ import './screens/date_screen.dart';
 
 void main() {
   if (kIsWeb) {
-//This is to preserve the splash screen til loading is done
+    //This is to preserve the splash screen til loading is done
     WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
     FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   }
