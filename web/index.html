@@ -1,137 +1,146 @@
-<!DOCTYPE html><html><head>
-  <meta charset="UTF-8">
-  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="Arminaatu Wolof.">
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
+    <meta name="description" content="Arminaatu Wolof." />
 
-  <!-- iOS meta tags & icons -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="wolof_calendar">
-  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+    <!-- iOS meta tags & icons -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="wolof_calendar" />
+    <link rel="apple-touch-icon" href="icons/Icon-192.png" />
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png" />
 
-  <title>Arminaatu Wolof</title>
-  <link rel="manifest" href="manifest.json">
-  
-  <base href="$FLUTTER_BASE_HREF">
-  <!-- <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"> -->
-  
-  
-  
-  
-  
-  
-  
-  
-  <style id="splash-screen-style">
-    html {
-      height: 100%
-    }
+    <title>Arminaatu Wolof</title>
+    <link rel="manifest" href="manifest.json" />
 
-    body {
-      margin: 0;
-      min-height: 100%;
-      background-color: #ffffff;
-          background-size: 100% 100%;
-    }
+    <base href="$FLUTTER_BASE_HREF" />
+    <!-- <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"> -->
 
-    .center {
-      margin: 0;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      -ms-transform: translate(-50%, -50%);
-      transform: translate(-50%, -50%);
-    }
+    <style id="splash-screen-style">
+      html {
+        height: 100%;
+      }
 
-    .contain {
-      display:block;
-      width:100%; height:100%;
-      object-fit: contain;
-    }
+      body {
+        margin: 0;
+        min-height: 100%;
+        background-color: #ffffff;
+        background-size: 100% 100%;
+      }
 
-    .stretch {
-      display:block;
-      width:100%; height:100%;
-    }
+      .center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+      }
 
-    .cover {
-      display:block;
-      width:100%; height:100%;
-      object-fit: cover;
-    }
+      .contain {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
 
-    .bottom {
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      -ms-transform: translate(-50%, 0);
-      transform: translate(-50%, 0);
-    }
+      .stretch {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
 
-    .bottomLeft {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-    }
+      .cover {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
 
-    .bottomRight {
-      position: absolute;
-      bottom: 0;
-      right: 0;
-    }
-  </style>
-  <script id="splash-screen-script">
-    function removeSplashFromWeb() {
-      document.getElementById("splash")?.remove();
-      document.getElementById("splash-branding")?.remove();
-      document.body.style.background = "transparent";
-    }
-  </script>
-</head>
-<body>
-  <picture id="splash">
-      <source srcset="splash/img/light-1x.gif 1x, splash/img/light-2x.gif 2x, splash/img/light-3x.gif 3x, splash/img/light-4x.gif 4x" media="(prefers-color-scheme: light)">
-      <source srcset="splash/img/dark-1x.gif 1x, splash/img/dark-2x.gif 2x, splash/img/dark-3x.gif 3x, splash/img/dark-4x.gif 4x" media="(prefers-color-scheme: dark)">
-      <img class="center" aria-hidden="true" src="splash/img/light-1x.gif" alt="">
-  </picture>
-  
-  
-  
-  
-  
- 
-   <script src="flutter_bootstrap.js" async></script>
+      .bottom {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        -ms-transform: translate(-50%, 0);
+        transform: translate(-50%, 0);
+      }
+
+      .bottomLeft {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+      }
+
+      .bottomRight {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+      }
+    </style>
+    <script id="splash-screen-script">
+      function removeSplashFromWeb() {
+        document.getElementById("splash")?.remove();
+        document.getElementById("splash-branding")?.remove();
+        document.body.style.background = "transparent";
+      }
+    </script>
+  </head>
+  <body>
+    <picture id="splash">
+      <source
+        srcset="
+          splash/img/light-1x.gif 1x,
+          splash/img/light-2x.gif 2x,
+          splash/img/light-3x.gif 3x,
+          splash/img/light-4x.gif 4x
+        "
+        media="(prefers-color-scheme: light)" />
+      <source
+        srcset="
+          splash/img/dark-1x.gif 1x,
+          splash/img/dark-2x.gif 2x,
+          splash/img/dark-3x.gif 3x,
+          splash/img/dark-4x.gif 4x
+        "
+        media="(prefers-color-scheme: dark)" />
+      <img
+        class="center"
+        aria-hidden="true"
+        src="splash/img/light-1x.gif"
+        alt="" />
+    </picture>
+
+    <script src="flutter_bootstrap.js" async></script>
 
     <!-- The core Firebase JS SDK is always required and must be listed first -->
-<script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-app.js"></script>
 
-<!-- TODO: Add SDKs for Firebase products that you want to use
+    <!-- TODO: Add SDKs for Firebase products that you want to use
      https://firebase.google.com/docs/web/setup#available-libraries -->
-<script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-analytics.js"></script>
 
-<script>
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  var firebaseConfig = {
-    apiKey: "AIzaSyDD3p4ZfR_avKLxph-VL82947UckPAmFQA",
-    authDomain: "wolof-calendar.firebaseapp.com",
-    databaseURL: "https://wolof-calendar.firebaseio.com",
-    projectId: "wolof-calendar",
-    storageBucket: "wolof-calendar.appspot.com",
-    messagingSenderId: "613913153946",
-    appId: "1:613913153946:web:aeb97626ce1ab40e406a23",
-    measurementId: "G-VBLNXNXSTR"
-  };
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  firebase.analytics();
-</script>
-    
+    <script>
+      // Your web app's Firebase configuration
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      var firebaseConfig = {
+        apiKey: "AIzaSyDD3p4ZfR_avKLxph-VL82947UckPAmFQA",
+        authDomain: "wolof-calendar.firebaseapp.com",
+        databaseURL: "https://wolof-calendar.firebaseio.com",
+        projectId: "wolof-calendar",
+        storageBucket: "wolof-calendar.appspot.com",
+        messagingSenderId: "613913153946",
+        appId: "1:613913153946:web:aeb97626ce1ab40e406a23",
+        measurementId: "G-VBLNXNXSTR",
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      firebase.analytics();
+    </script>
 
-  <script src="main.dart.js" type="application/javascript"></script>
-
-
-</body></html>
+    <script src="main.dart.js" type="application/javascript"></script>
+  </body>
+</html>

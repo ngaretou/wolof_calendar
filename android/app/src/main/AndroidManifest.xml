@@ -45,6 +45,8 @@
       <action android:name="android.intent.action.SEND" />
       <data android:mimeType="*/*" />
     </intent>
+    <!-- for messenger -->
+    <package android:name="com.facebook.orca" />
   </queries>
 
 

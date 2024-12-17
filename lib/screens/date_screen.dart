@@ -559,6 +559,22 @@ class DateScreenState extends State<DateScreen> {
           navType: NavType.jumped, navigatedIndex: navigateToDateIndex);
     }
 
+    navigateToDate(DateTime chosenDate) {
+      var goToYear = DateFormat('yyyy', 'fr_FR').format(chosenDate).toString();
+      var goToMonth = DateFormat('M', 'fr_FR').format(chosenDate).toString();
+      var goToDate = DateFormat('d', 'fr_FR').format(chosenDate).toString();
+
+      //This uses the scrollcontroller to whisk us to the desired date
+      //Here this returns the index of the date we're headed to,
+      //-1 to account for the app bar hiding the first tile
+      int navigateToIndex = getDateIndex(goToYear, goToMonth, goToDate) - 1;
+      //then passes it to the scroll controlloer to get us there
+      itemScrollController.jumpTo(index: navigateToIndex);
+      //and then updates the interface to match the new date
+      updateAfterNavigation(
+          navType: NavType.jumped, navigatedIndex: navigateToIndex);
+    }
+
     Future pickDateToShow() async {
       // print('pickDateToShow');
       DateTime lastDate = DateTime(
@@ -577,20 +593,7 @@ class DateScreenState extends State<DateScreen> {
       if (chosenDate == null) {
         return;
       }
-
-      var goToYear = DateFormat('yyyy', 'fr_FR').format(chosenDate).toString();
-      var goToMonth = DateFormat('M', 'fr_FR').format(chosenDate).toString();
-      var goToDate = DateFormat('d', 'fr_FR').format(chosenDate).toString();
-
-      //This uses the scrollcontroller to whisk us to the desired date
-      //Here this returns the index of the date we're headed to,
-      //-1 to account for the app bar hiding the first tile
-      int navigateToIndex = getDateIndex(goToYear, goToMonth, goToDate) - 1;
-      //then passes it to the scroll controlloer to get us there
-      itemScrollController.jumpTo(index: navigateToIndex);
-      //and then updates the interface to match the new date
-      updateAfterNavigation(
-          navType: NavType.jumped, navigatedIndex: navigateToIndex);
+      navigateToDate(chosenDate);
     }
 
     //The widget that is used for all the month headers
@@ -793,19 +796,44 @@ class DateScreenState extends State<DateScreen> {
             //         ? const Icon(Icons.light_mode)
             //         : const Icon(Icons.dark_mode)),
 
-            //Navigate one month back
-            IconButton(
-                icon: const Icon(
-                  Icons.arrow_back_ios,
-                ),
-                onPressed: () => moveMonths('backward')),
-
-            //Date picker
+            // Date picker
             IconButton(
               icon: const Icon(Icons.date_range),
               onPressed: () => pickDateToShow(),
             ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Container(
+                width: 1.0, // Width of the line
+                height: 28, // Height of the line
+                color: Theme.of(context)
+                    .colorScheme
+                    .onSurface, // Color of the line
+              ),
+            ),
 
+            //Navigate one month back
+            IconButton(
+                icon: const Icon(
+                  Icons.arrow_back_ios_new,
+                ),
+                onPressed: () => moveMonths('backward')),
+            IconButton(
+              icon: Stack(
+                alignment: const AlignmentDirectional(.0, .5),
+                children: [
+                  Text(
+                    DateFormat('d', 'fr_FR').format(DateTime.now()),
+                    style: Theme.of(context).textTheme.labelSmall,
+                  ),
+                  const Icon(Icons.calendar_today),
+                ],
+              ),
+              onPressed: () {
+                DateTime now = DateTime.now();
+                navigateToDate(now);
+              },
+            ),
             //one month forward
             IconButton(
                 icon: const Icon(Icons.arrow_forward_ios),
