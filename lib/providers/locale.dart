@@ -23,7 +23,7 @@ class LocaleProvider extends ChangeNotifier {
         break;
       case 'fr_CH':
         userLocale = const Locale('fr', 'CH');
-        notifyListeners();
+      notifyListeners();
         break;
       default:
     }

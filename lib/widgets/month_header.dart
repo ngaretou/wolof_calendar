@@ -4,7 +4,7 @@ import 'dart:io';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:wolof_calendar/l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../providers/months.dart';

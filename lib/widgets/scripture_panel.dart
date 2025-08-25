@@ -7,7 +7,7 @@ import 'package:path_provider/path_provider.dart';
 
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:wolof_calendar/l10n/app_localizations.dart';
 
 import '../providers/user_prefs.dart';
 import '../providers/months.dart';
