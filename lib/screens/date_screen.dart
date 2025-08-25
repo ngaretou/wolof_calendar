@@ -737,8 +737,8 @@ class DateScreenState extends State<DateScreen> {
                           begin: Alignment.bottomLeft,
                           end: Alignment.topCenter,
                           colors: [
-                            overlayColor.withOpacity(.7),
-                            overlayColor.withOpacity(.3)
+                            overlayColor.withAlpha(179),
+                            overlayColor.withAlpha(77)
                           ],
                           stops: const [0.1, .9],
                         ),
@@ -770,8 +770,8 @@ class DateScreenState extends State<DateScreen> {
       extendBodyBehindAppBar: true,
       //Theme + BackdropFilter gets the glass theme on the drawer
       drawerScrimColor: Theme.of(context).brightness == Brightness.light
-          ? Colors.white.withOpacity(.1)
-          : Colors.black.withOpacity(.1),
+          ? Colors.white.withAlpha(26)
+          : Colors.black.withAlpha(26),
       drawer: BackdropFilter(
           filter: userPrefs.glassEffects!
               ? ImageFilter.blur(sigmaX: 50, sigmaY: 50)

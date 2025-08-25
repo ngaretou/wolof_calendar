@@ -257,9 +257,9 @@ class MonthHeaderState extends State<MonthHeader> {
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [
-                          overlayColor.withOpacity(.0),
-                          overlayColor.withOpacity(.5),
-                          overlayColor.withOpacity(.7)
+                          overlayColor.withAlpha(0),
+                          overlayColor.withAlpha(128),
+                          overlayColor.withAlpha(179)
                         ],
                         stops: const [0.1, .6, .9],
                       ),

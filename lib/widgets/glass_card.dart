@@ -39,9 +39,9 @@ class GlassCard extends StatelessWidget {
     tintColor == null
         ? colorToShow = Theme.of(context)
             .cardColor
-            .withOpacity(userPrefs.glassEffects! ? .6 : 1)
+            .withAlpha(userPrefs.glassEffects! ? 153 : 255)
         : colorToShow =
-            tintColor!.withOpacity(userPrefs.glassEffects! ? .5 : 1);
+            tintColor!.withAlpha(userPrefs.glassEffects! ? 128 : 255);
 
     return ClipRRect(
       clipBehavior: Clip.hardEdge,
@@ -66,11 +66,11 @@ class GlassCard extends StatelessWidget {
                   showGradientSet
                       ? Theme.of(context)
                           .cardColor
-                          .withOpacity(userPrefs.glassEffects! ? .1 : 1)
+                          .withAlpha(userPrefs.glassEffects! ? 26 : 255)
                       : colorToShow,
                   showGradientSet
                       ? Colors.grey
-                          .withOpacity(userPrefs.glassEffects! ? .3 : 1)
+                          .withAlpha(userPrefs.glassEffects! ? 77 : 255)
                       : colorToShow,
                 ],
                 stops: const [

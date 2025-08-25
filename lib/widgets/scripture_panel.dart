@@ -131,7 +131,7 @@ class _ScripturePanelState extends State<ScripturePanel> {
                           ? Theme.of(context)
                               .colorScheme
                               .secondaryContainer
-                              .withOpacity(.2)
+                              .withAlpha(51)
                           : Theme.of(context).colorScheme.secondaryContainer,
                       borderRadius: const BorderRadius.only(
                         topRight: Radius.circular(20.0),

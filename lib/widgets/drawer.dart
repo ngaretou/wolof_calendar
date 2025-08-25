@@ -63,7 +63,7 @@ class _MainDrawerState extends State<MainDrawer> {
         //The color of the Drawer
         // color: Colors.transparent,
         color: userPrefs.glassEffects!
-            ? Theme.of(context).colorScheme.surface.withOpacity(.2)
+            ? Theme.of(context).colorScheme.surface.withAlpha(51)
             : Theme.of(context).colorScheme.surface,
 
         child: ListView(
