@@ -33,8 +33,10 @@ class ThemeModel extends ChangeNotifier {
   String? userThemeName;
   ThemeData? currentTheme;
 
-  Future<void> initialSetupAsync(context) async {
-    await Provider.of<Months>(context, listen: false).getData();
+  Future<void> initialSetup(context) async {
+    await Provider.of<Months>(context, listen: false)
+        .fetchInitialDates(DateTime.now()); // real version
+    // await Provider.of<Months>(context, listen: false).fetchInitialDates(DateTime(2028, 3)); // for testing
     await Provider.of<UserPrefs>(context, listen: false).setupUserPrefs();
     await setupTheme();
 
@@ -53,7 +55,6 @@ class ThemeModel extends ChangeNotifier {
     int currentBuildNumber = int.parse(packageInfo.buildNumber);
 
     try {
-      
       // not just a new installation - if a build before about 2024 where
       // the build number was not saved then clear cache and set dark mode.
       if (!prefs.containsKey('lastBuildNumber')) {

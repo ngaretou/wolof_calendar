@@ -96,8 +96,8 @@ class MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    init = Provider.of<ThemeModel>(context, listen: false)
-        .initialSetupAsync(context);
+    init =
+        Provider.of<ThemeModel>(context, listen: false).initialSetup(context);
     // Call the intitialization of the locale
     setupLang();
     super.initState();

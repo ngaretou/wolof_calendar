@@ -69,7 +69,7 @@ class DateScreenState extends State<DateScreen> {
   late UserPrefs userPrefs;
 
   //This is used just for the initial navigation on open
-  int? initialScrollIndex;
+  int initialScrollIndex = 0;
 
   //Holders for the app bar title info that gets refreshed as the user navigates
   //Doing this with valuenotifiers saves lots of rebuilds
@@ -81,7 +81,7 @@ class DateScreenState extends State<DateScreen> {
   ValueNotifier<String> appBarWolofalMonth = ValueNotifier("");
 
   //used both for that initial navigation on open AND for the starting date for the date picker
-  late DateTime initialDateTime;
+  DateTime initialDateTime = DateTime.now();
 
   // the fade-in speed for the button animations in milliseconds
   final int fadeInSpeed = 300;
@@ -93,35 +93,26 @@ class DateScreenState extends State<DateScreen> {
   // this stores what the last navigated type is.
   late NavType lastNavigatedVia;
 
+  bool _isLoading = false;
+
   @override
   void initState() {
-    // print('date screen initState');
-    UserPrefs prefsProvider = Provider.of<UserPrefs>(context, listen: false);
-    userPrefs = prefsProvider.userPrefs;
-
-    //The data - display 'infinite' list; here infinite being all dates in the data
-    datesToDisplay = Provider.of<Months>(context, listen: false).dates;
+    super.initState();
+    userPrefs = Provider.of<UserPrefs>(context, listen: false).userPrefs;
     allMonths = Provider.of<Months>(context, listen: false).months;
-
-    //If already on low power setting, don't bother checking;
-    //Also if user has one time chosen a power setting and knows where it is, don't check anymore
 
     // enableFpsMonitoring(); //for testing, always turns on fps monitoring
     if (userPrefs.shouldTestDevicePerformance!) enableFpsMonitoring();
 
-    /*
-    //   In the initial version of the app we arrived here with route arguments.
-    //   Following the 2020 version we're going to this screen being the intial screen,
-    //   but leaving the logic in case in the future we want to navigate back to this screen
-    //   using route args. A bit confusing reading through for the current version.
-    //   */
-    late DateScreenArgs args;
+    datesToDisplay = Provider.of<Months>(context, listen: false).dates;
 
-    // When first opening, there are no arguments, so go to current date using the argument format
-    DateTime now = DateTime.now();
-    String currentDate = DateFormat('d', 'fr_FR').format(now);
-    String currentMonthString = DateFormat('M', 'fr_FR').format(now);
-    String currentYear = DateFormat('yyyy', 'fr_FR').format(now);
+    // Set up the initial app bar values currentMonthFirstDate
+    final String currentDate = DateFormat('d', 'fr_FR').format(initialDateTime);
+    final String currentMonthString =
+        DateFormat('M', 'fr_FR').format(initialDateTime);
+    final String currentYear =
+        DateFormat('yyyy', 'fr_FR').format(initialDateTime);
+    DateTime startHere = initialDateTime;
 
     //Before we open to today's date, check if today's date is in the data
     if (datesToDisplay.any((element) =>
@@ -129,102 +120,107 @@ class DateScreenState extends State<DateScreen> {
         currentMonthString == element.month &&
         currentDate == element.westernDate)) {
       //Now that we know current date, today, is in the data, open to today's date
-      args = DateScreenArgs(
-          date: currentDate, month: currentMonthString, year: currentYear);
+      startHere = DateTime(int.parse(currentYear),
+          int.parse(currentMonthString), int.parse(currentDate));
     } else {
       // print('today not in the data, going to last entry');
       //Get the last entry in the list
       Date lastDateInData = datesToDisplay.last;
-      //and set our routargs to that date.
-      args = DateScreenArgs(
-          date: lastDateInData.westernDate,
-          month: lastDateInData.month,
-          year: lastDateInData.year);
+      startHere = DateTime(
+        int.parse(lastDateInData.year),
+        int.parse(lastDateInData.month),
+        int.parse(lastDateInData.westernDate),
+      );
     }
 
-    //This initializes with a value the month we initially open to.
-    int firstOfCurrentMonthIndex = datesToDisplay.indexWhere((element) =>
-        element.year == args.year &&
-        element.month == args.month &&
-        element.westernDate == '1');
-
-    currentMonthFirstDate =
-        ValueNotifier(datesToDisplay[firstOfCurrentMonthIndex]);
-
-    //This is the index of the initial date to show in that infinite list
-    //This sets up the first date you see as that initialDateIndex but will be changed as we scroll
-    //important if it's a scroll body behind app bar situation with glass app bar that it be -1 to account for
-    //the tile under the app bar
     initialScrollIndex = ((datesToDisplay.indexWhere((element) =>
-                args.year == element.year &&
-                args.month == element.month &&
-                args.date == element.westernDate)) -
+                startHere.year.toString() == element.year &&
+                startHere.month.toString() == element.month &&
+                startHere.day.toString() == element.westernDate)) -
             1)
         .toInt();
 
-    //Get the initialDate as a DateTime
-    initialDateTime = DateFormat('yyyy M d', 'fr_FR')
-        .parse('${args.year} ${args.month} ${args.date}');
-    //Then make it nice for the initial appBarTitle
-    //To change format of title bar change both in initState & in main build
-    formattedAppBarTitle.value = args.year!;
+    currentMonthFirstDate = ValueNotifier(datesToDisplay[initialScrollIndex]);
 
-    Month currentMonth = (Provider.of<Months>(context, listen: false)
-            .months
-            .where((element) => element.monthID == args.month!)
-            .toList()[
-        0]); //the [0] grabs the first in the list, which will be the only one
+    _updateAppBar(initialScrollIndex);
 
-    // Look back from topDate and get the first record where Wolof month is not empty
-    int? index = initialScrollIndex;
-    while (datesToDisplay[index!].wolofMonthRS == "") {
-      index--;
-    }
+    itemPositionsListener.itemPositions.addListener(() {
+      final positions = itemPositionsListener.itemPositions.value;
+      if (positions.isNotEmpty) {
+        final first = positions.first.index;
+        final last = positions.last.index;
 
-    //set up the initial values for these month headers
-    appBarWesternMonthFR.value = currentMonth.monthFR;
-    appBarWesternMonthRS.value = currentMonth.monthRS;
-    appBarWesternMonthAS.value = currentMonth.monthAS;
-    appBarWolofMonth.value = datesToDisplay[index].wolofMonthRS;
-    appBarWolofalMonth.value = datesToDisplay[index].wolofMonthAS;
+        if (first < 10 && !_isLoading) {
+          _loadPrevious();
+        }
 
-    //Listen to this valuenotifier for changes
-    currentMonthFirstDate.addListener(() {
-      // print('currentMonthFirstDate listener fired');
-
-      /* if the changeThemeColorWithBackground is off but backgroundImage on,
-      the valuelistenablebuilder will trigger that change. 
-      If the theme should change this triggers it: 
-      */
-
-      if (Provider.of<UserPrefs>(context, listen: false)
-          .userPrefs
-          .changeThemeColorWithBackground!) {
-        // setColor will refresh back to main.dart, so will automatically update the bg image, not setState necessary
-        setColor();
+        if (last > datesToDisplay.length - 10 && !_isLoading) {
+          _loadNext();
+        }
       }
     });
 
     lastNavigatedVia = NavType.jumped;
+  }
 
-    super.initState();
+  void _loadNext() async {
+    print('load next');
+    setState(() {
+      _isLoading = true;
+    });
+    await Provider.of<Months>(context, listen: false).loadNextMonth();
+    setState(() {
+      datesToDisplay = Provider.of<Months>(context, listen: false).dates;
+      _isLoading = false;
+    });
+  }
+
+  void _loadPrevious() async {
+    setState(() {
+      _isLoading = true;
+    });
+    await Provider.of<Months>(context, listen: false).loadPreviousMonth();
+    setState(() {
+      datesToDisplay = Provider.of<Months>(context, listen: false).dates;
+      _isLoading = false;
+    });
+  }
+
+  void _updateAppBar(int index) {
+    if (datesToDisplay.isEmpty || index >= datesToDisplay.length) return;
+
+    Date topDate = datesToDisplay[index];
+    Month currentMonth =
+        allMonths.firstWhere((element) => element.monthID == topDate.month);
+
+    int wolofIndex = index;
+    while (datesToDisplay[wolofIndex].wolofMonthRS == "") {
+      wolofIndex--;
+    }
+
+    formattedAppBarTitle.value = topDate.year;
+    appBarWesternMonthFR.value = currentMonth.monthFR;
+    appBarWesternMonthRS.value = currentMonth.monthRS;
+    appBarWesternMonthAS.value = currentMonth.monthAS;
+    appBarWolofMonth.value = datesToDisplay[wolofIndex].wolofMonthRS;
+    appBarWolofalMonth.value = datesToDisplay[wolofIndex].wolofMonthAS;
+
+    int firstOfCurrentMonthIndex = datesToDisplay.indexWhere((element) =>
+        element.year == topDate.year &&
+        element.month == topDate.month &&
+        element.westernDate == '1');
+
+    if (firstOfCurrentMonthIndex != -1) {
+      currentMonthFirstDate =
+          ValueNotifier(datesToDisplay[firstOfCurrentMonthIndex]);
+    }
   }
 
   Future<void> enableFpsMonitoring() async {
-    // debugPrint('starting fps test');
     Fps.instance!.start();
-
     Fps.instance!.addFpsCallback((fpsInfo) {
-      // print(fpsInfo);
-      // Note below format of fpsInfo object
-      // FpsInfo fpsInfo = FpsInfo(fps, totalCount, droppedCount, drawFramesCount);
-
-      //If the reported fps is under 10 fps, not good. Add one observation to danger list, otherwise add one to good list
       (fpsInfo.fps < 10) ? fpsDangerZone++ : fpsWorking++;
-
-      //If we've observed 10 bad fps readings:
       if (fpsDangerZone > 5) enableLightAnimation();
-      //If we've observed 15 reports of good working order:
       if (fpsWorking > 15) disableFpsMonitoring();
     });
   }
@@ -233,44 +229,19 @@ class DateScreenState extends State<DateScreen> {
     debugPrint('FPS consistently good: disable monitoring');
     Provider.of<UserPrefs>(context, listen: false)
         .savePref('shouldTestDevicePerformance', false);
-
     Fps.instance!.stop();
   }
 
   Future<void> enableLightAnimation() async {
     debugPrint('FPS consistently low: ask to enable Light Animation');
     Fps.instance!.stop();
-    //Set the preference
     Provider.of<UserPrefs>(context, listen: false)
         .savePref('changeThemeColorWithBackground', false);
     Provider.of<UserPrefs>(context, listen: false)
         .savePref('shouldTestDevicePerformance', false);
-
-    //Give the user a message and a chance to cancel
-    // ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-    //   duration: Duration(seconds: 8),
-    //   content: Icon(Icons.power),
-    // Text(
-    //   AppLocalizations.of(context).changeThemeColorWithBackgroundMessage,
-    // style: const TextStyle(fontSize: 18),
-
-    // action: SnackBarAction(
-    //     //for some reason the action color is not contrasting enough by default
-    //     textColor: Theme.of(context).colorScheme.background,
-    //     label: AppLocalizations.of(context).cancel,
-    //     onPressed: () {
-    //       //undo the lowPower setting
-    //       Provider.of<CardPrefs>(context, listen: false)
-    //           .savePref('lowPower', false);
-    //       setState(() {});
-    //     }),
-    // ));
   }
 
   Future<void> setColor() async {
-    // print('setColor fired');
-
     String monthAsString = currentMonthFirstDate.value.month;
     ImageProvider myBackground = AssetImage('assets/images/$monthAsString.jpg');
     Brightness brightness = Theme.of(context).brightness;
@@ -278,12 +249,8 @@ class DateScreenState extends State<DateScreen> {
     try {
       final newColorScheme = await ColorScheme.fromImageProvider(
           provider: myBackground, brightness: brightness);
-
-      // hit a delay in here so the wallpaper changes, then the theme changes
-      // Future.delayed(const Duration(milliseconds: 0)).then((_) {
       if (!mounted) return;
       Provider.of<ThemeModel>(context, listen: false).setTheme(newColorScheme);
-      // });
     } catch (e) {
       debugPrint('problem setting palette generator color');
     }
@@ -291,42 +258,27 @@ class DateScreenState extends State<DateScreen> {
 
   @override
   void dispose() {
-    currentMonthFirstDate.dispose();
     formattedAppBarTitle.dispose();
     appBarWesternMonthFR.dispose();
     appBarWesternMonthRS.dispose();
     appBarWesternMonthAS.dispose();
     appBarWolofMonth.dispose();
     appBarWolofalMonth.dispose();
-
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // print('date_screen build');
-
-    UserPrefs userPrefsListenTrue =
-        Provider.of<UserPrefs>(context, listen: true).userPrefs;
-
-    //this is for later on when the user navigates
-    late int navigateToDateIndex;
+    datesToDisplay = Provider.of<Months>(context).dates;
+    allMonths = Provider.of<Months>(context).months;
 
     final Size size = MediaQuery.of(context).size;
     final screenwidth = size.width;
     final screenheight = size.height;
-    // print(screenwidth);
 
-    //set up the column proportions for widescreen view
-
-    // final double datePanelWidth = max(screenwidth * .4, 1);
-    // final double scripturePanelWidth = screenwidth - datePanelWidth;
-
-    //set up the column proportions for widescreen view
     final double datePanelWidth = max(screenwidth * .4, 350);
     final double scripturePanelWidth = screenwidth - datePanelWidth;
 
-    //overlay color for widgets that will have a gradient over them
     final Color overlayColor = Theme.of(context).brightness == Brightness.dark
         ? Colors.black
         : Colors.grey;
@@ -334,21 +286,14 @@ class DateScreenState extends State<DateScreen> {
     final bool isPhone =
         ((screenwidth + screenheight) <= 1400) || screenwidth < 750;
 
-    // Column width
     late double contentColWidth;
     late double headerImageHeight;
     late EdgeInsets adaptiveMargin;
 
-    //if big screen
     if (!isPhone) {
       contentColWidth = 600;
-      // headerImageHeight = min(screenheight, screenwidth) / 3;
       headerImageHeight = 275;
-
-      // adaptiveMargin = EdgeInsets.symmetric(
-      //     horizontal: (screenwidth - contentColWidth) / 2, vertical: 0);
       adaptiveMargin = const EdgeInsets.symmetric(horizontal: 5, vertical: 5);
-      //small screen
     } else if (isPhone) {
       contentColWidth = screenwidth - 10;
       headerImageHeight = 275;
@@ -364,239 +309,6 @@ class DateScreenState extends State<DateScreen> {
         .titleLarge!
         .copyWith(fontFamily: "Harmattan", color: appBarItemColor);
 
-    // Updates the appbar title with the month and shows or hides the play and share buttons
-    Future<void> updateAfterNavigation(
-        {required NavType navType, int? navigatedIndex}) async {
-      lastNavigatedVia = navType;
-      // print('updateAfterNavigation');
-      late int topIndex;
-      // int? bottomIndex;
-
-      /*
-      There are three ways you can get here.
-      1. By scrolling. 
-      2. By navigating with the arrow buttons in the appbar that go +1 month and -1 month.
-      3. By the date picker in the appbar.
-      If user scrolls, case #1, then the itemPositionsListener will tell you both the first displayed and last displayed date's index.
-      In the latter two cases, the itemPositionsListener doesn't see what's happening, so those functions pass in the index we need.
-      The problem here is that if scrolling, we can see if the month header is displayed at top or bottom - if navigating directly to an index, 
-      then we might actually see the header but not have the correct month header buttons :( Hopefully ListView will do a better job 
-      of supporting this in the future. 
-      */
-
-      if (navigatedIndex == null) {
-        //navigated index is optional so 2 and 3 pass it in but 1 (scrolling) does not.
-        //So this case is if the user scrolled and we can get the first and last Index displayed directly.
-        //firstIndex i.e. the top position in the visible portion of the list.
-        //itemPositionsListener's 'first' and 'last' are relative to scroll direction.
-        //This is how to get the scroll direction
-
-        topIndex = min(itemPositionsListener.itemPositions.value.first.index,
-                itemPositionsListener.itemPositions.value.last.index) +
-            1;
-        // bottomIndex = max(itemPositionsListener.itemPositions.value.first.index,
-        //     itemPositionsListener.itemPositions.value.last.index);
-      } else {
-        topIndex = navigatedIndex + 1;
-      }
-
-      //we'll definitely have the topIndex so get the topDate info.
-      Date topDate = datesToDisplay[topIndex];
-
-      //Because we will definitely have a firstIndex but may not have a lastIndex,
-      //handle the null case before we get to the if below
-
-      //There are four cases where we want the month buttons to change:
-      //if the first of the month visible on the screen, top of either Western or Wolof
-      //or bottom of either Western or Wolof.
-
-      // late String tempMonthToPlayAndShare;
-
-      //Handle the first two cases in one expression:
-      // topIndex-1 helps keep the button on screen as it's scrolling out of view
-      if (topDate.westernDate == '1') {
-        currentMonthFirstDate.value = topDate;
-      }
-
-      //Here unfortunately we have a complicated if, but we are checking if there is a bottom index in play
-      // else if (bottomIndex != null &&
-      //     //and then now we know it's not null we test if either is a 1
-      //     (datesToDisplay[bottomIndex].westernDate == '1')) {
-
-      //   tempMonthToPlayAndShare = datesToDisplay[bottomIndex]
-      //       .month; //topDate.month is the western month
-      // } else {
-      //   //in this case it's not a 1st of any months, so make sure the headers are hidden
-
-      //   tempMonthToPlayAndShare = currentMonthFirstDate;
-      // }
-      //If we got here by direct navigation and we are going to show the headers,
-      //we have to reset the FAB.
-
-      //Then do the real set up for our view
-      /*This is a bit of a hack that I don't like but it's the easiest way to get around the problem. 
-        When on a header screen with the play button playing, you can be playing when teh user presses
-        next month. If that happens without the setState showMonthHeaderButtons = false; then the 
-        button keeps playing and does not reset with the current month. This kills the button by setting
-        showMonthHeaderButtons = false for .3 seconds, and doesn't slow down the UI too much. 
-      */
-      // if (navigatedIndex != null) {
-      //   setState(() {
-      //     showMonthHeaderButtons = false;
-      //   });
-      // }
-
-      // Here get the French month for the header
-
-      Month currentMonth = (Provider.of<Months>(context, listen: false)
-              .months
-              .where((element) => element.monthID == topDate.month)
-              .toList()[
-          0]); //the [0] grabs the first in the list, which will be the only one
-
-      // Look back from top Date and get the first record where Wolof month is not empty
-      int index = topIndex;
-      while (datesToDisplay[index].wolofMonthRS == "") {
-        index--;
-      }
-      if (!mounted) return;
-      try {
-        formattedAppBarTitle.value = topDate.year;
-        appBarWesternMonthFR.value = currentMonth.monthFR;
-        appBarWesternMonthRS.value = currentMonth.monthRS;
-        appBarWesternMonthAS.value = currentMonth.monthAS;
-        //this is the first record before the current topDate where a Wolof month is mentioned.
-        appBarWolofMonth.value = datesToDisplay[index].wolofMonthRS;
-        appBarWolofalMonth.value = datesToDisplay[index].wolofMonthAS;
-
-        int firstOfCurrentMonthIndex = datesToDisplay.indexWhere((element) =>
-            element.year == topDate.year &&
-            element.month == topDate.month &&
-            element.westernDate == '1');
-
-        currentMonthFirstDate.value = datesToDisplay[firstOfCurrentMonthIndex];
-      } catch (e) {
-        debugPrint('error: $e');
-      }
-    }
-
-    //This magically finds the index we want given a year, month, and date
-    int getDateIndex(String goToYear, String goToMonth, String goToDate) {
-      var me = (datesToDisplay.indexWhere((element) =>
-          element.year == goToYear &&
-          element.month == goToMonth &&
-          element.westernDate == goToDate)).toInt();
-
-      return me;
-    }
-
-    void moveMonths(String direction) async {
-      // print('moveMonths');
-      //We use this to move one month forward or backward to the first of the month
-      //wiht the arrow buttons in the app title bar.
-      //Just feed in the direction forward or backward as a string.
-
-      //This gets the current index of the topmost date visible.
-      //The + 1 is a hack accounting for the glass app bar
-
-      int topIndexShown =
-          itemPositionsListener.itemPositions.value.first.index + 1;
-
-      //Grab these elements and initialize the vars
-      String currentYearDisplayed = (datesToDisplay[topIndexShown].year);
-      String currentMonthDisplayed = (datesToDisplay[topIndexShown].month);
-      late String goToMonth;
-      late String goToYear;
-
-      if (direction == 'forward') {
-        //If it's not December, we just add a month
-        if (currentMonthDisplayed != '12') {
-          goToMonth = ((int.parse(currentMonthDisplayed)) + 1).toString();
-          goToYear = currentYearDisplayed;
-          //If it's december, go to january but up the year by 1
-        } else if (currentMonthDisplayed == '12') {
-          goToMonth = '1';
-          // var intermediate = (int.parse(currentYearDisplayed)) + 1;
-          // goToYear = intermediate.toString();
-
-          goToYear = ((int.parse(currentYearDisplayed)) + 1).toString();
-        }
-      }
-
-      if (direction == 'backward') {
-        //If not January, it's easy, just go back one month
-        if (currentMonthDisplayed != '1') {
-          goToMonth = ((int.parse(currentMonthDisplayed)) - 1).toString();
-          goToYear = currentYearDisplayed;
-          //But if january you go back to december and subtract a year
-        } else if (currentMonthDisplayed == '1') {
-          goToMonth = '12';
-          goToYear = ((int.parse(currentYearDisplayed)) - 1).toString();
-        }
-      }
-
-      navigateToDateIndex = getDateIndex(goToYear, goToMonth, '1');
-
-      //getDateIndex returns -1 if [element] is not found.
-      //Here you've requested a date not in the data set, so go to beginning or end of set
-      if (navigateToDateIndex < 0) {
-        if (direction == 'forward') {
-          //lenght starts 1, 2, 3; indexes start 0, 1, 2; so that's why the -1 here
-          navigateToDateIndex = datesToDisplay.length - 1;
-        } else if (direction == 'backward') {
-          navigateToDateIndex = 1;
-        }
-      }
-
-      //Adjust for the glass app bar
-      navigateToDateIndex = navigateToDateIndex - 1;
-
-      //This uses the scrollcontroller to whisk us to the desired date
-
-      itemScrollController.jumpTo(index: navigateToDateIndex);
-
-      updateAfterNavigation(
-          navType: NavType.jumped, navigatedIndex: navigateToDateIndex);
-    }
-
-    navigateToDate(DateTime chosenDate) {
-      var goToYear = DateFormat('yyyy', 'fr_FR').format(chosenDate).toString();
-      var goToMonth = DateFormat('M', 'fr_FR').format(chosenDate).toString();
-      var goToDate = DateFormat('d', 'fr_FR').format(chosenDate).toString();
-
-      //This uses the scrollcontroller to whisk us to the desired date
-      //Here this returns the index of the date we're headed to,
-      //-1 to account for the app bar hiding the first tile
-      int navigateToIndex = getDateIndex(goToYear, goToMonth, goToDate) - 1;
-      //then passes it to the scroll controlloer to get us there
-      itemScrollController.jumpTo(index: navigateToIndex);
-      //and then updates the interface to match the new date
-      updateAfterNavigation(
-          navType: NavType.jumped, navigatedIndex: navigateToIndex);
-    }
-
-    Future pickDateToShow() async {
-      // print('pickDateToShow');
-      DateTime lastDate = DateTime(
-          int.parse(datesToDisplay.last.year),
-          int.parse(datesToDisplay.last.month),
-          int.parse(datesToDisplay.last.westernDate));
-
-      final chosenDate = await showDatePicker(
-        context: context,
-        initialDate: initialDateTime,
-        firstDate: DateTime(2020, 8),
-        lastDate: lastDate,
-        locale: const Locale("fr", "FR"),
-      );
-
-      if (chosenDate == null) {
-        return;
-      }
-      navigateToDate(chosenDate);
-    }
-
-    //The widget that is used for all the month headers
     Widget monthNames(ValueNotifier<String> notifier, TextAlign textAlign) {
       return ValueListenableBuilder(
           valueListenable: notifier,
@@ -611,17 +323,11 @@ class DateScreenState extends State<DateScreen> {
           });
     }
 
-    //the row of month names in the app bar
     Widget monthRow() {
       late Row row;
-
       List<Widget> monthNameWidgets = [];
-
-      //this pushes the month names over to the right in widescreen view
       double spaceAvailable = isPhone ? screenwidth : (datePanelWidth) - 16;
 
-      //for larger screens we can show more month names:
-      //western month in RS and AS, then wolof in RS and AS
       if (spaceAvailable > 368) {
         monthNameWidgets = [
           monthNames(appBarWesternMonthFR, TextAlign.left),
@@ -642,7 +348,6 @@ class DateScreenState extends State<DateScreen> {
           monthNames(appBarWolofalMonth, TextAlign.right),
         ];
       } else {
-        //if not a large screen just show western month in RS, then wolof in AS
         monthNameWidgets = [
           monthNames(appBarWesternMonthFR, TextAlign.left),
           monthNames(appBarWolofalMonth, TextAlign.right)
@@ -662,12 +367,18 @@ class DateScreenState extends State<DateScreen> {
     }
 
     Widget datesSection() {
+      if (datesToDisplay.isEmpty) {
+        return const Center(child: CircularProgressIndicator());
+      }
       return MouseRegion(
         cursor: SystemMouseCursors.grab,
         child: NotificationListener(
           onNotification: (dynamic notification) {
             if (notification is UserScrollNotification) {
-              updateAfterNavigation(navType: NavType.scrolled);
+              final positions = itemPositionsListener.itemPositions.value;
+              if (positions.isNotEmpty) {
+                _updateAppBar(positions.first.index);
+              }
             }
             return true;
           },
@@ -675,14 +386,13 @@ class DateScreenState extends State<DateScreen> {
             children: [
               Expanded(
                 child: ScrollConfiguration(
-                  //The 2.8 Flutter behavior is to not have mice grabbing and dragging - but we do want this in the web version of the app, so the custom scroll behavior here
                   behavior:
                       MyCustomScrollBehavior().copyWith(scrollbars: false),
                   child: ScrollablePositionedList.builder(
                     itemScrollController: itemScrollController,
                     itemPositionsListener: itemPositionsListener,
                     physics: const BouncingScrollPhysics(),
-                    initialScrollIndex: initialScrollIndex!,
+                    initialScrollIndex: initialScrollIndex ?? 0,
                     itemBuilder: (ctx, i) => DateTile(
                       currentDate: datesToDisplay[i],
                       contentColWidth: contentColWidth,
@@ -694,16 +404,15 @@ class DateScreenState extends State<DateScreen> {
                   ),
                 ),
               ),
+              if (_isLoading) const CircularProgressIndicator(),
             ],
           ),
         ),
       );
     }
 
-    //this image backdrop goes behind the whole screen if widescreen and just date panel if phone
     Widget imageBackdrop({required Widget child}) {
       return ValueListenableBuilder(
-        // this is what triggers changing the wallpaper
         valueListenable: currentMonthFirstDate,
         child: child,
         builder: (context, value, child) {
@@ -714,7 +423,7 @@ class DateScreenState extends State<DateScreen> {
             curve: Curves.ease,
             height: double.infinity,
             width: double.infinity,
-            decoration: userPrefsListenTrue.backgroundImage!
+            decoration: userPrefs.backgroundImage!
                 ? BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage(
@@ -725,8 +434,6 @@ class DateScreenState extends State<DateScreen> {
                   )
                 : BoxDecoration(color: Theme.of(context).highlightColor),
             child: BackdropFilter(
-              // This is not exactly as I want it, this is for the bg image - but in
-              // widescreen view it makes the verses blurry.
               filter: isPhone
                   ? ImageFilter.blur(sigmaX: 1, sigmaY: 5)
                   : ImageFilter.blur(sigmaX: 15, sigmaY: 15),
@@ -753,6 +460,9 @@ class DateScreenState extends State<DateScreen> {
     }
 
     Widget versesSection() {
+      if (datesToDisplay.isEmpty) {
+        return Container();
+      }
       return ScripturePanel(
           currentDate: currentMonthFirstDate.value,
           monthData: allMonths,
@@ -768,7 +478,6 @@ class DateScreenState extends State<DateScreen> {
     return Scaffold(
       key: scaffoldStateKey,
       extendBodyBehindAppBar: true,
-      //Theme + BackdropFilter gets the glass theme on the drawer
       drawerScrimColor: Theme.of(context).brightness == Brightness.light
           ? Colors.white.withAlpha(26)
           : Colors.black.withAlpha(26),
@@ -777,67 +486,50 @@ class DateScreenState extends State<DateScreen> {
               ? ImageFilter.blur(sigmaX: 50, sigmaY: 50)
               : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
           child: const MainDrawer()),
-
       appBar: glassAppBar(
           scaffoldStateKey: scaffoldStateKey,
           context: context,
           title: formattedAppBarTitle.value,
           height: 89.0,
           actions: [
-            //light/dark theme
-
             // IconButton(
-            //     onPressed: () {
-            //       Theme.of(context).brightness == Brightness.light
-            //           ? themeProvider.setDarkTheme()
-            //           : themeProvider.setLightTheme();
-            //     },
-            //     icon: Theme.of(context).brightness == Brightness.light
-            //         ? const Icon(Icons.light_mode)
-            //         : const Icon(Icons.dark_mode)),
-
-            // Date picker
-            IconButton(
-              icon: const Icon(Icons.date_range),
-              onPressed: () => pickDateToShow(),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Container(
-                width: 1.0, // Width of the line
-                height: 28, // Height of the line
-                color: Theme.of(context)
-                    .colorScheme
-                    .onSurface, // Color of the line
-              ),
-            ),
-
-            //Navigate one month back
-            IconButton(
-                icon: const Icon(
-                  Icons.arrow_back_ios_new,
-                ),
-                onPressed: () => moveMonths('backward')),
-            IconButton(
-              icon: Stack(
-                alignment: const AlignmentDirectional(.0, .5),
-                children: [
-                  Text(
-                    DateFormat('d', 'fr_FR').format(DateTime.now()),
-                    style: Theme.of(context).textTheme.labelSmall,
-                  ),
-                  const Icon(Icons.calendar_today),
-                ],
-              ),
-              onPressed: () {
-                DateTime now = DateTime.now();
-                navigateToDate(now);
-              },
-            ),
-            //one month forward
-            IconButton(
-                icon: const Icon(Icons.arrow_forward_ios),
-                onPressed: () => moveMonths('forward')),
+            //   icon: const Icon(Icons.date_range),
+            //   onPressed: () => pickDateToShow(),
+            // ),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            //   child: Container(
+            //     width: 1.0, // Width of the line
+            //     height: 28, // Height of the line
+            //     color: Theme.of(context)
+            //         .colorScheme
+            //         .onSurface, // Color of the line
+            //   ),
+            // ),
+            // IconButton(
+            //     icon: const Icon(
+            //       Icons.arrow_back_ios_new,
+            //     ),
+            //     onPressed: () => moveMonths('backward')),
+            // IconButton(
+            //   icon: Stack(
+            //     alignment: const AlignmentDirectional(.0, .5),
+            //     children: [
+            //       Text(
+            //         DateFormat('d', 'fr_FR').format(DateTime.now()),
+            //         style: Theme.of(context).textTheme.labelSmall,
+            //       ),
+            //       const Icon(Icons.calendar_today),
+            //     ],
+            //   ),
+            //   onPressed: () {
+            //     DateTime now = DateTime.now();
+            //     navigateToDate(now);
+            //   },
+            // ),
+            // IconButton(
+            //     icon: const Icon(Icons.arrow_forward_ios),
+            //     onPressed: () => moveMonths('forward')),
           ],
           extraRow: monthRow()),
       body: isPhone
@@ -852,6 +544,89 @@ class DateScreenState extends State<DateScreen> {
                 ],
               ),
             ),
+    );
+  }
+}
+
+class SmoothAnimatedContainer extends StatefulWidget {
+  final Widget child;
+  final BoxDecoration decoration;
+  final Duration duration;
+  final Curve curve;
+  final double height;
+  final double width;
+
+  const SmoothAnimatedContainer({
+    super.key,
+    required this.child,
+    required this.decoration,
+    required this.duration,
+    required this.curve,
+    required this.height,
+    required this.width,
+  });
+
+  @override
+  SmoothAnimatedContainerState createState() => SmoothAnimatedContainerState();
+}
+
+class SmoothAnimatedContainerState extends State<SmoothAnimatedContainer>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<Decoration> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: widget.duration,
+    );
+    _animation = DecorationTween(
+      begin: widget.decoration,
+      end: widget.decoration,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: widget.curve,
+    ));
+    _controller.forward();
+  }
+
+  @override
+  void didUpdateWidget(SmoothAnimatedContainer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.decoration != oldWidget.decoration) {
+      _animation = DecorationTween(
+        begin: oldWidget.decoration,
+        end: widget.decoration,
+      ).animate(CurvedAnimation(
+        parent: _controller,
+        curve: widget.curve,
+      ));
+      _controller.reset();
+      _controller.forward();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _animation,
+      builder: (context, child) {
+        return Container(
+          decoration: _animation.value,
+          height: widget.height,
+          width: widget.width,
+          child: widget.child,
+        );
+      },
+      child: widget.child,
     );
   }
 }

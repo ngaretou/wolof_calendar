@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show rootBundle;
-// import 'package:shared_preferences/shared_preferences.dart';
-// import 'dart:math';
 import 'dart:async';
 import 'dart:convert';
 
@@ -67,9 +65,6 @@ class Month {
   final String monthFR;
   final String monthRS;
   final String monthAS;
-
-  // final String? wolofName;
-  // final String? wolofalName;
   final List<Verses> verses;
 
   Month({
@@ -77,131 +72,54 @@ class Month {
     required this.monthFR,
     required this.monthRS,
     required this.monthAS,
-    // this.wolofName,
-    // this.wolofalName,
     required this.verses,
   });
 }
 
 final List<dynamic> monthNames = [
-  {
-    "monthID": "1",
-    "monthFR": "Janvier",
-    "monthRS": "Samwiye",
-    "monthAS": "سَمْوِيࣹ"
-  },
-  {
-    "monthID": "2",
-    "monthFR": "Février",
-    "monthRS": "Fewriye",
-    "monthAS": "فࣹوْرِيࣹ"
-  },
+  {"monthID": "1", "monthFR": "Janvier", "monthRS": "Samwiye", "monthAS": "سَمْوِيࣹ"},
+  {"monthID": "2", "monthFR": "Février", "monthRS": "Fewriye", "monthAS": "فࣹوْرِيࣹ"},
   {"monthID": "3", "monthFR": "Mars", "monthRS": "Màrs", "monthAS": "مࣵرسّ"},
-  {
-    "monthID": "4",
-    "monthFR": "Avril",
-    "monthRS": "Awril",
-    "monthAS": "اَوْرِلْ"
-  },
+  {"monthID": "4", "monthFR": "Avril", "monthRS": "Awril", "monthAS": "اَوْرِلْ"},
   {"monthID": "5", "monthFR": "Mai", "monthRS": "Me", "monthAS": "مࣹ"},
   {"monthID": "6", "monthFR": "Juin", "monthRS": "Suwen", "monthAS": "سُوࣹنْ"},
-  {
-    "monthID": "7",
-    "monthFR": "Juillet",
-    "monthRS": "Sulet",
-    "monthAS": "سُلࣹتْ"
-  },
+  {"monthID": "7", "monthFR": "Juillet", "monthRS": "Sulet", "monthAS": "سُلࣹتْ"},
   {"monthID": "8", "monthFR": "Août", "monthRS": "Ut", "monthAS": "اُتْ"},
-  {
-    "monthID": "9",
-    "monthFR": "Septembre",
-    "monthRS": "Sàttumbar",
-    "monthAS": "سࣵتُّمْبَرْ"
-  },
-  {
-    "monthID": "10",
-    "monthFR": "Octobre",
-    "monthRS": "Oktoobar",
-    "monthAS": "اࣷڪْتࣷوبَرْ"
-  },
-  {
-    "monthID": "11",
-    "monthFR": "Novembre",
-    "monthRS": "Nowàmbar",
-    "monthAS": "نࣷوࣵمْبَرْ"
-  },
-  {
-    "monthID": "12",
-    "monthFR": "Décembre",
-    "monthRS": "Desàmbar",
-    "monthAS": "دࣹسࣵمْبَرْ"
-  }
+  {"monthID": "9", "monthFR": "Septembre", "monthRS": "Sàttumbar", "monthAS": "سࣵتُّمْبَرْ"},
+  {"monthID": "10", "monthFR": "Octobre", "monthRS": "Oktoobar", "monthAS": "اࣷڪْتࣷوبَرْ"},
+  {"monthID": "11", "monthFR": "Novembre", "monthRS": "Nowàmbar", "monthAS": "نࣷوࣵمْبَرْ"},
+  {"monthID": "12", "monthFR": "Décembre", "monthRS": "Desàmbar", "monthAS": "دࣹسࣵمْبَرْ"}
 ];
 
 class Months with ChangeNotifier {
-  // You have two main data collections
-  // Months view which has 1 month and 1 name but potentially many scriptures
-
   List<Month> _months = [];
-
-  //Work with a copy of the map, not the map itself
-  List<Month> get months {
-    return [..._months];
-  }
-
-  // Dates, which have 1 date for each calendar but potentialy several or one or no holidays.
   List<Date> _dates = [];
+  List<dynamic> _allDatesData = [];
+  List<dynamic> _holidaysData = [];
 
-  //Work with a copy of the map, not the map itself
-  List<Date> get dates {
-    return [..._dates];
-  }
+  List<Month> get months => [..._months];
+  List<Date> get dates => [..._dates];
 
-  String get isTestingVersion {
-    return 'yes';
-  }
+  Future<void> _loadAllData() async {
+    if (_allDatesData.isNotEmpty) return;
 
-  // String get currentCalendarYear {
-  //   return '2021';
-  // }
-
-  //   List<Date> get datesToShow {
-  //   return _dates.where((date) => date.monthId).toList();
-  // }
-
-  Future getData() async {
-    //check if the current session still contains the names - if so no need to rebuild
-    if (_months.isNotEmpty) {
-      return;
-    }
-
-    //temporary simple list for holding data
-    final List<Month> loadedMonthData = [];
-    final List<Date> loadedDateData = [];
-
-    //Get the data from the json files
     String holidaysJSON = await rootBundle.loadString("assets/holidays.json");
-    final holidaysData = json.decode(holidaysJSON) as List<dynamic>?;
+    _holidaysData = json.decode(holidaysJSON) as List<dynamic>;
 
     String versesJSON = await rootBundle.loadString("assets/verses.json");
-    final versesData = json.decode(versesJSON) as List<dynamic>?;
+    final versesData = json.decode(versesJSON) as List<dynamic>;
 
     String datesJSON = await rootBundle.loadString("assets/dates.json");
-    final datesData = json.decode(datesJSON) as List<dynamic>;
+    _allDatesData = json.decode(datesJSON) as List<dynamic>;
 
-    //So we have the info but it's in the wrong format - here map it to our class
-
+    final List<Month> loadedMonthData = [];
     for (var month in monthNames) {
       loadedMonthData.add(Month(
         monthID: month['monthID'],
         monthFR: month['monthFR'],
         monthRS: month['monthRS'],
         monthAS: month['monthAS'],
-        // arabicName: month['arabicName'],
-        // arabicNameCode: month['arabicNameCode'],
-        // wolofName: month['wolofName'],
-        // wolofalName: month['wolofalName'],
-        verses: versesData!
+        verses: versesData
             .map((entry) => Verses(
                   monthID: entry['monthID'],
                   verseAS: entry['verseAS'],
@@ -213,9 +131,73 @@ class Months with ChangeNotifier {
             .toList(),
       ));
     }
-
     _months = loadedMonthData;
-    for (var date in datesData) {
+  }
+
+  Future<void> fetchInitialDates(DateTime initialDate) async {
+    await _loadAllData();
+    int initialIndex = _allDatesData.indexWhere((d) =>
+        d['year'] == initialDate.year.toString() &&
+        d['month'] == initialDate.month.toString() &&
+        d['westernDate'] == initialDate.day.toString());
+
+    if (initialIndex == -1) {
+      initialIndex = 0;
+    }
+
+    int startIndex = (initialIndex - 30).clamp(0, _allDatesData.length);
+    int endIndex = (initialIndex + 30).clamp(0, _allDatesData.length);
+
+    _dates = _getDateRange(startIndex, endIndex);
+    notifyListeners();
+  }
+
+  Future<bool> loadNextMonth() async {
+    if (_dates.isEmpty) return false;
+    final lastDate = _dates.last;
+    int lastIndex = _allDatesData.indexWhere((d) =>
+        d['year'] == lastDate.year &&
+        d['month'] == lastDate.month &&
+        d['westernDate'] == lastDate.westernDate);
+
+    if (lastIndex == -1 || lastIndex == _allDatesData.length - 1) return false;
+
+    int startIndex = lastIndex + 1;
+    int endIndex = (startIndex + 30).clamp(0, _allDatesData.length);
+
+    final newDates = _getDateRange(startIndex, endIndex);
+    if (newDates.isEmpty) return false;
+
+    _dates.addAll(newDates);
+    notifyListeners();
+    return true;
+  }
+
+  Future<bool> loadPreviousMonth() async {
+    if (_dates.isEmpty) return false;
+    final firstDate = _dates.first;
+    int firstIndex = _allDatesData.indexWhere((d) =>
+        d['year'] == firstDate.year &&
+        d['month'] == firstDate.month &&
+        d['westernDate'] == firstDate.westernDate);
+
+    if (firstIndex == -1 || firstIndex == 0) return false;
+
+    int endIndex = firstIndex;
+    int startIndex = (endIndex - 30).clamp(0, _allDatesData.length);
+
+    final newDates = _getDateRange(startIndex, endIndex);
+    if (newDates.isEmpty) return false;
+
+    _dates.insertAll(0, newDates);
+    notifyListeners();
+    return true;
+  }
+
+  List<Date> _getDateRange(int startIndex, int endIndex) {
+    final List<Date> loadedDateData = [];
+    for (int i = startIndex; i < endIndex; i++) {
+      var date = _allDatesData[i];
       loadedDateData.add(Date(
         year: date['year'],
         month: date['month'],
@@ -223,7 +205,7 @@ class Months with ChangeNotifier {
         wolofMonthRS: date['wolofMonthRS'] ?? '',
         westernDate: date['westernDate'],
         wolofDate: date['wolofDate'],
-        holidays: holidaysData!
+        holidays: _holidaysData
             .map((holiday) => Holiday(
                 year: holiday['year'],
                 monthID: holiday['monthID'],
@@ -239,10 +221,6 @@ class Months with ChangeNotifier {
             .toList(),
       ));
     }
-
-    _dates = loadedDateData;
-
-    notifyListeners();
-    return;
+    return loadedDateData;
   }
 }
