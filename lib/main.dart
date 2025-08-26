@@ -9,6 +9,9 @@ import 'package:wolof_calendar/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 
 import './providers/user_prefs.dart';
 import './providers/months.dart';
@@ -21,10 +24,16 @@ import './screens/about_screen.dart';
 
 import './screens/date_screen.dart';
 
-void main() {
+void main() async {
   if (kIsWeb) {
     //This is to preserve the splash screen til loading is done
     WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+    await analytics.logAppOpen();
+
     FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   }
 
