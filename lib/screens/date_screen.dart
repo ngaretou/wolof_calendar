@@ -29,10 +29,10 @@ class MyCustomScrollBehavior extends ScrollBehavior {
       };
 }
 
-enum NavType {
-  jumped,
-  scrolled,
-}
+// enum NavType {
+//   jumped,
+//   scrolled,
+// }
 
 /////////
 
@@ -86,10 +86,6 @@ class DateScreenState extends State<DateScreen> {
 
   //store the first day of the month that we'll use for monthly headers
   late ValueNotifier<Date> currentMonthFirstDate;
-
-  // when we navigate the backgroundimage changes slowly if scrolled but instantly if navigated to by a jumpTo.
-  // this stores what the last navigated type is.
-  late NavType lastNavigatedVia;
 
   bool _isLoading = false;
   bool _hasMoreNext = true;
@@ -148,22 +144,22 @@ class DateScreenState extends State<DateScreen> {
       final positions = itemPositionsListener.itemPositions.value;
       if (positions.isNotEmpty) {
         final first = positions.first.index;
+
         final last = positions.last.index;
 
-        if (first < 10 && !_isLoading) {
+        if (min(first, last) < 10 && !_isLoading) {
           _loadPrevious();
         }
 
-        if (last > datesToDisplay.length - 10 && !_isLoading) {
+        if (max(first, last) > (datesToDisplay.length - 10) && !_isLoading) {
           _loadNext();
         }
       }
     });
-
-    lastNavigatedVia = NavType.jumped;
   }
 
   void _loadNext() async {
+    print('load next');
     if (!_hasMoreNext) return;
 
     setState(() {
@@ -183,51 +179,143 @@ class DateScreenState extends State<DateScreen> {
   }
 
   void _loadPrevious() async {
-    if (!_hasMorePrevious) return;
+    print('load previous');
+    if (!_hasMorePrevious || _isLoading) return;
+
     setState(() {
       _isLoading = true;
     });
+
+    // Some problems where it doesn't distinguish between top and bottom
+    // - only forward and backward, and so 'first' and 'last' are relative.
+    // This keeps us sticking to the practical top of the screen.
+    final firstIndex = min(
+        itemPositionsListener.itemPositions.value.first.index,
+        itemPositionsListener.itemPositions.value.last.index);
+    final oldListSize = datesToDisplay.length;
+
     final hasMore =
         await Provider.of<Months>(context, listen: false).loadPreviousMonth();
-    if (!hasMore) {
+
+    if (mounted) {
+      if (hasMore) {
+        final newDates = Provider.of<Months>(context, listen: false).dates;
+        final newListSize = newDates.length;
+        final itemsAdded = newListSize - oldListSize;
+
+        final newFirstIndex = firstIndex + itemsAdded;
+        print(
+            'firstIndex: $firstIndex | date: ${newDates[newFirstIndex].westernDate}');
+
+        print(itemsAdded);
+
+        setState(() {
+          datesToDisplay = newDates;
+        });
+
+        // this + 1 adjusts just a bit to keep the scrolling correct with the appbar
+        itemScrollController.jumpTo(index: newFirstIndex + 1);
+      } else {
+        setState(() {
+          _hasMorePrevious = false;
+        });
+      }
+
       setState(() {
-        _hasMorePrevious = false;
+        _isLoading = false;
       });
     }
+  }
+
+  void navigateToDate(DateTime date) {
+    print('navigateToDate $date');
     setState(() {
-      datesToDisplay = Provider.of<Months>(context, listen: false).dates;
-      _isLoading = false;
+      _isLoading = true;
     });
+
+    // Is the date we are trying to navigate to already in the data?
+    int indexToJumpTo = datesToDisplay.indexWhere((element) =>
+        date.year.toString() == element.year &&
+        date.month.toString() == element.month &&
+        date.day.toString() == element.westernDate);
+
+    // if the date is already in the data, just jump to it
+    if (indexToJumpTo != -1) {
+      itemScrollController.jumpTo(index: indexToJumpTo);
+      _updateAppBar(indexToJumpTo);
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    } else {
+      // if not, in essence we discard the old data and fetch new data around the date we want
+      Provider.of<Months>(context, listen: false)
+          .fetchInitialDates(date)
+          .then((_) {
+        if (!mounted) return;
+        datesToDisplay = Provider.of<Months>(context, listen: false).dates;
+
+        initialScrollIndex = (datesToDisplay.indexWhere((element) =>
+            element.year == date.year.toString() &&
+            element.month == date.month.toString() &&
+            element.westernDate == date.day.toString()));
+
+        if (initialScrollIndex == -1) {
+          initialScrollIndex = (datesToDisplay.length / 2).round();
+        }
+
+        final initialDate = datesToDisplay[initialScrollIndex];
+        int firstOfCurrentMonthIndex = datesToDisplay.indexWhere((element) =>
+            element.year == initialDate.year &&
+            element.month == initialDate.month &&
+            element.westernDate == '1');
+
+        if (firstOfCurrentMonthIndex == -1) {
+          firstOfCurrentMonthIndex = 0;
+        }
+
+        setState(() {
+          currentMonthFirstDate =
+              ValueNotifier(datesToDisplay[firstOfCurrentMonthIndex]);
+          itemScrollController.jumpTo(index: initialScrollIndex);
+          _updateAppBar(initialScrollIndex);
+          _isLoading = false;
+          _hasMoreNext = true;
+          _hasMorePrevious = true;
+        });
+      });
+    }
   }
 
   void _updateAppBar(int index) {
-    if (datesToDisplay.isEmpty || index >= datesToDisplay.length) return;
+    // print('update app bar to index $index');
+    // if (datesToDisplay.isEmpty || index >= datesToDisplay.length) return;
 
-    Date topDate = datesToDisplay[index];
-    Month currentMonth =
-        allMonths.firstWhere((element) => element.monthID == topDate.month);
+    // Date topDate = datesToDisplay[index];
+    // Month currentMonth =
+    //     allMonths.firstWhere((element) => element.monthID == topDate.month);
 
-    int wolofIndex = index;
-    while (datesToDisplay[wolofIndex].wolofMonthRS == "") {
-      wolofIndex--;
-    }
+    // int wolofIndex = index;
+    // while (datesToDisplay[wolofIndex].wolofMonthRS == "") {
+    //   wolofIndex--;
+    // }
 
-    formattedAppBarTitle.value = topDate.year;
-    appBarWesternMonthFR.value = currentMonth.monthFR;
-    appBarWesternMonthRS.value = currentMonth.monthRS;
-    appBarWesternMonthAS.value = currentMonth.monthAS;
-    appBarWolofMonth.value = datesToDisplay[wolofIndex].wolofMonthRS;
-    appBarWolofalMonth.value = datesToDisplay[wolofIndex].wolofMonthAS;
+    // formattedAppBarTitle.value = topDate.year;
+    // appBarWesternMonthFR.value = currentMonth.monthFR;
+    // appBarWesternMonthRS.value = currentMonth.monthRS;
+    // appBarWesternMonthAS.value = currentMonth.monthAS;
+    // appBarWolofMonth.value = datesToDisplay[wolofIndex].wolofMonthRS;
+    // appBarWolofalMonth.value = datesToDisplay[wolofIndex].wolofMonthAS;
 
-    int firstOfCurrentMonthIndex = datesToDisplay.indexWhere((element) =>
-        element.year == topDate.year &&
-        element.month == topDate.month &&
-        element.westernDate == '1');
+    // int firstOfCurrentMonthIndex = datesToDisplay.indexWhere((element) =>
+    //     element.year == topDate.year &&
+    //     element.month == topDate.month &&
+    //     element.westernDate == '1');
 
-    if (firstOfCurrentMonthIndex != -1) {
-      currentMonthFirstDate =
-          ValueNotifier(datesToDisplay[firstOfCurrentMonthIndex]);
-    }
+    // if (firstOfCurrentMonthIndex != -1) {
+    //   currentMonthFirstDate =
+    //       ValueNotifier(datesToDisplay[firstOfCurrentMonthIndex]);
+    // }
   }
 
   Future<void> enableFpsMonitoring() async {
@@ -398,6 +486,7 @@ class DateScreenState extends State<DateScreen> {
           },
           child: Column(
             children: [
+              if (_isLoading) const CircularProgressIndicator(),
               Expanded(
                 child: ScrollConfiguration(
                   behavior:
@@ -406,7 +495,7 @@ class DateScreenState extends State<DateScreen> {
                     itemScrollController: itemScrollController,
                     itemPositionsListener: itemPositionsListener,
                     physics: const BouncingScrollPhysics(),
-                    initialScrollIndex: initialScrollIndex ?? 0,
+                    initialScrollIndex: initialScrollIndex,
                     itemBuilder: (ctx, i) => DateTile(
                       currentDate: datesToDisplay[i],
                       contentColWidth: contentColWidth,
@@ -430,10 +519,8 @@ class DateScreenState extends State<DateScreen> {
         valueListenable: currentMonthFirstDate,
         child: child,
         builder: (context, value, child) {
-          return SmoothAnimatedContainer(
-            duration: lastNavigatedVia == NavType.jumped
-                ? const Duration(milliseconds: 0)
-                : const Duration(milliseconds: 500),
+          return AnimatedContainer(
+            duration: const Duration(milliseconds: 500),
             curve: Curves.ease,
             height: double.infinity,
             width: double.infinity,
@@ -525,22 +612,21 @@ class DateScreenState extends State<DateScreen> {
             //       Icons.arrow_back_ios_new,
             //     ),
             //     onPressed: () => moveMonths('backward')),
-            // IconButton(
-            //   icon: Stack(
-            //     alignment: const AlignmentDirectional(.0, .5),
-            //     children: [
-            //       Text(
-            //         DateFormat('d', 'fr_FR').format(DateTime.now()),
-            //         style: Theme.of(context).textTheme.labelSmall,
-            //       ),
-            //       const Icon(Icons.calendar_today),
-            //     ],
-            //   ),
-            //   onPressed: () {
-            //     DateTime now = DateTime.now();
-            //     navigateToDate(now);
-            //   },
-            // ),
+            IconButton(
+              icon: Stack(
+                alignment: const AlignmentDirectional(.0, .5),
+                children: [
+                  Text(
+                    DateFormat('d', 'fr_FR').format(DateTime.now()),
+                    style: Theme.of(context).textTheme.labelSmall,
+                  ),
+                  const Icon(Icons.calendar_today),
+                ],
+              ),
+              onPressed: () {
+                navigateToDate(DateTime.now());
+              },
+            ),
             // IconButton(
             //     icon: const Icon(Icons.arrow_forward_ios),
             //     onPressed: () => moveMonths('forward')),

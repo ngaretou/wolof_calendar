@@ -77,18 +77,58 @@ class Month {
 }
 
 final List<dynamic> monthNames = [
-  {"monthID": "1", "monthFR": "Janvier", "monthRS": "Samwiye", "monthAS": "سَمْوِيࣹ"},
-  {"monthID": "2", "monthFR": "Février", "monthRS": "Fewriye", "monthAS": "فࣹوْرِيࣹ"},
+  {
+    "monthID": "1",
+    "monthFR": "Janvier",
+    "monthRS": "Samwiye",
+    "monthAS": "سَمْوِيࣹ"
+  },
+  {
+    "monthID": "2",
+    "monthFR": "Février",
+    "monthRS": "Fewriye",
+    "monthAS": "فࣹوْرِيࣹ"
+  },
   {"monthID": "3", "monthFR": "Mars", "monthRS": "Màrs", "monthAS": "مࣵرسّ"},
-  {"monthID": "4", "monthFR": "Avril", "monthRS": "Awril", "monthAS": "اَوْرِلْ"},
+  {
+    "monthID": "4",
+    "monthFR": "Avril",
+    "monthRS": "Awril",
+    "monthAS": "اَوْرِلْ"
+  },
   {"monthID": "5", "monthFR": "Mai", "monthRS": "Me", "monthAS": "مࣹ"},
   {"monthID": "6", "monthFR": "Juin", "monthRS": "Suwen", "monthAS": "سُوࣹنْ"},
-  {"monthID": "7", "monthFR": "Juillet", "monthRS": "Sulet", "monthAS": "سُلࣹتْ"},
+  {
+    "monthID": "7",
+    "monthFR": "Juillet",
+    "monthRS": "Sulet",
+    "monthAS": "سُلࣹتْ"
+  },
   {"monthID": "8", "monthFR": "Août", "monthRS": "Ut", "monthAS": "اُتْ"},
-  {"monthID": "9", "monthFR": "Septembre", "monthRS": "Sàttumbar", "monthAS": "سࣵتُّمْبَرْ"},
-  {"monthID": "10", "monthFR": "Octobre", "monthRS": "Oktoobar", "monthAS": "اࣷڪْتࣷوبَرْ"},
-  {"monthID": "11", "monthFR": "Novembre", "monthRS": "Nowàmbar", "monthAS": "نࣷوࣵمْبَرْ"},
-  {"monthID": "12", "monthFR": "Décembre", "monthRS": "Desàmbar", "monthAS": "دࣹسࣵمْبَرْ"}
+  {
+    "monthID": "9",
+    "monthFR": "Septembre",
+    "monthRS": "Sàttumbar",
+    "monthAS": "سࣵتُّمْبَرْ"
+  },
+  {
+    "monthID": "10",
+    "monthFR": "Octobre",
+    "monthRS": "Oktoobar",
+    "monthAS": "اࣷڪْتࣷوبَرْ"
+  },
+  {
+    "monthID": "11",
+    "monthFR": "Novembre",
+    "monthRS": "Nowàmbar",
+    "monthAS": "نࣷوࣵمْبَرْ"
+  },
+  {
+    "monthID": "12",
+    "monthFR": "Décembre",
+    "monthRS": "Desàmbar",
+    "monthAS": "دࣹسࣵمْبَرْ"
+  }
 ];
 
 class Months with ChangeNotifier {
@@ -175,7 +215,7 @@ class Months with ChangeNotifier {
 
   Future<bool> loadPreviousMonth() async {
     if (_dates.isEmpty) return false;
-    final firstDate = _dates.first;
+    final firstDate = _dates.first; // real composed Date objects
     int firstIndex = _allDatesData.indexWhere((d) =>
         d['year'] == firstDate.year &&
         d['month'] == firstDate.month &&
