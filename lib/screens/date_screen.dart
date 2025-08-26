@@ -7,11 +7,9 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:animated_box_decoration/animated_box_decoration.dart';
 
 import '../providers/user_prefs.dart';
 import '../providers/months.dart';
-import '../providers/route_args.dart';
 import '../providers/theme.dart';
 import '../providers/fps.dart';
 
@@ -94,6 +92,8 @@ class DateScreenState extends State<DateScreen> {
   late NavType lastNavigatedVia;
 
   bool _isLoading = false;
+  bool _hasMoreNext = true;
+  bool _hasMorePrevious = true;
 
   @override
   void initState() {
@@ -164,11 +164,18 @@ class DateScreenState extends State<DateScreen> {
   }
 
   void _loadNext() async {
-    print('load next');
+    if (!_hasMoreNext) return;
+
     setState(() {
       _isLoading = true;
     });
-    await Provider.of<Months>(context, listen: false).loadNextMonth();
+    final hasMore =
+        await Provider.of<Months>(context, listen: false).loadNextMonth();
+    if (!hasMore) {
+      setState(() {
+        _hasMoreNext = false;
+      });
+    }
     setState(() {
       datesToDisplay = Provider.of<Months>(context, listen: false).dates;
       _isLoading = false;
@@ -176,10 +183,17 @@ class DateScreenState extends State<DateScreen> {
   }
 
   void _loadPrevious() async {
+    if (!_hasMorePrevious) return;
     setState(() {
       _isLoading = true;
     });
-    await Provider.of<Months>(context, listen: false).loadPreviousMonth();
+    final hasMore =
+        await Provider.of<Months>(context, listen: false).loadPreviousMonth();
+    if (!hasMore) {
+      setState(() {
+        _hasMorePrevious = false;
+      });
+    }
     setState(() {
       datesToDisplay = Provider.of<Months>(context, listen: false).dates;
       _isLoading = false;
