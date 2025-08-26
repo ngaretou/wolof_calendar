@@ -140,6 +140,30 @@ class Months with ChangeNotifier {
   List<Month> get months => [..._months];
   List<Date> get dates => [..._dates];
 
+  Date get firstDate {
+    final date = _allDatesData.first;
+    return Date(
+      year: date['year'],
+      month: date['month'],
+      wolofMonthAS: date['wolofMonthAS'] ?? '',
+      wolofMonthRS: date['wolofMonthRS'] ?? '',
+      westernDate: date['westernDate'],
+      wolofDate: date['wolofDate'],
+    );
+  }
+
+  Date get lastDate {
+    final date = _allDatesData.last;
+    return Date(
+      year: date['year'],
+      month: date['month'],
+      wolofMonthAS: date['wolofMonthAS'] ?? '',
+      wolofMonthRS: date['wolofMonthRS'] ?? '',
+      westernDate: date['westernDate'],
+      wolofDate: date['wolofDate'],
+    );
+  }
+
   Future<void> _loadAllData() async {
     if (_allDatesData.isNotEmpty) return;
 
