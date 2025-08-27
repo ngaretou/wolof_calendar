@@ -23,10 +23,10 @@ class MyCustomScrollBehavior extends ScrollBehavior {
   // Override behavior methods and getters like dragDevices
   @override
   Set<PointerDeviceKind> get dragDevices => {
-        PointerDeviceKind.touch,
-        PointerDeviceKind.mouse,
-        // etc.
-      };
+    PointerDeviceKind.touch,
+    PointerDeviceKind.mouse,
+    // etc.
+  };
 }
 
 // enum NavType {
@@ -85,7 +85,10 @@ class DateScreenState extends State<DateScreen> {
   final int fadeInSpeed = 300;
 
   //store the first day of the month that we'll use for monthly headers
+  // late ValueNotifier<Date> currentMonthFirstDate;
+  // this is really what we need for the headers - just the monthID
   late ValueNotifier<Date> currentMonthFirstDate;
+  late ValueNotifier<String> imageBackdropListener;
 
   bool _isLoading = false;
   bool _hasMoreNext = true;
@@ -93,6 +96,7 @@ class DateScreenState extends State<DateScreen> {
 
   @override
   void initState() {
+    print('date screen initState');
     super.initState();
     userPrefs = Provider.of<UserPrefs>(context, listen: false).userPrefs;
     allMonths = Provider.of<Months>(context, listen: false).months;
@@ -102,22 +106,31 @@ class DateScreenState extends State<DateScreen> {
 
     datesToDisplay = Provider.of<Months>(context, listen: false).dates;
 
-    // Set up the initial app bar values currentMonthFirstDate
+    // Set up the initial app bar values current Month First Date
     final String currentDate = DateFormat('d', 'fr_FR').format(initialDateTime);
-    final String currentMonthString =
-        DateFormat('M', 'fr_FR').format(initialDateTime);
-    final String currentYear =
-        DateFormat('yyyy', 'fr_FR').format(initialDateTime);
+    final String currentMonthString = DateFormat(
+      'M',
+      'fr_FR',
+    ).format(initialDateTime);
+    final String currentYear = DateFormat(
+      'yyyy',
+      'fr_FR',
+    ).format(initialDateTime);
     DateTime startHere = initialDateTime;
 
     //Before we open to today's date, check if today's date is in the data
-    if (datesToDisplay.any((element) =>
-        currentYear == element.year &&
-        currentMonthString == element.month &&
-        currentDate == element.westernDate)) {
+    if (datesToDisplay.any(
+      (element) =>
+          currentYear == element.year &&
+          currentMonthString == element.month &&
+          currentDate == element.westernDate,
+    )) {
       //Now that we know current date, today, is in the data, open to today's date
-      startHere = DateTime(int.parse(currentYear),
-          int.parse(currentMonthString), int.parse(currentDate));
+      startHere = DateTime(
+        int.parse(currentYear),
+        int.parse(currentMonthString),
+        int.parse(currentDate),
+      );
     } else {
       // print('today not in the data, going to last entry');
       //Get the last entry in the list
@@ -129,43 +142,69 @@ class DateScreenState extends State<DateScreen> {
       );
     }
 
-    initialScrollIndex = ((datesToDisplay.indexWhere((element) =>
-                startHere.year.toString() == element.year &&
-                startHere.month.toString() == element.month &&
-                startHere.day.toString() == element.westernDate)) -
-            1)
-        .toInt();
+    initialScrollIndex =
+        ((datesToDisplay.indexWhere(
+          (element) =>
+              startHere.year.toString() == element.year &&
+              startHere.month.toString() == element.month &&
+              startHere.day.toString() == element.westernDate,
+        )) -
+        1);
 
-    currentMonthFirstDate = ValueNotifier(datesToDisplay[initialScrollIndex]);
+    currentMonthFirstDate = ValueNotifier(
+      firstDateCurrentMonth(datesToDisplay, datesToDisplay[initialScrollIndex]),
+    );
 
-    _updateAppBar(initialScrollIndex);
+    imageBackdropListener = ValueNotifier(currentMonthFirstDate.value.month);
 
-    itemPositionsListener.itemPositions.addListener(() {
-      final positions = itemPositionsListener.itemPositions.value;
-      if (positions.isNotEmpty) {
-        final first = positions.first.index;
+    currentMonthFirstDate.addListener(() {
+      bool changeColor = Provider.of<UserPrefs>(
+        context,
+        listen: false,
+      ).userPrefs.changeThemeColorWithBackground!;
+      bool changeImage = Provider.of<UserPrefs>(
+        context,
+        listen: false,
+      ).userPrefs.backgroundImage!;
 
-        final last = positions.last.index;
-
-        if (min(first, last) < 10 && !_isLoading) {
-          _loadPrevious();
-        }
-
-        if (max(first, last) > (datesToDisplay.length - 10) && !_isLoading) {
-          _loadNext();
-        }
+      if (changeColor) {
+        debugPrint('triggering changing colorscheme');
+        // setColor will refresh back to main.dart, so will automatically update the bg image, not setState necessary
+        setColor(currentMonthFirstDate.value.month);
+      }
+      if (changeImage) {
+        debugPrint('triggering imageBackdrop build');
+        imageBackdropListener.value = currentMonthFirstDate.value.month;
       }
     });
+
+    _updateAppBar(initialScrollIndex);
+  }
+
+  Date firstDateCurrentMonth(List<Date> dates, Date date) {
+    int returnMe = dates.indexWhere(
+      (element) =>
+          element.year == date.year &&
+          element.month == date.month &&
+          element.westernDate == '1',
+    );
+
+    if (returnMe == -1) {
+      returnMe = 0;
+    }
+    return dates[returnMe];
   }
 
   void _loadNext() async {
+    print('loadnext called');
     if (!_hasMoreNext) return;
 
-    setState(() {
-      _isLoading = true;
-    });
-    final hasMore =
-        await Provider.of<Months>(context, listen: false).loadNextMonth();
+    _isLoading = true;
+
+    final hasMore = await Provider.of<Months>(
+      context,
+      listen: false,
+    ).loadNextMonth();
     if (!hasMore) {
       setState(() {
         _hasMoreNext = false;
@@ -178,19 +217,21 @@ class DateScreenState extends State<DateScreen> {
   }
 
   void _loadPrevious() async {
+    print('loadPrevious called');
     if (!_hasMorePrevious || _isLoading) return;
 
-    setState(() {
-      _isLoading = true;
-    });
+    _isLoading = true;
 
     final firstIndex = min(
-        itemPositionsListener.itemPositions.value.first.index,
-        itemPositionsListener.itemPositions.value.last.index);
+      itemPositionsListener.itemPositions.value.first.index,
+      itemPositionsListener.itemPositions.value.last.index,
+    );
     final oldListSize = datesToDisplay.length;
 
-    final hasMore =
-        await Provider.of<Months>(context, listen: false).loadPreviousMonth();
+    final hasMore = await Provider.of<Months>(
+      context,
+      listen: false,
+    ).loadPreviousMonth();
 
     if (mounted) {
       if (hasMore) {
@@ -219,8 +260,9 @@ class DateScreenState extends State<DateScreen> {
 
   void moveMonths(String direction) {
     final topIndexShown = min(
-        itemPositionsListener.itemPositions.value.first.index,
-        itemPositionsListener.itemPositions.value.last.index);
+      itemPositionsListener.itemPositions.value.first.index,
+      itemPositionsListener.itemPositions.value.last.index,
+    );
 
     String currentYearDisplayed = (datesToDisplay[topIndexShown + 1].year);
     String currentMonthDisplayed = (datesToDisplay[topIndexShown + 1].month);
@@ -259,13 +301,15 @@ class DateScreenState extends State<DateScreen> {
       context: context,
       initialDate: initialDateTime,
       firstDate: DateTime(
-          int.parse(firstCalendarDate.year),
-          int.parse(firstCalendarDate.month),
-          int.parse(firstCalendarDate.westernDate)),
+        int.parse(firstCalendarDate.year),
+        int.parse(firstCalendarDate.month),
+        int.parse(firstCalendarDate.westernDate),
+      ),
       lastDate: DateTime(
-          int.parse(lastCalendarDate.year),
-          int.parse(lastCalendarDate.month),
-          int.parse(lastCalendarDate.westernDate)),
+        int.parse(lastCalendarDate.year),
+        int.parse(lastCalendarDate.month),
+        int.parse(lastCalendarDate.westernDate),
+      ),
       locale: const Locale("fr", "FR"),
     );
 
@@ -278,13 +322,15 @@ class DateScreenState extends State<DateScreen> {
   void navigateToDate(DateTime date) {
     final monthsProvider = Provider.of<Months>(context, listen: false);
     final firstCalendarDate = DateTime(
-        int.parse(monthsProvider.firstDate.year),
-        int.parse(monthsProvider.firstDate.month),
-        int.parse(monthsProvider.firstDate.westernDate));
+      int.parse(monthsProvider.firstDate.year),
+      int.parse(monthsProvider.firstDate.month),
+      int.parse(monthsProvider.firstDate.westernDate),
+    );
     final lastCalendarDate = DateTime(
-        int.parse(monthsProvider.lastDate.year),
-        int.parse(monthsProvider.lastDate.month),
-        int.parse(monthsProvider.lastDate.westernDate));
+      int.parse(monthsProvider.lastDate.year),
+      int.parse(monthsProvider.lastDate.month),
+      int.parse(monthsProvider.lastDate.westernDate),
+    );
 
     if (date.isBefore(firstCalendarDate) || date.isAfter(lastCalendarDate)) {
       return; // Date is out of bounds, do nothing.
@@ -294,49 +340,42 @@ class DateScreenState extends State<DateScreen> {
       _isLoading = true;
     });
 
-    int indexToJumpTo = datesToDisplay.indexWhere((element) =>
-        date.year.toString() == element.year &&
-        date.month.toString() == element.month &&
-        date.day.toString() == element.westernDate);
+    int indexToJumpTo = datesToDisplay.indexWhere(
+      (element) =>
+          date.year.toString() == element.year &&
+          date.month.toString() == element.month &&
+          date.day.toString() == element.westernDate,
+    );
 
     if (indexToJumpTo != -1) {
       itemScrollController.jumpTo(
-          index: indexToJumpTo == 0 ? 0 : indexToJumpTo - 1);
+        index: indexToJumpTo == 0 ? 0 : indexToJumpTo - 1,
+      );
       _updateAppBar(indexToJumpTo);
       setState(() {
         _isLoading = false;
       });
       return;
     } else {
-      Provider.of<Months>(context, listen: false)
-          .fetchInitialDates(date)
-          .then((_) {
+      Provider.of<Months>(context, listen: false).fetchInitialDates(date).then((
+        _,
+      ) {
         if (!mounted) return;
         datesToDisplay.clear();
         datesToDisplay = Provider.of<Months>(context, listen: false).dates;
 
-        initialScrollIndex = (datesToDisplay.indexWhere((element) =>
-            element.year == date.year.toString() &&
-            element.month == date.month.toString() &&
-            element.westernDate == date.day.toString()));
+        initialScrollIndex = (datesToDisplay.indexWhere(
+          (element) =>
+              element.year == date.year.toString() &&
+              element.month == date.month.toString() &&
+              element.westernDate == date.day.toString(),
+        ));
 
         if (initialScrollIndex == -1) {
           initialScrollIndex = (datesToDisplay.length / 2).round();
         }
 
-        final initialDate = datesToDisplay[initialScrollIndex];
-        int firstOfCurrentMonthIndex = datesToDisplay.indexWhere((element) =>
-            element.year == initialDate.year &&
-            element.month == initialDate.month &&
-            element.westernDate == '1');
-
-        if (firstOfCurrentMonthIndex == -1) {
-          firstOfCurrentMonthIndex = 0;
-        }
-
         setState(() {
-          currentMonthFirstDate =
-              ValueNotifier(datesToDisplay[firstOfCurrentMonthIndex]);
           itemScrollController.jumpTo(index: initialScrollIndex - 1);
           _updateAppBar(initialScrollIndex);
           _isLoading = false;
@@ -351,11 +390,15 @@ class DateScreenState extends State<DateScreen> {
     if (datesToDisplay.isEmpty || index >= datesToDisplay.length) return;
 
     Date topDate = datesToDisplay[index];
-    Month currentMonth =
-        allMonths.firstWhere((element) => element.monthID == topDate.month);
 
+    Month currentMonth = allMonths.firstWhere(
+      (element) => element.monthID == topDate.month,
+    );
+
+    // // Look back from top Date and get the first record where Wolof month is not empty
     int wolofIndex = index;
     while (datesToDisplay[wolofIndex].wolofMonthRS == "") {
+      if (wolofIndex <= 0) break;
       wolofIndex--;
     }
 
@@ -365,16 +408,10 @@ class DateScreenState extends State<DateScreen> {
     appBarWesternMonthAS.value = currentMonth.monthAS;
     appBarWolofMonth.value = datesToDisplay[wolofIndex].wolofMonthRS;
     appBarWolofalMonth.value = datesToDisplay[wolofIndex].wolofMonthAS;
-
-    int firstOfCurrentMonthIndex = datesToDisplay.indexWhere((element) =>
-        element.year == topDate.year &&
-        element.month == topDate.month &&
-        element.westernDate == '1');
-
-    if (firstOfCurrentMonthIndex != -1) {
-      currentMonthFirstDate =
-          ValueNotifier(datesToDisplay[firstOfCurrentMonthIndex]);
-    }
+    currentMonthFirstDate.value = firstDateCurrentMonth(
+      datesToDisplay,
+      topDate,
+    );
   }
 
   Future<void> enableFpsMonitoring() async {
@@ -388,28 +425,35 @@ class DateScreenState extends State<DateScreen> {
 
   Future<void> disableFpsMonitoring() async {
     debugPrint('FPS consistently good: disable monitoring');
-    Provider.of<UserPrefs>(context, listen: false)
-        .savePref('shouldTestDevicePerformance', false);
+    Provider.of<UserPrefs>(
+      context,
+      listen: false,
+    ).savePref('shouldTestDevicePerformance', false);
     Fps.instance!.stop();
   }
 
   Future<void> enableLightAnimation() async {
     debugPrint('FPS consistently low: ask to enable Light Animation');
     Fps.instance!.stop();
-    Provider.of<UserPrefs>(context, listen: false)
-        .savePref('changeThemeColorWithBackground', false);
-    Provider.of<UserPrefs>(context, listen: false)
-        .savePref('shouldTestDevicePerformance', false);
+    Provider.of<UserPrefs>(
+      context,
+      listen: false,
+    ).savePref('changeThemeColorWithBackground', false);
+    Provider.of<UserPrefs>(
+      context,
+      listen: false,
+    ).savePref('shouldTestDevicePerformance', false);
   }
 
-  Future<void> setColor() async {
-    String monthAsString = currentMonthFirstDate.value.month;
-    ImageProvider myBackground = AssetImage('assets/images/$monthAsString.jpg');
+  Future<void> setColor(String monthID) async {
+    ImageProvider myBackground = AssetImage('assets/images/$monthID.jpg');
     Brightness brightness = Theme.of(context).brightness;
 
     try {
       final newColorScheme = await ColorScheme.fromImageProvider(
-          provider: myBackground, brightness: brightness);
+        provider: myBackground,
+        brightness: brightness,
+      );
       if (!mounted) return;
       Provider.of<ThemeModel>(context, listen: false).setTheme(newColorScheme);
     } catch (e) {
@@ -430,12 +474,8 @@ class DateScreenState extends State<DateScreen> {
 
   @override
   Widget build(BuildContext context) {
-    datesToDisplay = Provider.of<Months>(context).dates;
-    allMonths = Provider.of<Months>(context).months;
-
-    final Size size = MediaQuery.of(context).size;
-    final screenwidth = size.width;
-    final screenheight = size.height;
+    final screenwidth = MediaQuery.sizeOf(context).width;
+    final screenheight = MediaQuery.sizeOf(context).height;
 
     final double datePanelWidth = max(screenwidth * .4, 350);
     final double scripturePanelWidth = screenwidth - datePanelWidth;
@@ -465,23 +505,22 @@ class DateScreenState extends State<DateScreen> {
         ? Colors.black87
         : Colors.white;
 
-    TextStyle appBarMonthsStyle = Theme.of(context)
-        .textTheme
-        .titleLarge!
+    final TextStyle appBarMonthsStyle = Theme.of(context).textTheme.titleLarge!
         .copyWith(fontFamily: "Harmattan", color: appBarItemColor);
 
     Widget monthNames(ValueNotifier<String> notifier, TextAlign textAlign) {
       return ValueListenableBuilder(
-          valueListenable: notifier,
-          builder: (context, String value, _) {
-            return Text(
-              value,
-              style: appBarMonthsStyle,
-              textAlign: textAlign,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            );
-          });
+        valueListenable: notifier,
+        builder: (context, String value, _) {
+          return Text(
+            value,
+            style: appBarMonthsStyle,
+            textAlign: textAlign,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          );
+        },
+      );
     }
 
     Widget monthRow() {
@@ -492,39 +531,32 @@ class DateScreenState extends State<DateScreen> {
       if (spaceAvailable > 368) {
         monthNameWidgets = [
           monthNames(appBarWesternMonthFR, TextAlign.left),
-          Text(
-            '/',
-            style: appBarMonthsStyle,
-          ),
+          Text('/', style: appBarMonthsStyle),
           monthNames(appBarWesternMonthAS, TextAlign.right),
-          const Expanded(
-              child: SizedBox(
-            width: 1,
-          )),
+          const Expanded(child: SizedBox(width: 1)),
           monthNames(appBarWolofMonth, TextAlign.left),
-          Text(
-            '/',
-            style: appBarMonthsStyle,
-          ),
+          Text('/', style: appBarMonthsStyle),
           monthNames(appBarWolofalMonth, TextAlign.right),
         ];
       } else {
         monthNameWidgets = [
           monthNames(appBarWesternMonthFR, TextAlign.left),
-          monthNames(appBarWolofalMonth, TextAlign.right)
+          monthNames(appBarWolofalMonth, TextAlign.right),
         ];
       }
 
       row = Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: monthNameWidgets);
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: monthNameWidgets,
+      );
 
       return Container(
-          padding: isPhone
-              ? const EdgeInsets.symmetric(horizontal: 8)
-              : EdgeInsets.only(left: (scripturePanelWidth) + 16, right: 8),
-          color: Colors.transparent,
-          child: row);
+        padding: isPhone
+            ? const EdgeInsets.symmetric(horizontal: 8)
+            : EdgeInsets.only(left: (scripturePanelWidth) + 16, right: 8),
+        color: Colors.transparent,
+        child: row,
+      );
     }
 
     Widget datesSection() {
@@ -543,6 +575,15 @@ class DateScreenState extends State<DateScreen> {
 
                 final last = positions.last.index;
 
+                if (min(first, last) < 30 && !_isLoading) {
+                  _loadPrevious();
+                }
+
+                if (max(first, last) > (datesToDisplay.length - 30) &&
+                    !_isLoading) {
+                  _loadNext();
+                }
+
                 _updateAppBar(min(first, last));
               }
             }
@@ -550,11 +591,12 @@ class DateScreenState extends State<DateScreen> {
           },
           child: Column(
             children: [
-              if (_isLoading) const CircularProgressIndicator(),
+              // if (_isLoading) const CircularProgressIndicator(),
               Expanded(
                 child: ScrollConfiguration(
-                  behavior:
-                      MyCustomScrollBehavior().copyWith(scrollbars: false),
+                  behavior: MyCustomScrollBehavior().copyWith(
+                    scrollbars: false,
+                  ),
                   child: ScrollablePositionedList.builder(
                     itemScrollController: itemScrollController,
                     itemPositionsListener: itemPositionsListener,
@@ -571,7 +613,7 @@ class DateScreenState extends State<DateScreen> {
                   ),
                 ),
               ),
-              if (_isLoading) const CircularProgressIndicator(),
+              // if (_isLoading) const CircularProgressIndicator(),
             ],
           ),
         ),
@@ -580,7 +622,7 @@ class DateScreenState extends State<DateScreen> {
 
     Widget imageBackdrop({required Widget child}) {
       return ValueListenableBuilder(
-        valueListenable: currentMonthFirstDate,
+        valueListenable: imageBackdropListener,
         child: child,
         builder: (context, value, child) {
           return AnimatedContainer(
@@ -592,8 +634,9 @@ class DateScreenState extends State<DateScreen> {
                 ? BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage(
-                          'assets/images/${currentMonthFirstDate.value.month.toString()}.jpg',
-                          bundle: DefaultAssetBundle.of(context)),
+                        'assets/images/${imageBackdropListener.value}.jpg',
+                        bundle: DefaultAssetBundle.of(context),
+                      ),
                       fit: BoxFit.cover,
                     ),
                   )
@@ -610,7 +653,7 @@ class DateScreenState extends State<DateScreen> {
                           end: Alignment.topCenter,
                           colors: [
                             overlayColor.withAlpha(179),
-                            overlayColor.withAlpha(77)
+                            overlayColor.withAlpha(77),
                           ],
                           stops: const [0.1, .9],
                         ),
@@ -629,15 +672,16 @@ class DateScreenState extends State<DateScreen> {
         return Container();
       }
       return ScripturePanel(
-          currentDate: currentMonthFirstDate.value,
-          monthData: allMonths,
-          contentColWidth: contentColWidth,
-          headerImageHeight: headerImageHeight,
-          scripturePanelWidth: scripturePanelWidth,
-          adaptiveMargin: adaptiveMargin,
-          size: size,
-          isPhone: isPhone,
-          kIsWeb: kIsWeb);
+        currentDate: currentMonthFirstDate.value,
+        monthData: allMonths,
+        contentColWidth: contentColWidth,
+        headerImageHeight: headerImageHeight,
+        scripturePanelWidth: scripturePanelWidth,
+        adaptiveMargin: adaptiveMargin,
+        size: Size(screenwidth, screenheight),
+        isPhone: isPhone,
+        kIsWeb: kIsWeb,
+      );
     }
 
     return Scaffold(
@@ -647,47 +691,53 @@ class DateScreenState extends State<DateScreen> {
           ? Colors.white.withAlpha(26)
           : Colors.black.withAlpha(26),
       drawer: BackdropFilter(
-          filter: userPrefs.glassEffects!
-              ? ImageFilter.blur(sigmaX: 50, sigmaY: 50)
-              : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
-          child: const MainDrawer()),
+        filter: userPrefs.glassEffects!
+            ? ImageFilter.blur(sigmaX: 50, sigmaY: 50)
+            : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
+        child: const MainDrawer(),
+      ),
       appBar: glassAppBar(
-          scaffoldStateKey: scaffoldStateKey,
-          context: context,
-          title: formattedAppBarTitle.value,
-          height: 89.0,
-          actions: [
-            IconButton(
-                icon: const Icon(Icons.date_range),
-                onPressed: () => pickDateToShow()),
-            IconButton(
-                icon: const Icon(
-                  Icons.arrow_back_ios_new,
+        scaffoldStateKey: scaffoldStateKey,
+        context: context,
+        title: formattedAppBarTitle.value,
+        height: 89.0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.date_range),
+            onPressed: () => pickDateToShow(),
+          ),
+          IconButton(
+            icon: const Icon(Icons.arrow_back_ios_new),
+            onPressed: () => moveMonths('backward'),
+          ),
+          IconButton(
+            icon: Stack(
+              alignment: const AlignmentDirectional(.0, .5),
+              children: [
+                Text(
+                  DateFormat('d', 'fr_FR').format(DateTime.now()),
+                  style: Theme.of(context).textTheme.labelSmall,
                 ),
-                onPressed: () => moveMonths('backward')),
-            IconButton(
-              icon: Stack(
-                alignment: const AlignmentDirectional(.0, .5),
-                children: [
-                  Text(
-                    DateFormat('d', 'fr_FR').format(DateTime.now()),
-                    style: Theme.of(context).textTheme.labelSmall,
-                  ),
-                  const Icon(Icons.calendar_today),
-                ],
-              ),
-              onPressed: () {
-                navigateToDate(DateTime.now());
-              },
+                const Icon(Icons.calendar_today),
+              ],
             ),
-            IconButton(
-                icon: const Icon(Icons.arrow_forward_ios),
-                onPressed: () => moveMonths('forward')),
-          ],
-          extraRow: monthRow()),
+            onPressed: () {
+              navigateToDate(DateTime.now());
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.arrow_forward_ios),
+            onPressed: () => moveMonths('forward'),
+          ),
+        ],
+        extraRow: monthRow(),
+      ),
       body: isPhone
           ? Stack(
-              children: [imageBackdrop(child: datesSection()), versesSection()],
+              children: [
+                imageBackdrop(child: datesSection()),
+                versesSection(),
+              ],
             )
           : imageBackdrop(
               child: Row(
@@ -701,85 +751,76 @@ class DateScreenState extends State<DateScreen> {
   }
 }
 
-class SmoothAnimatedContainer extends StatefulWidget {
-  final Widget child;
-  final BoxDecoration decoration;
-  final Duration duration;
-  final Curve curve;
-  final double height;
-  final double width;
+// class SmoothAnimatedContainer extends StatefulWidget {
+//   final Widget child;
+//   final BoxDecoration decoration;
+//   final Duration duration;
+//   final Curve curve;
+//   final double height;
+//   final double width;
 
-  const SmoothAnimatedContainer({
-    super.key,
-    required this.child,
-    required this.decoration,
-    required this.duration,
-    required this.curve,
-    required this.height,
-    required this.width,
-  });
+//   const SmoothAnimatedContainer({
+//     super.key,
+//     required this.child,
+//     required this.decoration,
+//     required this.duration,
+//     required this.curve,
+//     required this.height,
+//     required this.width,
+//   });
 
-  @override
-  SmoothAnimatedContainerState createState() => SmoothAnimatedContainerState();
-}
+//   @override
+//   SmoothAnimatedContainerState createState() => SmoothAnimatedContainerState();
+// }
 
-class SmoothAnimatedContainerState extends State<SmoothAnimatedContainer>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<Decoration> _animation;
+// class SmoothAnimatedContainerState extends State<SmoothAnimatedContainer>
+//     with SingleTickerProviderStateMixin {
+//   late AnimationController _controller;
+//   late Animation<Decoration> _animation;
 
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: widget.duration,
-    );
-    _animation = DecorationTween(
-      begin: widget.decoration,
-      end: widget.decoration,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: widget.curve,
-    ));
-    _controller.forward();
-  }
+//   @override
+//   void initState() {
+//     super.initState();
+//     _controller = AnimationController(vsync: this, duration: widget.duration);
+//     _animation = DecorationTween(
+//       begin: widget.decoration,
+//       end: widget.decoration,
+//     ).animate(CurvedAnimation(parent: _controller, curve: widget.curve));
+//     _controller.forward();
+//   }
 
-  @override
-  void didUpdateWidget(SmoothAnimatedContainer oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.decoration != oldWidget.decoration) {
-      _animation = DecorationTween(
-        begin: oldWidget.decoration,
-        end: widget.decoration,
-      ).animate(CurvedAnimation(
-        parent: _controller,
-        curve: widget.curve,
-      ));
-      _controller.reset();
-      _controller.forward();
-    }
-  }
+//   @override
+//   void didUpdateWidget(SmoothAnimatedContainer oldWidget) {
+//     super.didUpdateWidget(oldWidget);
+//     if (widget.decoration != oldWidget.decoration) {
+//       _animation = DecorationTween(
+//         begin: oldWidget.decoration,
+//         end: widget.decoration,
+//       ).animate(CurvedAnimation(parent: _controller, curve: widget.curve));
+//       _controller.reset();
+//       _controller.forward();
+//     }
+//   }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+//   @override
+//   void dispose() {
+//     _controller.dispose();
+//     super.dispose();
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _animation,
-      builder: (context, child) {
-        return Container(
-          decoration: _animation.value,
-          height: widget.height,
-          width: widget.width,
-          child: widget.child,
-        );
-      },
-      child: widget.child,
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return AnimatedBuilder(
+//       animation: _animation,
+//       builder: (context, child) {
+//         return Container(
+//           decoration: _animation.value,
+//           height: widget.height,
+//           width: widget.width,
+//           child: widget.child,
+//         );
+//       },
+//       child: widget.child,
+//     );
+//   }
+// }

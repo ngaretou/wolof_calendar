@@ -25,15 +25,14 @@ import './screens/about_screen.dart';
 import './screens/date_screen.dart';
 
 void main() async {
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    name: 'wolof_calendar',
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   if (kIsWeb) {
     //This is to preserve the splash screen til loading is done
-    WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-    FirebaseAnalytics analytics = FirebaseAnalytics.instance;
-    await analytics.logAppOpen();
-
     FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   }
 
@@ -41,21 +40,11 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (ctx) => UserPrefs(),
-        ),
-        ChangeNotifierProvider(
-          create: (ctx) => ThemeModel(),
-        ),
-        ChangeNotifierProvider(
-          create: (ctx) => LocaleProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (ctx) => Months(),
-        ),
-        ChangeNotifierProvider(
-          create: (ctx) => PlayAction(),
-        ),
+        ChangeNotifierProvider(create: (ctx) => UserPrefs()),
+        ChangeNotifierProvider(create: (ctx) => ThemeModel()),
+        ChangeNotifierProvider(create: (ctx) => LocaleProvider()),
+        ChangeNotifierProvider(create: (ctx) => Months()),
+        ChangeNotifierProvider(create: (ctx) => PlayAction()),
       ],
       child: const MyApp(),
     ),
@@ -76,8 +65,10 @@ class MyAppState extends State<MyApp> {
   Future<void> setupLang() async {
     // print('setupLang');
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    Function setLocale =
-        Provider.of<LocaleProvider>(context, listen: false).setLocale;
+    Function setLocale = Provider.of<LocaleProvider>(
+      context,
+      listen: false,
+    ).setLocale;
 
     //If there is no lang pref (i.e. first run), set lang to Wolof
     if (!prefs.containsKey('userLang')) {
@@ -96,8 +87,10 @@ class MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    init =
-        Provider.of<ThemeModel>(context, listen: false).initialSetup(context);
+    init = Provider.of<ThemeModel>(
+      context,
+      listen: false,
+    ).initialSetup(context);
     // Call the intitialization of the locale
     setupLang();
     super.initState();
@@ -111,23 +104,21 @@ class MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'Arminaatu Wolof',
       home: FutureBuilder(
-          future: init,
-          builder: (ctx, snapshot) {
-            // late Widget returnMe;
+        future: init,
+        builder: (ctx, snapshot) {
+          // late Widget returnMe;
 
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return kIsWeb
-                  ? const Center(
-                      child: SizedBox(
-                      width: 10,
-                    ))
-                  : const Center(child: CircularProgressIndicator());
-            } else {
-              //remove the loading spinner for web
-              if (kIsWeb) FlutterNativeSplash.remove();
-              return const DateScreen();
-            }
-          }),
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return kIsWeb
+                ? const Center(child: SizedBox(width: 10))
+                : const Center(child: CircularProgressIndicator());
+          } else {
+            //remove the loading spinner for web
+            if (kIsWeb) FlutterNativeSplash.remove();
+            return const DateScreen();
+          }
+        },
+      ),
       theme: Provider.of<ThemeModel>(context).currentTheme,
       routes: {
         SettingsScreen.routeName: (ctx) => const SettingsScreen(),

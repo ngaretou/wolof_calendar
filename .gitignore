@@ -1,6 +1,5 @@
 
 #Corey edit
-.fvm/flutter_sdk
 test
 pubspec.lock
 **/android/key.properties
@@ -18,8 +17,6 @@ pubspec.lock
 .svn/
 /build/
 ios/build/
-
-
 
 # IntelliJ related
 *.iml
@@ -42,7 +39,6 @@ ios/build/
 .pub-cache/
 .pub/
 
-
 # Web related
 
 # Symbolication related
@@ -53,3 +49,9 @@ app.*.map.json
 
 # Exceptions to above rules.
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
+
+# FVM Version Cache
+.fvm/
+.fvmrc
+.fvm/flutter_sdk
+.fvm/flutter_sdk

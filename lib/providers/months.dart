@@ -58,6 +58,26 @@ class Date {
     required this.wolofDate,
     this.holidays,
   });
+
+  // Date copyWith({
+  //   String? year,
+  //   String? month,
+  //   String? wolofMonthRS,
+  //   String? wolofMonthAS,
+  //   String? westernDate,
+  //   String? wolofDate,
+  //   List<Holiday>? holidays,
+  // }) {
+  //   return Date(
+  //     year: year ?? this.year,
+  //     month: month ?? this.month,
+  //     wolofMonthRS: wolofMonthRS ?? this.wolofMonthRS,
+  //     wolofMonthAS: wolofMonthAS ?? this.wolofMonthAS,
+  //     westernDate: westernDate ?? this.westernDate,
+  //     wolofDate: wolofDate ?? this.wolofDate,
+  //     holidays: holidays ?? this.holidays,
+  //   );
+  // }
 }
 
 class Month {
@@ -81,20 +101,20 @@ final List<dynamic> monthNames = [
     "monthID": "1",
     "monthFR": "Janvier",
     "monthRS": "Samwiye",
-    "monthAS": "سَمْوِيࣹ"
+    "monthAS": "سَمْوِيࣹ",
   },
   {
     "monthID": "2",
     "monthFR": "Février",
     "monthRS": "Fewriye",
-    "monthAS": "فࣹوْرِيࣹ"
+    "monthAS": "فࣹوْرِيࣹ",
   },
   {"monthID": "3", "monthFR": "Mars", "monthRS": "Màrs", "monthAS": "مࣵرسّ"},
   {
     "monthID": "4",
     "monthFR": "Avril",
     "monthRS": "Awril",
-    "monthAS": "اَوْرِلْ"
+    "monthAS": "اَوْرِلْ",
   },
   {"monthID": "5", "monthFR": "Mai", "monthRS": "Me", "monthAS": "مࣹ"},
   {"monthID": "6", "monthFR": "Juin", "monthRS": "Suwen", "monthAS": "سُوࣹنْ"},
@@ -102,33 +122,33 @@ final List<dynamic> monthNames = [
     "monthID": "7",
     "monthFR": "Juillet",
     "monthRS": "Sulet",
-    "monthAS": "سُلࣹتْ"
+    "monthAS": "سُلࣹتْ",
   },
   {"monthID": "8", "monthFR": "Août", "monthRS": "Ut", "monthAS": "اُتْ"},
   {
     "monthID": "9",
     "monthFR": "Septembre",
     "monthRS": "Sàttumbar",
-    "monthAS": "سࣵتُّمْبَرْ"
+    "monthAS": "سࣵتُّمْبَرْ",
   },
   {
     "monthID": "10",
     "monthFR": "Octobre",
     "monthRS": "Oktoobar",
-    "monthAS": "اࣷڪْتࣷوبَرْ"
+    "monthAS": "اࣷڪْتࣷوبَرْ",
   },
   {
     "monthID": "11",
     "monthFR": "Novembre",
     "monthRS": "Nowàmbar",
-    "monthAS": "نࣷوࣵمْبَرْ"
+    "monthAS": "نࣷوࣵمْبَرْ",
   },
   {
     "monthID": "12",
     "monthFR": "Décembre",
     "monthRS": "Desàmbar",
-    "monthAS": "دࣹسࣵمْبَرْ"
-  }
+    "monthAS": "دࣹسࣵمْبَرْ",
+  },
 ];
 
 class Months with ChangeNotifier {
@@ -178,39 +198,45 @@ class Months with ChangeNotifier {
 
     final List<Month> loadedMonthData = [];
     for (var month in monthNames) {
-      loadedMonthData.add(Month(
-        monthID: month['monthID'],
-        monthFR: month['monthFR'],
-        monthRS: month['monthRS'],
-        monthAS: month['monthAS'],
-        verses: versesData
-            .map((entry) => Verses(
+      loadedMonthData.add(
+        Month(
+          monthID: month['monthID'],
+          monthFR: month['monthFR'],
+          monthRS: month['monthRS'],
+          monthAS: month['monthAS'],
+          verses: versesData
+              .map(
+                (entry) => Verses(
                   monthID: entry['monthID'],
                   verseAS: entry['verseAS'],
                   verseRS: entry['verseRS'],
                   verseRefRS: entry['verseRefRS'],
                   verseRefAS: entry['verseRefAS'],
-                ))
-            .where((element) => element.monthID == month['monthID'])
-            .toList(),
-      ));
+                ),
+              )
+              .where((element) => element.monthID == month['monthID'])
+              .toList(),
+        ),
+      );
     }
     _months = loadedMonthData;
   }
 
   Future<void> fetchInitialDates(DateTime initialDate) async {
     await _loadAllData();
-    int initialIndex = _allDatesData.indexWhere((d) =>
-        d['year'] == initialDate.year.toString() &&
-        d['month'] == initialDate.month.toString() &&
-        d['westernDate'] == initialDate.day.toString());
+    int initialIndex = _allDatesData.indexWhere(
+      (d) =>
+          d['year'] == initialDate.year.toString() &&
+          d['month'] == initialDate.month.toString() &&
+          d['westernDate'] == initialDate.day.toString(),
+    );
 
     if (initialIndex == -1) {
       initialIndex = 0;
     }
 
-    int startIndex = (initialIndex - 30).clamp(0, _allDatesData.length);
-    int endIndex = (initialIndex + 30).clamp(0, _allDatesData.length);
+    int startIndex = (initialIndex - 45).clamp(0, _allDatesData.length);
+    int endIndex = (initialIndex + 45).clamp(0, _allDatesData.length);
 
     _dates = _getDateRange(startIndex, endIndex);
     notifyListeners();
@@ -219,15 +245,17 @@ class Months with ChangeNotifier {
   Future<bool> loadNextMonth() async {
     if (_dates.isEmpty) return false;
     final lastDate = _dates.last;
-    int lastIndex = _allDatesData.indexWhere((d) =>
-        d['year'] == lastDate.year &&
-        d['month'] == lastDate.month &&
-        d['westernDate'] == lastDate.westernDate);
+    int lastIndex = _allDatesData.indexWhere(
+      (d) =>
+          d['year'] == lastDate.year &&
+          d['month'] == lastDate.month &&
+          d['westernDate'] == lastDate.westernDate,
+    );
 
     if (lastIndex == -1 || lastIndex == _allDatesData.length - 1) return false;
 
     int startIndex = lastIndex + 1;
-    int endIndex = (startIndex + 30).clamp(0, _allDatesData.length);
+    int endIndex = (startIndex + 60).clamp(0, _allDatesData.length);
 
     final newDates = _getDateRange(startIndex, endIndex);
     if (newDates.isEmpty) return false;
@@ -240,15 +268,17 @@ class Months with ChangeNotifier {
   Future<bool> loadPreviousMonth() async {
     if (_dates.isEmpty) return false;
     final firstDate = _dates.first; // real composed Date objects
-    int firstIndex = _allDatesData.indexWhere((d) =>
-        d['year'] == firstDate.year &&
-        d['month'] == firstDate.month &&
-        d['westernDate'] == firstDate.westernDate);
+    int firstIndex = _allDatesData.indexWhere(
+      (d) =>
+          d['year'] == firstDate.year &&
+          d['month'] == firstDate.month &&
+          d['westernDate'] == firstDate.westernDate,
+    );
 
     if (firstIndex == -1 || firstIndex == 0) return false;
 
     int endIndex = firstIndex;
-    int startIndex = (endIndex - 30).clamp(0, _allDatesData.length);
+    int startIndex = (endIndex - 60).clamp(0, _allDatesData.length);
 
     final newDates = _getDateRange(startIndex, endIndex);
     if (newDates.isEmpty) return false;
@@ -262,28 +292,35 @@ class Months with ChangeNotifier {
     final List<Date> loadedDateData = [];
     for (int i = startIndex; i < endIndex; i++) {
       var date = _allDatesData[i];
-      loadedDateData.add(Date(
-        year: date['year'],
-        month: date['month'],
-        wolofMonthAS: date['wolofMonthAS'] ?? '',
-        wolofMonthRS: date['wolofMonthRS'] ?? '',
-        westernDate: date['westernDate'],
-        wolofDate: date['wolofDate'],
-        holidays: _holidaysData
-            .map((holiday) => Holiday(
-                year: holiday['year'],
-                monthID: holiday['monthID'],
-                westernMonthDate: holiday['westernMonthDate'],
-                wolofMonthDate: holiday['wolofMonthDate'],
-                holidayFR: holiday['holidayFR'],
-                holidayAS: holiday['holidayAS'],
-                holidayRS: holiday['holidayRS']))
-            .where((element) =>
-                element.monthID == date['month'] &&
-                element.year == date['year'] &&
-                element.westernMonthDate == date['westernDate'])
-            .toList(),
-      ));
+      loadedDateData.add(
+        Date(
+          year: date['year'],
+          month: date['month'],
+          wolofMonthAS: date['wolofMonthAS'] ?? '',
+          wolofMonthRS: date['wolofMonthRS'] ?? '',
+          westernDate: date['westernDate'],
+          wolofDate: date['wolofDate'],
+          holidays: _holidaysData
+              .map(
+                (holiday) => Holiday(
+                  year: holiday['year'],
+                  monthID: holiday['monthID'],
+                  westernMonthDate: holiday['westernMonthDate'],
+                  wolofMonthDate: holiday['wolofMonthDate'],
+                  holidayFR: holiday['holidayFR'],
+                  holidayAS: holiday['holidayAS'],
+                  holidayRS: holiday['holidayRS'],
+                ),
+              )
+              .where(
+                (element) =>
+                    element.monthID == date['month'] &&
+                    element.year == date['year'] &&
+                    element.westernMonthDate == date['westernDate'],
+              )
+              .toList(),
+        ),
+      );
     }
     return loadedDateData;
   }
