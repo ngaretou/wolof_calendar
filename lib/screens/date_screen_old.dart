@@ -7,7 +7,6 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:animated_box_decoration/animated_box_decoration.dart';
 
 import '../providers/user_prefs.dart';
 import '../providers/months.dart';
@@ -707,7 +706,7 @@ class DateScreenState extends State<DateScreen> {
         valueListenable: currentMonthFirstDate,
         child: child,
         builder: (context, value, child) {
-          return SmoothAnimatedContainer(
+          return AnimatedContainer(
             duration: lastNavigatedVia == NavType.jumped
                 ? const Duration(milliseconds: 0)
                 : const Duration(milliseconds: 500),

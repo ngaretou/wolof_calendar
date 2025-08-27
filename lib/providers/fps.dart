@@ -78,7 +78,7 @@ class Fps {
     }
   }
 
-  _onTimingsCallback(List<FrameTiming> timings) async {
+  void _onTimingsCallback(List<FrameTiming> timings) async {
     if (_fpsCallbacks.isNotEmpty) {
       for (FrameTiming timing in timings) {
         framesQueue.addFirst(timing);

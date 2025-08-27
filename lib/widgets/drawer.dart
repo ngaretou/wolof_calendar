@@ -25,8 +25,10 @@ class _MainDrawerState extends State<MainDrawer> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    UserPrefs userPrefs =
-        Provider.of<UserPrefs>(context, listen: false).userPrefs;
+    UserPrefs userPrefs = Provider.of<UserPrefs>(
+      context,
+      listen: false,
+    ).userPrefs;
 
     TextStyle whitetitleLarge = Theme.of(context).textTheme.titleLarge!;
 
@@ -35,25 +37,20 @@ class _MainDrawerState extends State<MainDrawer> {
       return InkWell(
         onTap: tapHandler as void Function()?,
         child: Container(
-            width: 300,
-            child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: Row(
-                  children: [
-                    icon.toString().startsWith("FontAwesomeIcons")
-                        ? FaIcon(
-                            icon,
-                            size: 27,
-                          )
-                        : Icon(
-                            icon,
-                            size: 27,
-                          ),
-                    const SizedBox(width: 25),
-                    Text(title, style: whitetitleLarge),
-                  ],
-                ))),
+          width: 300,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: Row(
+              children: [
+                icon.toString().startsWith("FontAwesomeIcons")
+                    ? FaIcon(icon, size: 27)
+                    : Icon(icon, size: 27),
+                const SizedBox(width: 25),
+                Text(title, style: whitetitleLarge),
+              ],
+            ),
+          ),
+        ),
       );
     }
 
@@ -69,25 +66,25 @@ class _MainDrawerState extends State<MainDrawer> {
         child: ListView(
           children: [
             //Main title
-
             Padding(
               padding: const EdgeInsets.only(
-                  top: 30, bottom: 20, left: 20, right: 20),
+                top: 30,
+                bottom: 20,
+                left: 20,
+                right: 20,
+              ),
               child: Row(
                 children: [
-                  const FaIcon(
-                    FontAwesomeIcons.calendar,
-                    size: 27,
-                  ),
+                  const FaIcon(FontAwesomeIcons.calendar, size: 27),
                   const SizedBox(width: 25),
-                  Text("Arminaatu wolof",
-                      style: Theme.of(context).textTheme.headlineSmall!),
+                  Text(
+                    "Arminaatu wolof",
+                    style: Theme.of(context).textTheme.headlineSmall!,
+                  ),
                 ],
               ),
             ),
-            const Divider(
-              thickness: 3,
-            ),
+            const Divider(thickness: 3),
             drawerTitle(
               AppLocalizations.of(context)!.settingsTitle,
               Icons.settings,
@@ -95,19 +92,14 @@ class _MainDrawerState extends State<MainDrawer> {
                 Navigator.of(context).pop();
                 // Navigator.of(context).popAndPushNamed(SettingsScreen.routeName);
                 clearPage(Widget page) => PageRouteBuilder(
-                      opaque: false,
-                      pageBuilder: (BuildContext context, _, __) => page,
-                    );
-                Navigator.push(
-                  context,
-                  clearPage(const SettingsScreen()),
+                  opaque: false,
+                  pageBuilder: (BuildContext context, _, _) => page,
                 );
+                Navigator.push(context, clearPage(const SettingsScreen()));
               },
             ),
 
-            const Divider(
-              thickness: 1,
-            ),
+            const Divider(thickness: 1),
             drawerTitle(
               // 'Add holidays to\nGoogle Calendar TT',
               AppLocalizations.of(context)!.addHolidays,
@@ -132,73 +124,85 @@ class _MainDrawerState extends State<MainDrawer> {
                 }
 
                 if (await canLaunchUrl(Uri.parse(url))) {
-                  await launchUrl(Uri.parse(url),
-                      mode: LaunchMode.externalApplication);
+                  await launchUrl(
+                    Uri.parse(url),
+                    mode: LaunchMode.externalApplication,
+                  );
                 } else {
                   throw 'Could not launch $url';
                 }
               },
             ),
 
-            const Divider(
-              thickness: 1,
-            ),
+            const Divider(thickness: 1),
             drawerTitle(
               AppLocalizations.of(context)!.shareAppLink,
               Icons.share,
               () async {
                 Navigator.of(context).pop();
                 if (!kIsWeb) {
-                  Share.share(
-                    'https://sng.al/cal',
-                    sharePositionOrigin:
-                        Rect.fromLTWH(0, 0, size.width, size.height * .33),
+                  SharePlus.instance.share(
+                    ShareParams(
+                      text: 'https://sng.al/cal',
+                      sharePositionOrigin: Rect.fromLTWH(
+                        0,
+                        0,
+                        size.width,
+                        size.height * .33,
+                      ),
+                    ),
                   );
                 } else {
                   const url =
                       "mailto:?subject=Arminaatu Wolof&body=Xoolal appli Arminaatu Wolof fii: https://sng.al/cal";
 
                   if (await canLaunchUrl(Uri.parse(url))) {
-                    await launchUrl(Uri.parse(url),
-                        mode: LaunchMode.externalApplication);
+                    await launchUrl(
+                      Uri.parse(url),
+                      mode: LaunchMode.externalApplication,
+                    );
                   } else {
                     throw 'Could not launch $url';
                   }
                 }
               },
             ),
-            const Divider(
-              thickness: 1,
-            ),
+            const Divider(thickness: 1),
             drawerTitle(
               AppLocalizations.of(context)!.moreApps,
               Icons.web_asset,
               () async {
                 const url = 'https://sng.al/app';
                 if (await canLaunchUrl(Uri.parse(url))) {
-                  await launchUrl(Uri.parse(url),
-                      mode: LaunchMode.externalApplication);
+                  await launchUrl(
+                    Uri.parse(url),
+                    mode: LaunchMode.externalApplication,
+                  );
                 } else {
                   throw 'Could not launch $url';
                 }
               },
             ),
             //Contact Us section
-            const Divider(
-              thickness: 2,
-            ),
+            const Divider(thickness: 2),
 
             Container(
-                width: 300,
-                child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 10),
-                    child: Row(
-                      children: [
-                        Text(AppLocalizations.of(context)!.settingsContactUs,
-                            style: whitetitleLarge),
-                      ],
-                    ))),
+              width: 300,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
+                ),
+                child: Row(
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.settingsContactUs,
+                      style: whitetitleLarge,
+                    ),
+                  ],
+                ),
+              ),
+            ),
 
             // drawerTitle(
             //     AppLocalizations.of(context).settingsContactUs, null, null),
@@ -208,8 +212,10 @@ class _MainDrawerState extends State<MainDrawer> {
               () async {
                 const url = 'mailto:equipedevmbs@gmail.com';
                 if (await canLaunchUrl(Uri.parse(url))) {
-                  await launchUrl(Uri.parse(url),
-                      mode: LaunchMode.externalApplication);
+                  await launchUrl(
+                    Uri.parse(url),
+                    mode: LaunchMode.externalApplication,
+                  );
                 } else {
                   throw 'Could not launch $url';
                 }
@@ -222,8 +228,10 @@ class _MainDrawerState extends State<MainDrawer> {
               () async {
                 const url = 'https://wa.me/221776427432';
                 if (await canLaunchUrl(Uri.parse(url))) {
-                  await launchUrl(Uri.parse(url),
-                      mode: LaunchMode.externalApplication);
+                  await launchUrl(
+                    Uri.parse(url),
+                    mode: LaunchMode.externalApplication,
+                  );
                 } else {
                   throw 'Could not launch $url';
                 }
@@ -275,18 +283,13 @@ class _MainDrawerState extends State<MainDrawer> {
                 print(url);
                 print(launchMode.toString());
                 if (await canLaunchUrl(Uri.parse(url))) {
-                  await launchUrl(
-                    Uri.parse(url),
-                    mode: launchMode,
-                  );
+                  await launchUrl(Uri.parse(url), mode: launchMode);
                 } else {
                   throw 'Could not launch $url';
                 }
               },
             ),
-            const Divider(
-              thickness: 2,
-            ),
+            const Divider(thickness: 2),
             drawerTitle(
               AppLocalizations.of(context)!.settingsAbout,
               Icons.question_answer,
@@ -305,126 +308,127 @@ class _MainDrawerState extends State<MainDrawer> {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     if (!context.mounted) return;
     showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            // title: Text(packageInfo.appName),
-            content: SingleChildScrollView(
-                child: ListBody(children: [
-              Row(
-                children: [
-                  Container(
-                    // child: Image.asset('assets/icons/icon.png'),
-                    width: 50,
-                    height: 50,
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage("assets/icons/icon.png"),
-                      ),
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(50)),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 200),
-                        child: Text(
-                          "Arminaatu wolof",
-                          style: Theme.of(context).textTheme.headlineSmall,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          // title: Text(packageInfo.appName),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      // child: Image.asset('assets/icons/icon.png'),
+                      width: 50,
+                      height: 50,
+                      decoration: const BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage("assets/icons/icon.png"),
                         ),
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(50)),
                       ),
-                      Text(
-                          'Version ${packageInfo.version} (${packageInfo.buildNumber})'),
+                    ),
+                    const SizedBox(width: 10),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 200),
+                          child: Text(
+                            "Arminaatu wolof",
+                            style: Theme.of(context).textTheme.headlineSmall,
+                          ),
+                        ),
+                        Text(
+                          'Version ${packageInfo.version} (${packageInfo.buildNumber})',
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                          fontStyle: FontStyle.italic,
+                        ),
+                        text: 'Arminaatu Wolof',
+                      ),
+                      TextSpan(
+                        style: Theme.of(context).textTheme.bodyLarge,
+                        text: ' produit par la MEAO. ',
+                      ),
                     ],
-                  )
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              RichText(
+                  ),
+                ),
+                RichText(
                   text: TextSpan(
-                children: [
-                  TextSpan(
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyLarge!
-                        .copyWith(fontStyle: FontStyle.italic),
-                    text: 'Arminaatu Wolof',
+                    children: [
+                      TextSpan(
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                          fontStyle: FontStyle.italic,
+                        ),
+                        text: 'Kàddug Yàlla',
+                      ),
+                      TextSpan(
+                        style: Theme.of(context).textTheme.bodyLarge,
+                        text: ' copyright © 2024 La MBS. ',
+                      ),
+                    ],
                   ),
-                  TextSpan(
-                    style: Theme.of(context).textTheme.bodyLarge,
-                    text: ' produit par la MEAO. ',
-                  ),
-                ],
-              )),
-              RichText(
+                ),
+                RichText(
                   text: TextSpan(
-                children: [
-                  TextSpan(
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyLarge!
-                        .copyWith(fontStyle: FontStyle.italic),
-                    text: 'Kàddug Yàlla',
+                    children: [
+                      TextSpan(
+                        style: Theme.of(context).textTheme.bodyLarge,
+                        text: 'Appli © 2024 Foundational LLC.',
+                      ),
+                    ],
                   ),
-                  TextSpan(
-                    style: Theme.of(context).textTheme.bodyLarge,
-                    text: ' copyright © 2024 La MBS. ',
-                  ),
-                ],
-              )),
-              RichText(
-                  text: TextSpan(
-                children: [
-                  TextSpan(
-                    style: Theme.of(context).textTheme.bodyLarge,
-                    text: 'Appli © 2024 Foundational LLC.',
-                  ),
-                ],
-              )),
-            ])),
+                ),
+              ],
+            ),
+          ),
 
-            actions: <Widget>[
-              OutlinedButton(
-                child: const Text('Copyrights'),
-                onPressed: () {
-                  // Navigator.of(context).pushNamed(AboutScreen.routeName);
-                  clearPage(Widget page) => PageRouteBuilder(
-                        opaque: false,
-                        pageBuilder: (BuildContext context, _, __) => page,
-                      );
-                  Navigator.push(
-                    context,
-                    clearPage(const AboutScreen()),
-                  );
-                },
-              ),
-              OutlinedButton(
-                child: const Text('Licenses'),
-                onPressed: () {
-                  // Navigator.of(context).pop();
-                  showLicenses(context,
-                      appName: packageInfo.appName,
-                      appVersion:
-                          '${packageInfo.version} (${packageInfo.buildNumber})');
-                },
-              ),
-              OutlinedButton(
-                child: Text(AppLocalizations.of(context)!.settingsOK),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        });
+          actions: <Widget>[
+            OutlinedButton(
+              child: const Text('Copyrights'),
+              onPressed: () {
+                // Navigator.of(context).pushNamed(AboutScreen.routeName);
+                clearPage(Widget page) => PageRouteBuilder(
+                  opaque: false,
+                  pageBuilder: (BuildContext context, _, _) => page,
+                );
+                Navigator.push(context, clearPage(const AboutScreen()));
+              },
+            ),
+            OutlinedButton(
+              child: const Text('Licenses'),
+              onPressed: () {
+                // Navigator.of(context).pop();
+                showLicenses(
+                  context,
+                  appName: packageInfo.appName,
+                  appVersion:
+                      '${packageInfo.version} (${packageInfo.buildNumber})',
+                );
+              },
+            ),
+            OutlinedButton(
+              child: Text(AppLocalizations.of(context)!.settingsOK),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
 
@@ -439,20 +443,22 @@ void showLicenses(BuildContext context, {String? appName, String? appVersion}) {
   }) {
     // assert(context != null);
     // assert(useRootNavigator != null);
-    Navigator.of(context, rootNavigator: useRootNavigator)
-        .push(MaterialPageRoute<void>(
-      builder: (BuildContext context) => LicensePage(
-        applicationName: applicationName,
-        applicationVersion: applicationVersion,
-        applicationIcon: applicationIcon,
-        applicationLegalese: applicationLegalese,
+    Navigator.of(context, rootNavigator: useRootNavigator).push(
+      MaterialPageRoute<void>(
+        builder: (BuildContext context) => LicensePage(
+          applicationName: applicationName,
+          applicationVersion: applicationVersion,
+          applicationIcon: applicationIcon,
+          applicationLegalese: applicationLegalese,
+        ),
       ),
-    ));
+    );
   }
 
   showLicensePage(
-      context: context,
-      applicationVersion: appVersion,
-      applicationName: appName,
-      useRootNavigator: true);
+    context: context,
+    applicationVersion: appVersion,
+    applicationName: appName,
+    useRootNavigator: true,
+  );
 }

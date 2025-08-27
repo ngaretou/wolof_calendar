@@ -39,10 +39,18 @@ if (flutterVersionName == null) {
 
 android {
     namespace = "org.mbs.cal.wol"
-    compileSdkVersion 35
+    compileSdkVersion flutter.compileSdkVersion
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = "17"
     }
 
     lintOptions {
@@ -52,7 +60,7 @@ android {
     defaultConfig {
         applicationId "org.mbs.cal.wol"
         minSdkVersion flutter.minSdkVersion
-        targetSdkVersion 35
+        targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true

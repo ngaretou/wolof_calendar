@@ -33,10 +33,11 @@ class ThemeModel extends ChangeNotifier {
   String? userThemeName;
   ThemeData? currentTheme;
 
-  Future<void> initialSetup(context) async {
+  Future<void> initialSetup(BuildContext context) async {
     await Provider.of<Months>(context, listen: false)
         .fetchInitialDates(DateTime.now()); // real version
     // await Provider.of<Months>(context, listen: false).fetchInitialDates(DateTime(2028, 3)); // for testing
+    if (!context.mounted) return;
     await Provider.of<UserPrefs>(context, listen: false).setupUserPrefs();
     await setupTheme();
 
@@ -120,7 +121,7 @@ class ThemeModel extends ChangeNotifier {
     //get the theme name as a string for storage
     userThemeName = 'darkTheme';
     //send it for storage
-    saveThemeToDisk(userThemeName);
+    saveThemeToDisk(userThemeName!);
     notifyListeners();
   }
 
@@ -128,7 +129,7 @@ class ThemeModel extends ChangeNotifier {
     currentTheme = lightTheme;
     _themeType = ThemeType.light;
     userThemeName = 'lightTheme';
-    saveThemeToDisk(userThemeName);
+    saveThemeToDisk(userThemeName!);
     notifyListeners();
   }
 
@@ -142,7 +143,7 @@ class ThemeModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> saveThemeToDisk(userThemeName) async {
+  Future<void> saveThemeToDisk(String userThemeName) async {
     //get preferences from disk
     final prefs = await SharedPreferences.getInstance();
     //save _themeName to disk
