@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'dart:math';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -46,23 +47,18 @@ class ScripturePanel extends StatefulWidget {
 }
 
 class _ScripturePanelState extends State<ScripturePanel> {
-  final ScrollController scriptureScrollController = ScrollController();
-
   // this is how the parent triggers a function in this child widget
   final ChildController childController = ChildController();
+  ValueNotifier<bool> showButtonNotifier = ValueNotifier(false);
+  DraggableScrollableController draggableScrollableController =
+      DraggableScrollableController();
 
-  //how high the bottom sheet should show above the bottom of screen
-  final double headerHeight = 140.0;
-
-  //Helps the drawer be a bit more sticky on drag down - see below
-  int numberOfOverscrollNotifications = 0;
-
-  //avoiding setState too much this helps with our bottom sheet's size
-  ValueNotifier<double> bodyHeightNotifier = ValueNotifier(0);
-
-  //the sheet we only want to be all the way up or down; this is
-  //how much the sheet gets dragged up or down before going all the way up or down.
-  final double dragAmountBeforePop = 175;
+  @override
+  void dispose() {
+    showButtonNotifier.dispose();
+    draggableScrollableController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,9 +69,6 @@ class _ScripturePanelState extends State<ScripturePanel> {
     final monthData = Provider.of<Months>(context, listen: false).months
         .where((month) => month.monthID == widget.currentDate.month)
         .toList();
-
-    //how high the bottom sheet should get -
-    final double maxHeight = widget.size.height - 200;
 
     //this is the share and play buttons at bottom of scripture panel
     Widget buttonsRow() {
@@ -119,175 +112,97 @@ class _ScripturePanelState extends State<ScripturePanel> {
       );
     }
 
+    Widget scripturePanelContents(ScrollController scrollController) {
+      return ClipRRect(
+        borderRadius: const BorderRadius.only(
+          topRight: Radius.circular(20.0),
+          topLeft: Radius.circular(20.0),
+        ),
+        child: BackdropFilter(
+          filter: userPrefs.glassEffects!
+              ? ImageFilter.blur(sigmaX: 50, sigmaY: 50)
+              : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
+          child: Stack(
+            children: [
+              ScrollConfiguration(
+                behavior: MyCustomScrollBehavior(),
+                child: ListView(
+                  controller: scrollController,
+                  padding: EdgeInsets.zero,
+                  children: [
+                    const Center(child: Icon(Icons.drag_handle_rounded)),
+                    versesComposer(),
+                    // const SizedBox(height: 80), // space for buttons
+                  ],
+                ),
+              ),
+
+              // The animated opactiy buttons row
+              // Positioned(
+              //   left: 0,
+              //   bottom: 20,
+              //   child: AnimatedOpacity(
+              //     duration: const Duration(milliseconds: 500),
+              //     opacity: 1.0,
+              //     child: Container(
+              //       padding: const EdgeInsets.symmetric(horizontal: 20),
+              //       width: widget.scripturePanelWidth,
+              //       child: buttonsRow(),
+              //     ),
+              //   ),
+              // ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    draggableScrollableController.addListener(() {
+      // print(
+      //     'draggableScrollableController.size: ${draggableScrollableController.size}');
+      if (draggableScrollableController.size > 0.3) {
+        print('show buttons');
+        showButtonNotifier.value = true;
+      } else {
+        // print('hide buttons');
+        showButtonNotifier.value = true;
+      }
+    });
+
     //phone setup as bottom sheet
     return widget.isPhone
-        ? Positioned(
-            bottom: 0.0,
-            child: ValueListenableBuilder(
-              valueListenable: bodyHeightNotifier,
-              child: buttonsRow(),
-              builder: (context, double value, child) {
-                childController.childMethod();
-                return AnimatedContainer(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: userPrefs.glassEffects!
-                        ? Theme.of(
-                            context,
-                          ).colorScheme.secondaryContainer.withAlpha(51)
-                        : Theme.of(context).colorScheme.secondaryContainer,
-                    borderRadius: const BorderRadius.only(
-                      topRight: Radius.circular(20.0),
-                      topLeft: Radius.circular(20.0),
-                    ),
+        ? Stack(
+            children: [
+              DraggableScrollableSheet(
+                expand: true,
+                snap: true,
+                snapSizes: const [.2, .6, .8],
+                initialChildSize: .2,
+                minChildSize: .2,
+                maxChildSize: .8,
+                controller: draggableScrollableController,
+
+                // no way to get SafeArea consistently so go to 95%
+                // don't want handle to get hidden behind state bar
+                shouldCloseOnMinExtent: false,
+                builder: (context, scrollController) =>
+                    scripturePanelContents(scrollController),
+              ),
+              Positioned(
+                left: 0,
+                bottom: 20,
+                child: AnimatedOpacity(
+                  duration: const Duration(milliseconds: 500),
+                  // opacity: buttonsVisible ? 1 : 0,
+                  opacity: showButtonNotifier.value == false ? 0 : 1,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    width: widget.size.width,
+                    child: buttonsRow(),
                   ),
-                  constraints: BoxConstraints(
-                    maxHeight: maxHeight,
-                    minHeight: headerHeight,
-                    maxWidth: widget.size.width,
-                  ),
-                  curve: Curves.easeOut,
-                  // height: bodyHeight,
-                  height: bodyHeightNotifier.value,
-
-                  // how long the drawer open and close takes
-                  duration: const Duration(milliseconds: 200),
-                  child: GestureDetector(
-                    onVerticalDragUpdate: (DragUpdateDetails data) {
-                      //the Gestur detector here has scrolling, and so does the scrollcontroller.
-                      double draggedAmount =
-                          widget.size.height - data.globalPosition.dy;
-                      /* 
-                        data.delta.direction < 0 is UP
-                        data.delta.direction < 0 is DOWN
-                        (data.delta.direction == 0 is STILL)
-
-                        Down only gets called if you actually grab ahold of the handle - 
-                        you can also drag it down with the overscroll notification from the scrollcontroller. 
-                        */
-
-                      if (data.delta.direction < 0) {
-                        // print('dragging UP');
-                        if (draggedAmount < dragAmountBeforePop) {
-                          // bodyHeight = draggedAmount;
-                          bodyHeightNotifier.value = draggedAmount;
-                        } else if (draggedAmount > dragAmountBeforePop) {
-                          // bodyHeight = maxHeight;
-                          bodyHeightNotifier.value = maxHeight;
-                        }
-                      } else if (data.delta.direction > 0) {
-                        // print('dragging DOWN');
-
-                        double downDragged = maxHeight - draggedAmount;
-                        if (downDragged < dragAmountBeforePop) {
-                          // bodyHeight = draggedAmount;
-                          bodyHeightNotifier.value = draggedAmount;
-                        } else if (downDragged > dragAmountBeforePop) {
-                          // bodyHeight = 0.0;
-                          bodyHeightNotifier.value = 0.0;
-                        }
-                      }
-
-                      // if drawer is closed
-                      if (bodyHeightNotifier.value == 0.0) {
-                        scriptureScrollController.animateTo(
-                          0,
-                          duration: const Duration(milliseconds: 1000),
-                          curve: Curves.decelerate,
-                        );
-                      }
-                    },
-                    child: ClipRRect(
-                      borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(20.0),
-                        topLeft: Radius.circular(20.0),
-                      ),
-                      child: BackdropFilter(
-                        filter: userPrefs.glassEffects!
-                            ? ImageFilter.blur(sigmaX: 50, sigmaY: 50)
-                            : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
-                        child: Stack(
-                          children: [
-                            Column(
-                              children: [
-                                const Icon(Icons.drag_handle_rounded),
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 10.0,
-                                    ),
-                                    child:
-                                        //Month header
-                                        NotificationListener(
-                                          onNotification: (dynamic notification) {
-                                            //This listens to the scroll of the scripture scroll view.
-                                            //if we get an OverscrollNotification less than zero that is scrolled back up to top after reading.
-                                            //If it pops back down too quickly it feels a bit slippery, so wait til you get 10 notifications of
-                                            //this type before popping down. That happens pretty quickly but it helps it feel a bit stickier.
-                                            //Adjust the numberOfOverscrollNotifications down if too sticky.
-
-                                            if (notification
-                                                is OverscrollNotification) {
-                                              if (notification.overscroll < 0) {
-                                                numberOfOverscrollNotifications++;
-                                                if (numberOfOverscrollNotifications >
-                                                    5) {
-                                                  bodyHeightNotifier.value = 0;
-                                                  numberOfOverscrollNotifications =
-                                                      0;
-                                                }
-                                              }
-                                            }
-                                            return true;
-                                          },
-                                          child: ScrollConfiguration(
-                                            //The 2.8 Flutter behavior is to not have mice grabbing and dragging - but we do want this in the web version of the app, so the custom scroll behavior here
-                                            behavior: MyCustomScrollBehavior(),
-                                            child: MouseRegion(
-                                              cursor: SystemMouseCursors.grab,
-                                              child: SingleChildScrollView(
-                                                controller:
-                                                    scriptureScrollController,
-                                                physics:
-                                                    bodyHeightNotifier.value ==
-                                                        maxHeight
-                                                    ? const ClampingScrollPhysics()
-                                                    : const NeverScrollableScrollPhysics(),
-                                                child: versesComposer(),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                  ),
-                                ),
-                              ],
-                            ),
-
-                            // The animated opactiy buttons row
-                            Positioned(
-                              left: 0,
-                              bottom: 20,
-                              child: AnimatedOpacity(
-                                duration: const Duration(milliseconds: 500),
-                                // opacity: buttonsVisible ? 1 : 0,
-                                opacity: bodyHeightNotifier.value == 0 ? 0 : 1,
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 20,
-                                  ),
-                                  width: widget.size.width,
-                                  child: child,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
+                ),
+              ),
+            ],
           )
         //dates side by side with verses display for widescreen
         : Stack(
@@ -480,4 +395,14 @@ This is a hack to get around FB's unneighborly behavior.
 //For calling the child method from the parent - follow the childController text through this and player_button.dart
 class ChildController {
   void Function() childMethod = () {};
+}
+
+// The 2.8 Flutter behavior is to not have mice grabbing and dragging - but we do want this in the web version of the app, so the custom scroll behavior here
+class MyCustomScrollBehavior extends MaterialScrollBehavior {
+  // Override behavior methods and getters like dragDevices
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+    PointerDeviceKind.touch,
+    PointerDeviceKind.mouse,
+  };
 }

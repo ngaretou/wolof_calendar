@@ -353,6 +353,7 @@ class DateScreenState extends State<DateScreen> {
       );
       _updateAppBar(indexToJumpTo);
       setState(() {
+        //TODO get rid of more of these setStates?
         _isLoading = false;
       });
       return;
@@ -750,77 +751,3 @@ class DateScreenState extends State<DateScreen> {
     );
   }
 }
-
-// class SmoothAnimatedContainer extends StatefulWidget {
-//   final Widget child;
-//   final BoxDecoration decoration;
-//   final Duration duration;
-//   final Curve curve;
-//   final double height;
-//   final double width;
-
-//   const SmoothAnimatedContainer({
-//     super.key,
-//     required this.child,
-//     required this.decoration,
-//     required this.duration,
-//     required this.curve,
-//     required this.height,
-//     required this.width,
-//   });
-
-//   @override
-//   SmoothAnimatedContainerState createState() => SmoothAnimatedContainerState();
-// }
-
-// class SmoothAnimatedContainerState extends State<SmoothAnimatedContainer>
-//     with SingleTickerProviderStateMixin {
-//   late AnimationController _controller;
-//   late Animation<Decoration> _animation;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _controller = AnimationController(vsync: this, duration: widget.duration);
-//     _animation = DecorationTween(
-//       begin: widget.decoration,
-//       end: widget.decoration,
-//     ).animate(CurvedAnimation(parent: _controller, curve: widget.curve));
-//     _controller.forward();
-//   }
-
-//   @override
-//   void didUpdateWidget(SmoothAnimatedContainer oldWidget) {
-//     super.didUpdateWidget(oldWidget);
-//     if (widget.decoration != oldWidget.decoration) {
-//       _animation = DecorationTween(
-//         begin: oldWidget.decoration,
-//         end: widget.decoration,
-//       ).animate(CurvedAnimation(parent: _controller, curve: widget.curve));
-//       _controller.reset();
-//       _controller.forward();
-//     }
-//   }
-
-//   @override
-//   void dispose() {
-//     _controller.dispose();
-//     super.dispose();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return AnimatedBuilder(
-//       animation: _animation,
-//       builder: (context, child) {
-//         return Container(
-//           decoration: _animation.value,
-//           height: widget.height,
-//           width: widget.width,
-//           child: widget.child,
-//         );
-//       },
-//       child: widget.child,
-//     );
-//   }
-// }

@@ -55,3 +55,4 @@ app.*.map.json
 .fvmrc
 .fvm/flutter_sdk
 .fvm/flutter_sdk
+ios/Podfile.lock
