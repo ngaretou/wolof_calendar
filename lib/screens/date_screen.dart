@@ -46,6 +46,7 @@ class DateScreen extends StatefulWidget {
 }
 
 class DateScreenState extends State<DateScreen> {
+  bool _isDrawerOpen = false;
   //Because using custom appbar have to use this to connect the drawer to it
   GlobalKey<ScaffoldState> scaffoldStateKey = GlobalKey();
 
@@ -576,11 +577,11 @@ class DateScreenState extends State<DateScreen> {
 
                 final last = positions.last.index;
 
-                if (min(first, last) < 30 && !_isLoading) {
+                if (min(first, last) < 5 && !_isLoading) {
                   _loadPrevious();
                 }
 
-                if (max(first, last) > (datesToDisplay.length - 30) &&
+                if (max(first, last) > (datesToDisplay.length - 5) &&
                     !_isLoading) {
                   _loadNext();
                 }
@@ -627,7 +628,7 @@ class DateScreenState extends State<DateScreen> {
         child: child,
         builder: (context, value, child) {
           return AnimatedContainer(
-            duration: const Duration(milliseconds: 500),
+            duration: const Duration(milliseconds: 1000),
             curve: Curves.ease,
             height: double.infinity,
             width: double.infinity,
@@ -685,69 +686,79 @@ class DateScreenState extends State<DateScreen> {
       );
     }
 
-    return Scaffold(
-      key: scaffoldStateKey,
-      extendBodyBehindAppBar: true,
-      drawerScrimColor: Theme.of(context).brightness == Brightness.light
-          ? Colors.white.withAlpha(26)
-          : Colors.black.withAlpha(26),
-      drawer: BackdropFilter(
-        filter: userPrefs.glassEffects!
-            ? ImageFilter.blur(sigmaX: 50, sigmaY: 50)
-            : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
-        child: const MainDrawer(),
-      ),
-      appBar: glassAppBar(
-        scaffoldStateKey: scaffoldStateKey,
-        context: context,
-        title: formattedAppBarTitle.value,
-        height: 89.0,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.date_range),
-            onPressed: () => pickDateToShow(),
+    return Stack(
+      children: [
+        Scaffold(
+          onDrawerChanged: (isOpened) {
+            if (isPhone) {
+              setState(() {
+                _isDrawerOpen = isOpened;
+              });
+            }
+          },
+          key: scaffoldStateKey,
+          extendBodyBehindAppBar: true,
+          drawerScrimColor: Theme.of(context).brightness == Brightness.light
+              ? Colors.white.withAlpha(26)
+              : Colors.black.withAlpha(26),
+          drawer: BackdropFilter(
+            filter: userPrefs.glassEffects!
+                ? ImageFilter.blur(sigmaX: 50, sigmaY: 50)
+                : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
+            child: const MainDrawer(),
           ),
-          IconButton(
-            icon: const Icon(Icons.arrow_back_ios_new),
-            onPressed: () => moveMonths('backward'),
-          ),
-          IconButton(
-            icon: Stack(
-              alignment: const AlignmentDirectional(.0, .5),
-              children: [
-                Text(
-                  DateFormat('d', 'fr_FR').format(DateTime.now()),
-                  style: Theme.of(context).textTheme.labelSmall,
-                ),
-                const Icon(Icons.calendar_today),
-              ],
-            ),
-            onPressed: () {
-              navigateToDate(DateTime.now());
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.arrow_forward_ios),
-            onPressed: () => moveMonths('forward'),
-          ),
-        ],
-        extraRow: monthRow(),
-      ),
-      body: isPhone
-          ? Stack(
-              children: [
-                imageBackdrop(child: datesSection()),
-                versesSection(),
-              ],
-            )
-          : imageBackdrop(
-              child: Row(
-                children: [
-                  SizedBox(width: scripturePanelWidth, child: versesSection()),
-                  SizedBox(width: datePanelWidth, child: datesSection()),
-                ],
+          appBar: glassAppBar(
+            scaffoldStateKey: scaffoldStateKey,
+            context: context,
+            title: formattedAppBarTitle.value,
+            height: 89.0,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.date_range),
+                onPressed: () => pickDateToShow(),
               ),
-            ),
+              IconButton(
+                icon: const Icon(Icons.arrow_back_ios_new),
+                onPressed: () => moveMonths('backward'),
+              ),
+              IconButton(
+                icon: Stack(
+                  alignment: const AlignmentDirectional(.0, .5),
+                  children: [
+                    Text(
+                      DateFormat('d', 'fr_FR').format(DateTime.now()),
+                      style: Theme.of(context).textTheme.labelSmall,
+                    ),
+                    const Icon(Icons.calendar_today),
+                  ],
+                ),
+                onPressed: () {
+                  navigateToDate(DateTime.now());
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.arrow_forward_ios),
+                onPressed: () => moveMonths('forward'),
+              ),
+            ],
+            extraRow: monthRow(),
+          ),
+          body: isPhone
+              ? imageBackdrop(child: datesSection())
+              : imageBackdrop(
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: scripturePanelWidth,
+                        child: versesSection(),
+                      ),
+                      SizedBox(width: datePanelWidth, child: datesSection()),
+                    ],
+                  ),
+                ),
+        ),
+        if (isPhone && !_isDrawerOpen) versesSection(),
+      ],
     );
   }
 }

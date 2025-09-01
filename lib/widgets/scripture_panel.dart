@@ -132,25 +132,10 @@ class _ScripturePanelState extends State<ScripturePanel> {
                   children: [
                     const Center(child: Icon(Icons.drag_handle_rounded)),
                     versesComposer(),
-                    // const SizedBox(height: 80), // space for buttons
+                    // const SizedBox(height: 10), // space for buttons
                   ],
                 ),
               ),
-
-              // The animated opactiy buttons row
-              // Positioned(
-              //   left: 0,
-              //   bottom: 20,
-              //   child: AnimatedOpacity(
-              //     duration: const Duration(milliseconds: 500),
-              //     opacity: 1.0,
-              //     child: Container(
-              //       padding: const EdgeInsets.symmetric(horizontal: 20),
-              //       width: widget.scripturePanelWidth,
-              //       child: buttonsRow(),
-              //     ),
-              //   ),
-              // ),
             ],
           ),
         ),
@@ -159,15 +144,18 @@ class _ScripturePanelState extends State<ScripturePanel> {
 
     draggableScrollableController.addListener(() {
       // print(
-      //     'draggableScrollableController.size: ${draggableScrollableController.size}');
+      //   'draggableScrollableController.size: ${draggableScrollableController.size}',
+      // );
       if (draggableScrollableController.size > 0.3) {
-        print('show buttons');
+        // print('show buttons');
         showButtonNotifier.value = true;
       } else {
         // print('hide buttons');
-        showButtonNotifier.value = true;
+        showButtonNotifier.value = false;
       }
     });
+
+    const double smallestPanelHeight = .18;
 
     //phone setup as bottom sheet
     return widget.isPhone
@@ -176,10 +164,10 @@ class _ScripturePanelState extends State<ScripturePanel> {
               DraggableScrollableSheet(
                 expand: true,
                 snap: true,
-                snapSizes: const [.2, .6, .8],
-                initialChildSize: .2,
-                minChildSize: .2,
-                maxChildSize: .8,
+                snapSizes: const [smallestPanelHeight, .8],
+                initialChildSize: smallestPanelHeight,
+                minChildSize: smallestPanelHeight,
+                maxChildSize: kIsWeb ? .93 : .95,
                 controller: draggableScrollableController,
 
                 // no way to get SafeArea consistently so go to 95%
@@ -191,15 +179,20 @@ class _ScripturePanelState extends State<ScripturePanel> {
               Positioned(
                 left: 0,
                 bottom: 20,
-                child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 500),
-                  // opacity: buttonsVisible ? 1 : 0,
-                  opacity: showButtonNotifier.value == false ? 0 : 1,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    width: widget.size.width,
-                    child: buttonsRow(),
-                  ),
+                child: ValueListenableBuilder(
+                  valueListenable: showButtonNotifier,
+                  builder: (context, value, child) {
+                    return AnimatedOpacity(
+                      duration: const Duration(milliseconds: 500),
+                      // opacity: buttonsVisible ? 1 : 0,
+                      opacity: showButtonNotifier.value == false ? 0 : 1,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        width: widget.size.width,
+                        child: buttonsRow(),
+                      ),
+                    );
+                  },
                 ),
               ),
             ],
