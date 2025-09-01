@@ -1,5 +1,4 @@
 import 'dart:ui';
-import 'dart:math';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -12,8 +11,6 @@ import 'package:wolof_calendar/l10n/app_localizations.dart';
 
 import '../providers/user_prefs.dart';
 import '../providers/months.dart';
-
-import '../screens/date_screen.dart';
 
 import 'month_header.dart';
 import 'play_button.dart';

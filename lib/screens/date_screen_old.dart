@@ -2,7 +2,6 @@ import 'dart:ui';
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +16,6 @@ import '../providers/fps.dart';
 import '../widgets/drawer.dart';
 import '../widgets/date_tile.dart';
 import '../widgets/glass_app_bar.dart';
-import '../widgets/scripture_panel.dart';
 
 //To adapt to new Flutter 2.8 behavior that does not allow mice to drag - which is our desired behavior here
 class MyCustomScrollBehavior extends ScrollBehavior {

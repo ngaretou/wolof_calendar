@@ -253,9 +253,9 @@ class DateScreenState extends State<DateScreen> {
         });
       }
 
-      setState(() {
-        _isLoading = false;
-      });
+      // setState(() {
+      _isLoading = false;
+      // });
     }
   }
 
@@ -337,9 +337,9 @@ class DateScreenState extends State<DateScreen> {
       return; // Date is out of bounds, do nothing.
     }
 
-    setState(() {
-      _isLoading = true;
-    });
+    // setState(() {
+    _isLoading = true;
+    // });
 
     int indexToJumpTo = datesToDisplay.indexWhere(
       (element) =>
@@ -353,10 +353,9 @@ class DateScreenState extends State<DateScreen> {
         index: indexToJumpTo == 0 ? 0 : indexToJumpTo - 1,
       );
       _updateAppBar(indexToJumpTo);
-      setState(() {
-        //TODO get rid of more of these setStates?
-        _isLoading = false;
-      });
+      // setState(() {
+      _isLoading = false;
+      // });
       return;
     } else {
       Provider.of<Months>(context, listen: false).fetchInitialDates(date).then((
@@ -593,7 +592,6 @@ class DateScreenState extends State<DateScreen> {
           },
           child: Column(
             children: [
-              // if (_isLoading) const CircularProgressIndicator(),
               Expanded(
                 child: ScrollConfiguration(
                   behavior: MyCustomScrollBehavior().copyWith(
@@ -615,7 +613,6 @@ class DateScreenState extends State<DateScreen> {
                   ),
                 ),
               ),
-              // if (_isLoading) const CircularProgressIndicator(),
             ],
           ),
         ),
