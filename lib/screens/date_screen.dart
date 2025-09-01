@@ -10,7 +10,6 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../providers/user_prefs.dart';
 import '../providers/months.dart';
-import '../providers/theme.dart';
 import '../providers/fps.dart';
 
 import '../widgets/drawer.dart';
@@ -143,14 +142,12 @@ class DateScreenState extends State<DateScreen> {
       );
     }
 
-    initialScrollIndex =
-        ((datesToDisplay.indexWhere(
-          (element) =>
-              startHere.year.toString() == element.year &&
-              startHere.month.toString() == element.month &&
-              startHere.day.toString() == element.westernDate,
-        )) -
-        1);
+    initialScrollIndex = ((datesToDisplay.indexWhere(
+      (element) =>
+          startHere.year.toString() == element.year &&
+          startHere.month.toString() == element.month &&
+          startHere.day.toString() == element.westernDate,
+    )));
 
     currentMonthFirstDate = ValueNotifier(
       firstDateCurrentMonth(datesToDisplay, datesToDisplay[initialScrollIndex]),
@@ -159,20 +156,20 @@ class DateScreenState extends State<DateScreen> {
     imageBackdropListener = ValueNotifier(currentMonthFirstDate.value.month);
 
     currentMonthFirstDate.addListener(() {
-      bool changeColor = Provider.of<UserPrefs>(
-        context,
-        listen: false,
-      ).userPrefs.changeThemeColorWithBackground!;
+      // bool changeColor = Provider.of<UserPrefs>(
+      //   context,
+      //   listen: false,
+      // ).userPrefs.changeThemeColorWithBackground!;
       bool changeImage = Provider.of<UserPrefs>(
         context,
         listen: false,
       ).userPrefs.backgroundImage!;
 
-      if (changeColor) {
-        debugPrint('triggering changing colorscheme');
-        // setColor will refresh back to main.dart, so will automatically update the bg image, not setState necessary
-        setColor(currentMonthFirstDate.value.month);
-      }
+      // if (changeColor) {
+      //   debugPrint('triggering changing colorscheme');
+      //   // setColor will refresh back to main.dart, so will automatically update the bg image, not setState necessary
+      //   setColor(currentMonthFirstDate.value.month);
+      // }
       if (changeImage) {
         debugPrint('triggering imageBackdrop build');
         imageBackdropListener.value = currentMonthFirstDate.value.month;
@@ -377,7 +374,7 @@ class DateScreenState extends State<DateScreen> {
         }
 
         setState(() {
-          itemScrollController.jumpTo(index: initialScrollIndex - 1);
+          itemScrollController.jumpTo(index: initialScrollIndex);
           _updateAppBar(initialScrollIndex);
           _isLoading = false;
           _hasMoreNext = true;
@@ -446,21 +443,22 @@ class DateScreenState extends State<DateScreen> {
     ).savePref('shouldTestDevicePerformance', false);
   }
 
-  Future<void> setColor(String monthID) async {
-    ImageProvider myBackground = AssetImage('assets/images/$monthID.jpg');
-    Brightness brightness = Theme.of(context).brightness;
+  // original month changing of colors
+  // Future<void> setColor(String monthID) async {
+  //   ImageProvider myBackground = AssetImage('assets/images/$monthID.jpg');
+  //   Brightness brightness = Theme.of(context).brightness;
 
-    try {
-      final newColorScheme = await ColorScheme.fromImageProvider(
-        provider: myBackground,
-        brightness: brightness,
-      );
-      if (!mounted) return;
-      Provider.of<ThemeModel>(context, listen: false).setTheme(newColorScheme);
-    } catch (e) {
-      debugPrint('problem setting palette generator color');
-    }
-  }
+  //   try {
+  //     final newColorScheme = await ColorScheme.fromImageProvider(
+  //       provider: myBackground,
+  //       brightness: brightness,
+  //     );
+  //     if (!mounted) return;
+  //     Provider.of<ThemeModel>(context, listen: false).setTheme(newColorScheme);
+  //   } catch (e) {
+  //     debugPrint('problem setting palette generator color');
+  //   }
+  // }
 
   @override
   void dispose() {
@@ -585,7 +583,7 @@ class DateScreenState extends State<DateScreen> {
                   _loadNext();
                 }
 
-                _updateAppBar(min(first, last));
+                _updateAppBar((min(first, last)));
               }
             }
             return true;
@@ -601,7 +599,7 @@ class DateScreenState extends State<DateScreen> {
                     itemScrollController: itemScrollController,
                     itemPositionsListener: itemPositionsListener,
                     physics: const BouncingScrollPhysics(),
-                    initialScrollIndex: initialScrollIndex,
+                    initialScrollIndex: initialScrollIndex - 1,
                     itemBuilder: (ctx, i) => DateTile(
                       currentDate: datesToDisplay[i],
                       contentColWidth: contentColWidth,

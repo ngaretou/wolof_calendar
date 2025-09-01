@@ -1,5 +1,6 @@
 // ignore_for_file: sized_box_for_whitespace
 import 'dart:ui';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -9,6 +10,8 @@ import 'package:wolof_calendar/widgets/glass_app_bar.dart';
 import '../providers/theme.dart';
 import '../providers/locale.dart';
 import '../providers/user_prefs.dart';
+
+import '../helpers/color_suggestion.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -25,13 +28,17 @@ class SettingsScreenState extends State<SettingsScreen> {
   //Main Settings screen construction:
   @override
   Widget build(BuildContext context) {
-    final userThemeName =
-        Provider.of<ThemeModel>(context, listen: false).userThemeName;
+    final userThemeName = Provider.of<ThemeModel>(
+      context,
+      listen: false,
+    ).userThemeName;
     final themeProvider = Provider.of<ThemeModel>(context, listen: false);
     final localeProvider = Provider.of<LocaleProvider>(context, listen: false);
     final Locale? userLocale = localeProvider.userLocale;
-    final UserPrefs prefsProvider =
-        Provider.of<UserPrefs>(context, listen: true);
+    final UserPrefs prefsProvider = Provider.of<UserPrefs>(
+      context,
+      listen: true,
+    );
 
     final wolof = prefsProvider.userPrefs.wolofVerseEnabled;
     final wolofal = prefsProvider.userPrefs.wolofalVerseEnabled;
@@ -48,24 +55,26 @@ class SettingsScreenState extends State<SettingsScreen> {
       return InkWell(
         onTap: tapHandler as void Function()?,
         child: Container(
-            width: 300,
-            child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Row(
-                  children: [
-                    Icon(
-                      icon,
-                      size: 27,
-                      color: Theme.of(context).textTheme.titleLarge!.color,
-                    ),
-                    const SizedBox(width: 25),
-                    Text(title, style: Theme.of(context).textTheme.titleLarge),
-                  ],
-                ))),
+          width: 300,
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Row(
+              children: [
+                Icon(
+                  icon,
+                  size: 27,
+                  color: Theme.of(context).textTheme.titleLarge!.color,
+                ),
+                const SizedBox(width: 25),
+                Text(title, style: Theme.of(context).textTheme.titleLarge),
+              ],
+            ),
+          ),
+        ),
       );
     }
 
-//Main section layout types
+    //Main section layout types
     Widget settingRow(title, setting) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -73,9 +82,7 @@ class SettingsScreenState extends State<SettingsScreen> {
         children: [
           title,
           const VerticalDivider(width: 10, color: Colors.white),
-          Expanded(
-            child: setting,
-          )
+          Expanded(child: setting),
           // setting,
         ],
       );
@@ -85,18 +92,17 @@ class SettingsScreenState extends State<SettingsScreen> {
       return Column(
         //This aligns titles to the left
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          title,
-          setting,
-          const Divider(),
-        ],
+        children: [title, setting, const Divider()],
       );
     }
 
     //Now individual implementations of it
     Widget themeTitle() {
-      return settingTitle(AppLocalizations.of(context)!.settingsTheme,
-          Icons.settings_brightness, null);
+      return settingTitle(
+        AppLocalizations.of(context)!.settingsTheme,
+        Icons.settings_brightness,
+        null,
+      );
     }
 
     // Widget backgroundTitle() {
@@ -110,13 +116,19 @@ class SettingsScreenState extends State<SettingsScreen> {
     // }
 
     Widget scriptPickerTitle() {
-      return settingTitle(AppLocalizations.of(context)!.settingsVerseDisplay,
-          Icons.format_quote, null);
+      return settingTitle(
+        AppLocalizations.of(context)!.settingsVerseDisplay,
+        Icons.format_quote,
+        null,
+      );
     }
 
     Widget languageTitle() {
-      return settingTitle(AppLocalizations.of(context)!.settingsLanguage,
-          Icons.translate, null);
+      return settingTitle(
+        AppLocalizations.of(context)!.settingsLanguage,
+        Icons.translate,
+        null,
+      );
     }
 
     // Original two circle style
@@ -167,8 +179,10 @@ class SettingsScreenState extends State<SettingsScreen> {
       late bool switchValue;
 
       if (kind == 'brightness') {
-        labelText = Text(AppLocalizations.of(context)!.darkMode,
-            style: Theme.of(context).textTheme.titleMedium);
+        labelText = Text(
+          AppLocalizations.of(context)!.darkMode,
+          style: Theme.of(context).textTheme.titleMedium,
+        );
         switchValue = darkMode;
       } else if (kind == 'glassEffects') {
         labelText = Text(
@@ -177,13 +191,16 @@ class SettingsScreenState extends State<SettingsScreen> {
         );
         switchValue = glassEffects!;
       } else if (kind == 'backgroundImage') {
-        labelText = Text(AppLocalizations.of(context)!.backgroundImage,
-            style: Theme.of(context).textTheme.titleMedium);
+        labelText = Text(
+          AppLocalizations.of(context)!.backgroundImage,
+          style: Theme.of(context).textTheme.titleMedium,
+        );
         switchValue = backgroundImage!;
       } else if (kind == 'changeThemeColorWithBackground') {
         labelText = Text(
-            AppLocalizations.of(context)!.changeThemeColorWithBackground,
-            style: Theme.of(context).textTheme.titleMedium);
+          AppLocalizations.of(context)!.changeThemeColorWithBackground,
+          style: Theme.of(context).textTheme.titleMedium,
+        );
         switchValue = changeThemeColorWithBackground!;
       }
       // else if (kind == 'changeThemeColorWithBackground') {
@@ -191,14 +208,17 @@ class SettingsScreenState extends State<SettingsScreen> {
       //       style: Theme.of(context).textTheme.titleMedium);
       //   switchValue = backgroundImage!;
       // }
-
       else if (kind == 'roman') {
-        labelText = Text(AppLocalizations.of(context)!.settingsVerseinWolof,
-            style: Theme.of(context).textTheme.titleMedium);
+        labelText = Text(
+          AppLocalizations.of(context)!.settingsVerseinWolof,
+          style: Theme.of(context).textTheme.titleMedium,
+        );
         switchValue = wolof!;
       } else if (kind == 'arabic') {
-        labelText = Text(AppLocalizations.of(context)!.settingsVerseinWolofal,
-            style: Theme.of(context).textTheme.titleMedium);
+        labelText = Text(
+          AppLocalizations.of(context)!.settingsVerseinWolofal,
+          style: Theme.of(context).textTheme.titleMedium,
+        );
         switchValue = wolofal!;
       }
 
@@ -209,7 +229,6 @@ class SettingsScreenState extends State<SettingsScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // width: 250,
-
             Expanded(child: labelText),
 
             // const Expanded(
@@ -232,12 +251,16 @@ class SettingsScreenState extends State<SettingsScreen> {
                   if (prefsProvider.userPrefs.changeThemeColorWithBackground ==
                       true) {
                     prefsProvider.savePref(
-                        'changeThemeColorWithBackground', false);
+                      'changeThemeColorWithBackground',
+                      false,
+                    );
                   }
                 } else if (kind == 'changeThemeColorWithBackground') {
                   if (prefsProvider.userPrefs.backgroundImage == true) {
                     prefsProvider.savePref(
-                        'changeThemeColorWithBackground', !switchValue);
+                      'changeThemeColorWithBackground',
+                      !switchValue,
+                    );
                   }
                 } else if (kind == 'arabic') {
                   //if wolof/roman is on, then go ahead and switch it on or off.
@@ -329,15 +352,16 @@ class SettingsScreenState extends State<SettingsScreen> {
                   "Wolof",
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                // backgroundColor: Theme.of(context).primaryColor,
 
+                // backgroundColor: Theme.of(context).primaryColor,
                 onSelected: (bool selected) {
                   localeProvider.setLocale('fr_CH');
                 },
               ),
               ChoiceChip(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
-                selected: userLocale.toString() == 'fr' ||
+                selected:
+                    userLocale.toString() == 'fr' ||
                         userLocale.toString() == 'fr_'
                     ? true
                     : false,
@@ -355,7 +379,8 @@ class SettingsScreenState extends State<SettingsScreen> {
               ChoiceChip(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
 
-                selected: (userLocale.toString() == 'en' ||
+                selected:
+                    (userLocale.toString() == 'en' ||
                         userLocale.toString() == 'en_')
                     ? true
                     : false,
@@ -375,7 +400,7 @@ class SettingsScreenState extends State<SettingsScreen> {
       );
     }
 
-///////////////////////////////
+    ///////////////////////////////
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: prefsProvider.userPrefs.glassEffects!
@@ -383,9 +408,10 @@ class SettingsScreenState extends State<SettingsScreen> {
           : Theme.of(context).canvasColor,
 
       appBar: glassAppBar(
-          context: context,
-          title: AppLocalizations.of(context)!.settingsTitle,
-          actions: []),
+        context: context,
+        title: AppLocalizations.of(context)!.settingsTitle,
+        actions: [],
+      ),
 
       //If the width of the screen is greater or equal to 730 (whether or not is Phone is true)
       //show the wide view
@@ -409,10 +435,11 @@ class SettingsScreenState extends State<SettingsScreen> {
                     child: ListView(
                       children: [
                         themeTitle(),
+
                         settingPicker('brightness'),
                         settingPicker('glassEffects'),
                         settingPicker('backgroundImage'),
-                        settingPicker('changeThemeColorWithBackground'),
+                        // settingPicker('changeThemeColorWithBackground'),
                         const Divider(),
                         // settingRow(backgroundTitle(), backgroundSettings()),
                         // Divider(),
@@ -433,10 +460,19 @@ class SettingsScreenState extends State<SettingsScreen> {
                       //   color: Theme.of(context).colorScheme.primary,
                       // ),
                       themeTitle(),
+                      if (kDebugMode)
+                        Center(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              suggestColors(context);
+                            },
+                            child: Text('Theme suggestion to console'),
+                          ),
+                        ),
                       settingPicker('brightness'),
                       settingPicker('glassEffects'),
                       settingPicker('backgroundImage'),
-                      settingPicker('changeThemeColorWithBackground'),
+                      // settingPicker('changeThemeColorWithBackground'),
                       const Divider(),
                       // settingColumn(backgroundTitle(), backgroundSettings()),
                       // settingColumn(directionTitle(), directionSettings()),

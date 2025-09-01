@@ -10,7 +10,7 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import '../providers/user_prefs.dart';
 import '../providers/months.dart';
 import '../providers/route_args.dart';
-import '../providers/theme.dart';
+
 import '../providers/fps.dart';
 
 import '../widgets/drawer.dart';
@@ -203,13 +203,13 @@ class DateScreenState extends State<DateScreen> {
       If the theme should change this triggers it: 
       */
 
-      if (Provider.of<UserPrefs>(
-        context,
-        listen: false,
-      ).userPrefs.changeThemeColorWithBackground!) {
-        // setColor will refresh back to main.dart, so will automatically update the bg image, not setState necessary
-        setColor();
-      }
+      // if (Provider.of<UserPrefs>(
+      //   context,
+      //   listen: false,
+      // ).userPrefs.changeThemeColorWithBackground!) {
+      //   // setColor will refresh back to main.dart, so will automatically update the bg image, not setState necessary
+      //   setColor();
+      // }
     });
 
     lastNavigatedVia = NavType.jumped;
@@ -281,28 +281,28 @@ class DateScreenState extends State<DateScreen> {
     // ));
   }
 
-  Future<void> setColor() async {
-    // print('setColor fired');
+  // Future<void> setColor() async {
+  //   // print('setColor fired');
 
-    String monthAsString = currentMonthFirstDate.value.month;
-    ImageProvider myBackground = AssetImage('assets/images/$monthAsString.jpg');
-    Brightness brightness = Theme.of(context).brightness;
+  //   String monthAsString = currentMonthFirstDate.value.month;
+  //   ImageProvider myBackground = AssetImage('assets/images/$monthAsString.jpg');
+  //   Brightness brightness = Theme.of(context).brightness;
 
-    try {
-      final newColorScheme = await ColorScheme.fromImageProvider(
-        provider: myBackground,
-        brightness: brightness,
-      );
+  //   try {
+  //     final newColorScheme = await ColorScheme.fromImageProvider(
+  //       provider: myBackground,
+  //       brightness: brightness,
+  //     );
 
-      // hit a delay in here so the wallpaper changes, then the theme changes
-      // Future.delayed(const Duration(milliseconds: 0)).then((_) {
-      if (!mounted) return;
-      Provider.of<ThemeModel>(context, listen: false).setTheme(newColorScheme);
-      // });
-    } catch (e) {
-      debugPrint('problem setting palette generator color');
-    }
-  }
+  //     // hit a delay in here so the wallpaper changes, then the theme changes
+  //     // Future.delayed(const Duration(milliseconds: 0)).then((_) {
+  //     if (!mounted) return;
+  //     // Provider.of<ThemeModel>(context, listen: false).setTheme(newColorScheme);
+  //     // });
+  //   } catch (e) {
+  //     debugPrint('problem setting palette generator color');
+  //   }
+  // }
 
   @override
   void dispose() {

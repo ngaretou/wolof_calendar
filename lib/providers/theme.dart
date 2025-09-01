@@ -11,31 +11,46 @@ import 'package:package_info_plus/package_info_plus.dart';
 import './months.dart';
 import './user_prefs.dart';
 
-ThemeData darkTheme = ThemeData(
-  fontFamily: 'Lato',
-  colorSchemeSeed: Colors.teal,
-  brightness: Brightness.dark,
-);
+Future<ColorScheme> getMonthlyColorScheme(Brightness brightness) async {
+  int monthID = DateTime.now().month;
+  // int monthID = 1; // for testing
+  ImageProvider myBackground = AssetImage('assets/images/$monthID.jpg');
+  ColorScheme newColorScheme = ColorScheme.dark();
 
-ThemeData lightTheme = ThemeData(
-  fontFamily: 'Lato',
-  colorSchemeSeed: Colors.teal,
-  brightness: Brightness.light,
-);
-
-//////////////////////
-enum ThemeType { light, dark }
+  try {
+    newColorScheme = await ColorScheme.fromImageProvider(
+      provider: myBackground,
+      brightness: brightness,
+    );
+  } catch (e) {
+    debugPrint('problem setting palette generator color');
+  }
+  return newColorScheme;
+}
 
 class ThemeModel extends ChangeNotifier {
   Future<SharedPreferences> prefs = SharedPreferences.getInstance();
-  // ignore: unused_field
-  ThemeType? _themeType;
+
   String? userThemeName;
-  ThemeData? currentTheme;
+
+  // initial theme to keep it from doing a default theme
+  ThemeData currentTheme = ThemeData(
+    useMaterial3: true,
+    fontFamily: 'Lato',
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: Colors.black,
+      brightness: Brightness.dark,
+    ),
+  );
+
+  ThemeData? darkTheme;
+  ThemeData? lightTheme;
 
   Future<void> initialSetup(BuildContext context) async {
-    await Provider.of<Months>(context, listen: false)
-        .fetchInitialDates(DateTime.now()); // real version
+    await Provider.of<Months>(
+      context,
+      listen: false,
+    ).fetchInitialDates(DateTime.now()); // real version
     // await Provider.of<Months>(context, listen: false).fetchInitialDates(DateTime(2028, 3)); // for testing
     if (!context.mounted) return;
     await Provider.of<UserPrefs>(context, listen: false).setupUserPrefs();
@@ -45,9 +60,6 @@ class ThemeModel extends ChangeNotifier {
   }
 
   Future<void> setupTheme() async {
-    if (currentTheme != null) {
-      return;
-    }
     //get the prefs
     final prefs = await SharedPreferences.getInstance();
     //if there's no userTheme, it's the first time they've run the app, so give them darkTheme
@@ -58,6 +70,7 @@ class ThemeModel extends ChangeNotifier {
     try {
       // not just a new installation - if a build before about 2024 where
       // the build number was not saved then clear cache and set dark mode.
+
       if (!prefs.containsKey('lastBuildNumber')) {
         setDarkTheme();
         try {
@@ -67,8 +80,9 @@ class ThemeModel extends ChangeNotifier {
         }
       } else {
         //we've run it before - check last run build number
-        String lastBuildNumber =
-            json.decode(prefs.getString('lastBuildNumber')!).toString();
+        String lastBuildNumber = json
+            .decode(prefs.getString('lastBuildNumber')!)
+            .toString();
 
         int lastSeenBuildNumber = int.parse(lastBuildNumber);
 
@@ -80,7 +94,7 @@ class ThemeModel extends ChangeNotifier {
 
         // get user stored theme if it exists.
         if (!prefs.containsKey('userThemeName')) {
-          setDarkTheme();
+          await setDarkTheme();
         } else {
           userThemeName =
               json.decode(prefs.getString('userThemeName')!) as String?;
@@ -88,16 +102,13 @@ class ThemeModel extends ChangeNotifier {
           switch (userThemeName) {
             case 'darkTheme':
               {
-                currentTheme = darkTheme;
-
-                _themeType = ThemeType.dark;
+                await setDarkTheme();
                 break;
               }
 
             case 'lightTheme':
               {
-                currentTheme = lightTheme;
-                _themeType = ThemeType.light;
+                await setLightTheme();
                 break;
               }
           }
@@ -106,18 +117,27 @@ class ThemeModel extends ChangeNotifier {
     } catch (e) {
       debugPrint(e.toString());
       await AudioPlayer.clearAssetCache();
-      setDarkTheme();
+      await setDarkTheme();
     }
-
-    //save the current build number for next time.
+    //update ui
+    notifyListeners();
+    //and save the current build number for next time.
     final _currentBuildNumber = json.encode(currentBuildNumber);
     prefs.setString('lastBuildNumber', _currentBuildNumber);
-    notifyListeners();
   }
 
-  void setDarkTheme() {
-    currentTheme = darkTheme;
-    _themeType = ThemeType.dark;
+  Future<void> setDarkTheme() async {
+    // only set up dark theme if requested
+    if (darkTheme == null) {
+      final darkColorScheme = await getMonthlyColorScheme(Brightness.dark);
+      darkTheme = ThemeData(
+        useMaterial3: true,
+        fontFamily: 'Lato',
+        colorScheme: darkColorScheme,
+      );
+    }
+
+    currentTheme = darkTheme!;
     //get the theme name as a string for storage
     userThemeName = 'darkTheme';
     //send it for storage
@@ -125,23 +145,32 @@ class ThemeModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setLightTheme() {
-    currentTheme = lightTheme;
-    _themeType = ThemeType.light;
+  Future<void> setLightTheme() async {
+    // only set up dark theme if requested
+    if (lightTheme == null) {
+      final lightColorScheme = await getMonthlyColorScheme(Brightness.light);
+      lightTheme = ThemeData(
+        useMaterial3: true,
+        fontFamily: 'Lato',
+        colorScheme: lightColorScheme,
+      );
+    }
+
+    currentTheme = lightTheme!;
+    //get the theme name as a string for storage
     userThemeName = 'lightTheme';
+    //send it for storage
     saveThemeToDisk(userThemeName!);
     notifyListeners();
   }
 
-  void setTheme(ColorScheme colorScheme) {
-    // print('setting new color in provider theme.dart');
-    currentTheme = ThemeData(
-      fontFamily: 'Lato',
-      colorScheme: colorScheme,
-    );
+  // monthly changing colors
+  // void setTheme(ColorScheme colorScheme) {
+  //   // print('setting new color in provider theme.dart');
+  //   currentTheme = ThemeData(fontFamily: 'Lato', colorScheme: colorScheme);
 
-    notifyListeners();
-  }
+  //   notifyListeners();
+  // }
 
   Future<void> saveThemeToDisk(String userThemeName) async {
     //get preferences from disk
