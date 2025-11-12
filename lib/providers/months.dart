@@ -265,7 +265,7 @@ class Months with ChangeNotifier {
     return true;
   }
 
-  Future<bool> loadPreviousMonth() async {
+  Future<bool> loadPreviousTwoMonths() async {
     if (_dates.isEmpty) return false;
     final firstDate = _dates.first; // real composed Date objects
     int firstIndex = _allDatesData.indexWhere(

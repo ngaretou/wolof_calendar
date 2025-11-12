@@ -180,9 +180,21 @@
     "type": "text",
     "placeholders": {}
   },
+  "shareLink": "Partager le lien",
+  "@shareLink": {
+    "description": "Share link generic text",
+    "type": "text",
+    "placeholders": {}
+  },
   "shareAppLink": "Partager l'appli",
   "@shareAppLink": {
     "description": "Share link to app on app store",
+    "type": "text",
+    "placeholders": {}
+  },
+  "copyLink": "Copier le lien",
+  "@copyLink": {
+    "description": "Copy link generic text",
     "type": "text",
     "placeholders": {}
   },

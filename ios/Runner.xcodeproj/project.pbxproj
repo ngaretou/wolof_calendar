@@ -377,7 +377,7 @@
 				CODE_SIGN_ENTITLEMENTS = Runner/RunnerProfile.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 31;
+				CURRENT_PROJECT_VERSION = 32;
 				DEVELOPMENT_TEAM = RAJ3TA54HF;
 				ENABLE_BITCODE = NO;
 				EXCLUDED_ARCHS = "";
@@ -398,7 +398,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				MARKETING_VERSION = 2.3.3;
+				MARKETING_VERSION = 2.4.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.mbs.cal.wol;
 				PRODUCT_NAME = "Arminaatu Wolof";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -537,7 +537,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Runner/Arminaatu Wolof.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 31;
+				CURRENT_PROJECT_VERSION = 32;
 				DEVELOPMENT_TEAM = RAJ3TA54HF;
 				ENABLE_BITCODE = NO;
 				EXCLUDED_ARCHS = "";
@@ -558,7 +558,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				MARKETING_VERSION = 2.3.3;
+				MARKETING_VERSION = 2.4.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.mbs.cal.wol;
 				PRODUCT_NAME = "Arminaatu Wolof";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -580,7 +580,7 @@
 				CODE_SIGN_ENTITLEMENTS = Runner/RunnerRelease.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 31;
+				CURRENT_PROJECT_VERSION = 32;
 				DEVELOPMENT_TEAM = RAJ3TA54HF;
 				ENABLE_BITCODE = NO;
 				EXCLUDED_ARCHS = "";
@@ -601,7 +601,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				MARKETING_VERSION = 2.3.3;
+				MARKETING_VERSION = 2.4.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.mbs.cal.wol;
 				PRODUCT_NAME = "Arminaatu Wolof";
 				PROVISIONING_PROFILE_SPECIFIER = "";

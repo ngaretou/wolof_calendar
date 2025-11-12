@@ -78,8 +78,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get favsNoneYet => 'Vous n\'avez pas encore choisi des favoris';
 
   @override
-  String get favsNoneYetInstructions =>
-      'Cliquez sur l\'icône du cœur pour ajouter quelques favoris';
+  String get favsNoneYetInstructions => 'Cliquez sur l\'icône du cœur pour ajouter quelques favoris';
 
   @override
   String get settingsOK => 'OK';
@@ -103,6 +102,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get shareAppLink => 'Partager l\'appli';
 
   @override
+  String get shareLink => 'Partager le lien';
+
+  @override
+  String get copyLink => 'Copier le lien';
+
+  @override
   String get moreApps => 'D\'autres applis';
 
   @override
@@ -123,7 +128,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
 /// The translations for French, as used in Switzerland (`fr_CH`).
 class AppLocalizationsFrCh extends AppLocalizationsFr {
-  AppLocalizationsFrCh() : super('fr_CH');
+  AppLocalizationsFrCh(): super('fr_CH');
 
   @override
   String get settingsTitle => 'Ponki jekk-jekkal';
@@ -195,8 +200,7 @@ class AppLocalizationsFrCh extends AppLocalizationsFr {
   String get favsNoneYet => 'Tànnaguloo benn tur';
 
   @override
-  String get favsNoneYetInstructions =>
-      'Bëssal ci xol ba ci tuur yi nga gën bëgg.';
+  String get favsNoneYetInstructions => 'Bëssal ci xol ba ci tuur yi nga gën bëgg.';
 
   @override
   String get settingsOK => 'OK';
@@ -218,6 +222,12 @@ class AppLocalizationsFrCh extends AppLocalizationsFr {
 
   @override
   String get shareAppLink => 'Séddoo appli bi';
+
+  @override
+  String get shareLink => 'Séddoo ko';
+
+  @override
+  String get copyLink => 'Kopie ko';
 
   @override
   String get moreApps => 'Yeneen appli';

@@ -8,7 +8,7 @@ import '../providers/user_prefs.dart';
 PreferredSize glassAppBar(
     {required BuildContext context,
     GlobalKey<ScaffoldState>? scaffoldStateKey,
-    required String title,
+    Widget? title,
     double height = 56, //56 normal app bar height but is overrideable
     required List<Widget> actions,
     Widget? extraRow}) {
@@ -28,10 +28,7 @@ PreferredSize glassAppBar(
           padding: const EdgeInsets.all(16),
           onPressed: () => scaffoldStateKey.currentState!.openDrawer(),
           icon: const Icon(Icons.menu)),
-      Text(
-        title,
-        style: Theme.of(context).textTheme.titleLarge,
-      ),
+     if (title!=null)title,
       const Expanded(
           child: SizedBox(
         width: 10,
@@ -60,7 +57,7 @@ PreferredSize glassAppBar(
             : Colors.white,
         elevation: 0.0,
         backgroundColor: Colors.transparent,
-        title: Text(title),
+        title: title,
         actions: actions);
   }
 

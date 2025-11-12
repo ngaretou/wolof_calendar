@@ -808,5 +808,158 @@
             "holidayFR": "Nouvel An",
             "holidayRS": "At mu bees mi",
             "holidayAS": "اَتْ مُ بࣹيسْ مِ"
+        },
+        {
+            "monthID": "2",
+            "year": "2026",
+            "westernMonthDate": "18",
+            "wolofMonthDate": "1",
+            "holidayFR": "Ramadan",
+            "holidayRS": "Koor",
+            "holidayAS": "ڪࣷورْ"
+        },
+        {
+            "monthID": "3",
+            "year": "2026",
+            "westernMonthDate": "20",
+            "wolofMonthDate": "1",
+            "holidayFR": "Korité",
+            "holidayRS": "Korite",
+            "holidayAS": "ڪࣷرِتࣹ"
+        },
+        {
+            "monthID": "4",
+            "year": "2026",
+            "westernMonthDate": "4",
+            "wolofMonthDate": "16",
+            "holidayFR": "Fête nationale",
+            "holidayRS": "Bésu askan wi",
+            "holidayAS": "بࣺسُ اَسْڪَنْ وِ"
+        },
+        {
+            "monthID": "4",
+            "year": "2026",
+            "westernMonthDate": "5",
+            "wolofMonthDate": "17",
+            "holidayFR": "Pâques",
+            "holidayRS": "Ndekkite la",
+            "holidayAS": "ندࣹڪِّتࣹ لَ"
+        },
+        {
+            "monthID": "4",
+            "year": "2026",
+            "westernMonthDate": "6",
+            "wolofMonthDate": "18",
+            "holidayFR": "Pâques",
+            "holidayRS": "Ndekkite la",
+            "holidayAS": "ندࣹڪِّتࣹ لَ"
+        },
+        {
+            "monthID": "5",
+            "year": "2026",
+            "westernMonthDate": "1",
+            "wolofMonthDate": "14",
+            "holidayFR": "Fête du Travail",
+            "holidayRS": "1 Me",
+            "holidayAS": "1 مࣹ"
+        },
+        {
+            "monthID": "5",
+            "year": "2026",
+            "westernMonthDate": "14",
+            "wolofMonthDate": "27",
+            "holidayFR": "Ascension",
+            "holidayRS": "Yéeg ga",
+            "holidayAS": "يࣺيگْ گَ"
+        },
+        {
+            "monthID": "5",
+            "year": "2026",
+            "westernMonthDate": "24",
+            "wolofMonthDate": "7",
+            "holidayFR": "Pentecôte",
+            "holidayRS": "Wàccug Noo gu Sell gi",
+            "holidayAS": "وࣵݖُّگْ نࣷو گُ سࣹلّ گِ"
+        },
+        {
+            "monthID": "5",
+            "year": "2026",
+            "westernMonthDate": "25",
+            "wolofMonthDate": "8",
+            "holidayFR": "Pentecôte",
+            "holidayRS": "Wàccug Noo gu Sell gi",
+            "holidayAS": "وࣵݖُّگْ نࣷو گُ سࣹلّ گِ"
+        },
+        {
+            "monthID": "5",
+            "year": "2026",
+            "westernMonthDate": "27",
+            "wolofMonthDate": "10",
+            "holidayFR": "Tabaski",
+            "holidayRS": "Tabaski",
+            "holidayAS": "تَبَسْڪِ"
+        },
+        {
+            "monthID": "6",
+            "year": "2026",
+            "westernMonthDate": "26",
+            "wolofMonthDate": "10",
+            "holidayFR": "Tamkharite",
+            "holidayRS": "Tamxarit",
+            "holidayAS": "تَمْخَرِتْ"
+        },
+        {
+            "monthID": "8",
+            "year": "2026",
+            "westernMonthDate": "3",
+            "wolofMonthDate": "18",
+            "holidayFR": "Grand Magal de Touba",
+            "holidayRS": "Màggalu Tuubaa",
+            "holidayAS": "مࣵگَّلُ تُوبَا"
+        },
+        {
+            "monthID": "8",
+            "year": "2026",
+            "westernMonthDate": "15",
+            "wolofMonthDate": "1",
+            "holidayFR": "Assomption",
+            "holidayRS": "Asomsiyoŋ",
+            "holidayAS": "اَسࣷمْسِيࣷݝْ"
+        },
+        {
+            "monthID": "8",
+            "year": "2026",
+            "westernMonthDate": "26",
+            "wolofMonthDate": "12",
+            "holidayFR": "Maouloud",
+            "holidayRS": "Gàmmu",
+            "holidayAS": "گࣵمُّ"
+        },
+        {
+            "monthID": "11",
+            "year": "2026",
+            "westernMonthDate": "1",
+            "wolofMonthDate": "15",
+            "holidayFR": "Toussaint",
+            "holidayRS": "Tuseŋ",
+            "holidayAS": "تُسࣹݝْ"
+        },
+        {
+            "monthID": "12",
+            "year": "2026",
+            "westernMonthDate": "25",
+            "wolofMonthDate": "21",
+            "holidayFR": "Noël",
+            "holidayRS": "Juddub Almasi bi",
+            "holidayAS": "جُدُّبْ اَلْمَسِ بِ"
+        },{
+            "monthID": "1",
+            "year": "2027",
+            "westernMonthDate": "1",
+            "wolofMonthDate": "13",
+            "holidayFR": "Nouvel An",
+            "holidayRS": "At mu bees mi",
+            "holidayAS": "اَتْ مُ بࣹيسْ مِ"
         }
+
     ]

@@ -222,7 +222,8 @@ class MonthHeaderState extends State<MonthHeader> {
     //this is all about getting the spacing right going between the phone and widescreen versions.
     late EdgeInsetsGeometry headerPadding;
     if (widget.isPhone || !widget.scriptureOnly) {
-      headerPadding = widget.adaptiveMargin;
+      // headerPadding = widget.adaptiveMargin;
+      headerPadding = widget.adaptiveMargin.copyWith(top: 20);
     } else {
       headerPadding = widget.adaptiveMargin.copyWith(top: 90);
     }

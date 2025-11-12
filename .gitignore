@@ -17,6 +17,7 @@ pubspec.lock
 .svn/
 /build/
 ios/build/
+.fvm/
 
 # IntelliJ related
 *.iml

@@ -1,6 +1,5 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers
 
-import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:core';
 // import 'dart:async';
@@ -101,12 +100,14 @@ class UserPrefs with ChangeNotifier {
                   : jsonResponse['shouldTestDevicePerformance'] as bool,
         );
       } catch (e) {
-        print(e);
+        debugPrint(e.toString());
         //Set in-memory copy of prefs
         _userPrefs = defaultUserPrefs;
       }
     }
-    print('setting up user prefs done');
+    if (kDebugMode) {
+      debugPrint('setting up user prefs done');
+    }
 
     return;
   }

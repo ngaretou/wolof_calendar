@@ -2,7 +2,7 @@ import 'dart:ui';
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
 
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -16,22 +16,6 @@ import '../widgets/drawer.dart';
 import '../widgets/date_tile.dart';
 import '../widgets/glass_app_bar.dart';
 import '../widgets/scripture_panel.dart';
-
-//To adapt to new Flutter 2.8 behavior that does not allow mice to drag - which is our desired behavior here
-class MyCustomScrollBehavior extends ScrollBehavior {
-  // Override behavior methods and getters like dragDevices
-  @override
-  Set<PointerDeviceKind> get dragDevices => {
-    PointerDeviceKind.touch,
-    PointerDeviceKind.mouse,
-    // etc.
-  };
-}
-
-// enum NavType {
-//   jumped,
-//   scrolled,
-// }
 
 /////////
 
@@ -64,14 +48,14 @@ class DateScreenState extends State<DateScreen> {
   // that we can then use in the first build
   late List<Date> datesToDisplay;
   late List<Month> allMonths;
-  late UserPrefs userPrefs;
+  late UserPrefs userPrefsListenFalse;
 
   //This is used just for the initial navigation on open
   int initialScrollIndex = 0;
 
   //Holders for the app bar title info that gets refreshed as the user navigates
   //Doing this with valuenotifiers saves lots of rebuilds
-  ValueNotifier<String> formattedAppBarTitle = ValueNotifier("");
+  ValueNotifier<String> formattedAppBarTitle = ValueNotifier(""); // year
   ValueNotifier<String> appBarWesternMonthFR = ValueNotifier("");
   ValueNotifier<String> appBarWesternMonthRS = ValueNotifier("");
   ValueNotifier<String> appBarWesternMonthAS = ValueNotifier("");
@@ -96,13 +80,16 @@ class DateScreenState extends State<DateScreen> {
 
   @override
   void initState() {
-    print('date screen initState');
+    // print('date screen initState');
     super.initState();
-    userPrefs = Provider.of<UserPrefs>(context, listen: false).userPrefs;
+    userPrefsListenFalse =
+        Provider.of<UserPrefs>(context, listen: false).userPrefs;
     allMonths = Provider.of<Months>(context, listen: false).months;
 
     // enableFpsMonitoring(); //for testing, always turns on fps monitoring
-    if (userPrefs.shouldTestDevicePerformance!) enableFpsMonitoring();
+    if (userPrefsListenFalse.shouldTestDevicePerformance!) {
+      enableFpsMonitoring();
+    }
 
     datesToDisplay = Provider.of<Months>(context, listen: false).dates;
 
@@ -156,14 +143,7 @@ class DateScreenState extends State<DateScreen> {
     imageBackdropListener = ValueNotifier(currentMonthFirstDate.value.month);
 
     currentMonthFirstDate.addListener(() {
-      // bool changeColor = Provider.of<UserPrefs>(
-      //   context,
-      //   listen: false,
-      // ).userPrefs.changeThemeColorWithBackground!;
-      bool changeImage = Provider.of<UserPrefs>(
-        context,
-        listen: false,
-      ).userPrefs.backgroundImage!;
+      bool changeImage = userPrefsListenFalse.backgroundImage!;
 
       // if (changeColor) {
       //   debugPrint('triggering changing colorscheme');
@@ -171,12 +151,37 @@ class DateScreenState extends State<DateScreen> {
       //   setColor(currentMonthFirstDate.value.month);
       // }
       if (changeImage) {
-        debugPrint('triggering imageBackdrop build');
+        if (kDebugMode) {
+          debugPrint('triggering image Backdrop build');
+        }
+
         imageBackdropListener.value = currentMonthFirstDate.value.month;
       }
     });
 
     _updateAppBar(initialScrollIndex);
+  }
+
+  /// Returns the first visible item (index + alignment) from an ItemPositionsListener.
+  /// Guarantees that the item is at least partially visible in the viewport.
+  FirstVisible? getFirstVisible() {
+    ItemPositionsListener listener = itemPositionsListener;
+    final positions = listener.itemPositions.value;
+
+    if (positions.isEmpty) return null;
+
+    // Filter to items whose trailing edge is > 0 (visible in viewport)
+    final visibleItems = positions.where((item) => item.itemTrailingEdge > 0);
+
+    if (visibleItems.isEmpty) return null;
+
+    // Pick the lowest index among visible items
+    final firstVisible = visibleItems.reduce(
+      (min, item) => item.index < min.index ? item : min,
+    );
+
+    return FirstVisible(
+        index: firstVisible.index, alignment: firstVisible.itemTrailingEdge);
   }
 
   Date firstDateCurrentMonth(List<Date> dates, Date date) {
@@ -190,11 +195,12 @@ class DateScreenState extends State<DateScreen> {
     if (returnMe == -1) {
       returnMe = 0;
     }
+
     return dates[returnMe];
   }
 
   void _loadNext() async {
-    print('loadnext called');
+    if (kDebugMode) debugPrint('_loadNext');
     if (!_hasMoreNext) return;
 
     _isLoading = true;
@@ -215,186 +221,64 @@ class DateScreenState extends State<DateScreen> {
   }
 
   void _loadPrevious() async {
-    print('loadPrevious called');
+    if (kDebugMode) debugPrint('_loadPrevious');
+
     if (!_hasMorePrevious || _isLoading) return;
 
     _isLoading = true;
 
-    final firstIndex = min(
-      itemPositionsListener.itemPositions.value.first.index,
-      itemPositionsListener.itemPositions.value.last.index,
-    );
-    final oldListSize = datesToDisplay.length;
+    final first = getFirstVisible();
 
-    final hasMore = await Provider.of<Months>(
-      context,
-      listen: false,
-    ).loadPreviousMonth();
+    if (first != null) {
+      final oldListSize = datesToDisplay.length;
 
-    if (mounted) {
-      if (hasMore) {
-        final newDates = Provider.of<Months>(context, listen: false).dates;
-        final newListSize = newDates.length;
-        final itemsAdded = newListSize - oldListSize;
+      final hasMore = await Provider.of<Months>(
+        context,
+        listen: false,
+      ).loadPreviousTwoMonths();
 
-        final newFirstIndex = firstIndex + itemsAdded;
+      if (mounted) {
+        if (hasMore) {
+          final newDates = Provider.of<Months>(context, listen: false).dates;
+          final newListSize = newDates.length;
+          final itemsAdded = newListSize - oldListSize;
 
-        setState(() {
-          datesToDisplay = newDates;
-        });
+          final newFirstIndex = first.index + itemsAdded;
 
-        itemScrollController.jumpTo(index: newFirstIndex + 1);
-      } else {
-        setState(() {
-          _hasMorePrevious = false;
-        });
-      }
+          setState(() {
+            datesToDisplay = newDates;
+          });
 
-      // setState(() {
-      _isLoading = false;
-      // });
-    }
-  }
-
-  void moveMonths(String direction) {
-    final topIndexShown = min(
-      itemPositionsListener.itemPositions.value.first.index,
-      itemPositionsListener.itemPositions.value.last.index,
-    );
-
-    String currentYearDisplayed = (datesToDisplay[topIndexShown + 1].year);
-    String currentMonthDisplayed = (datesToDisplay[topIndexShown + 1].month);
-    late String goToMonth;
-    late String goToYear;
-
-    if (direction == 'forward') {
-      if (currentMonthDisplayed != '12') {
-        goToMonth = ((int.parse(currentMonthDisplayed)) + 1).toString();
-        goToYear = currentYearDisplayed;
-      } else if (currentMonthDisplayed == '12') {
-        goToMonth = '1';
-        goToYear = ((int.parse(currentYearDisplayed)) + 1).toString();
-      }
-    }
-
-    if (direction == 'backward') {
-      if (currentMonthDisplayed != '1') {
-        goToMonth = ((int.parse(currentMonthDisplayed)) - 1).toString();
-        goToYear = currentYearDisplayed;
-      } else if (currentMonthDisplayed == '1') {
-        goToMonth = '12';
-        goToYear = ((int.parse(currentYearDisplayed)) - 1).toString();
-      }
-    }
-
-    navigateToDate(DateTime(int.parse(goToYear), int.parse(goToMonth), 1));
-  }
-
-  Future<void> pickDateToShow() async {
-    final monthsProvider = Provider.of<Months>(context, listen: false);
-    final firstCalendarDate = monthsProvider.firstDate;
-    final lastCalendarDate = monthsProvider.lastDate;
-
-    final chosenDate = await showDatePicker(
-      context: context,
-      initialDate: initialDateTime,
-      firstDate: DateTime(
-        int.parse(firstCalendarDate.year),
-        int.parse(firstCalendarDate.month),
-        int.parse(firstCalendarDate.westernDate),
-      ),
-      lastDate: DateTime(
-        int.parse(lastCalendarDate.year),
-        int.parse(lastCalendarDate.month),
-        int.parse(lastCalendarDate.westernDate),
-      ),
-      locale: const Locale("fr", "FR"),
-    );
-
-    if (chosenDate == null) {
-      return;
-    }
-    navigateToDate(chosenDate);
-  }
-
-  void navigateToDate(DateTime date) {
-    final monthsProvider = Provider.of<Months>(context, listen: false);
-    final firstCalendarDate = DateTime(
-      int.parse(monthsProvider.firstDate.year),
-      int.parse(monthsProvider.firstDate.month),
-      int.parse(monthsProvider.firstDate.westernDate),
-    );
-    final lastCalendarDate = DateTime(
-      int.parse(monthsProvider.lastDate.year),
-      int.parse(monthsProvider.lastDate.month),
-      int.parse(monthsProvider.lastDate.westernDate),
-    );
-
-    if (date.isBefore(firstCalendarDate) || date.isAfter(lastCalendarDate)) {
-      return; // Date is out of bounds, do nothing.
-    }
-
-    // setState(() {
-    _isLoading = true;
-    // });
-
-    int indexToJumpTo = datesToDisplay.indexWhere(
-      (element) =>
-          date.year.toString() == element.year &&
-          date.month.toString() == element.month &&
-          date.day.toString() == element.westernDate,
-    );
-
-    if (indexToJumpTo != -1) {
-      itemScrollController.jumpTo(
-        index: indexToJumpTo == 0 ? 0 : indexToJumpTo - 1,
-      );
-      _updateAppBar(indexToJumpTo);
-      // setState(() {
-      _isLoading = false;
-      // });
-      return;
-    } else {
-      Provider.of<Months>(context, listen: false).fetchInitialDates(date).then((
-        _,
-      ) {
-        if (!mounted) return;
-        datesToDisplay.clear();
-        datesToDisplay = Provider.of<Months>(context, listen: false).dates;
-
-        initialScrollIndex = (datesToDisplay.indexWhere(
-          (element) =>
-              element.year == date.year.toString() &&
-              element.month == date.month.toString() &&
-              element.westernDate == date.day.toString(),
-        ));
-
-        if (initialScrollIndex == -1) {
-          initialScrollIndex = (datesToDisplay.length / 2).round();
+          itemScrollController.jumpTo(
+              alignment: first.alignment, index: newFirstIndex + 1);
+        } else {
+          setState(() {
+            _hasMorePrevious = false;
+          });
         }
+      }
 
-        setState(() {
-          itemScrollController.jumpTo(index: initialScrollIndex);
-          _updateAppBar(initialScrollIndex);
-          _isLoading = false;
-          _hasMoreNext = true;
-          _hasMorePrevious = true;
-        });
-      });
+      // setState(() {
+      _isLoading = false;
+      // });
     }
   }
 
   void _updateAppBar(int index) {
+    // print('_update AppBar');
     if (datesToDisplay.isEmpty || index >= datesToDisplay.length) return;
 
-    Date topDate = datesToDisplay[index];
+    // top date to the list is index;
+    // top date to the user UI is index+1 because of the UI going behind the appbar
+    int indexToUser = index + 1;
+    Date topDate = datesToDisplay[indexToUser];
 
     Month currentMonth = allMonths.firstWhere(
       (element) => element.monthID == topDate.month,
     );
 
     // // Look back from top Date and get the first record where Wolof month is not empty
-    int wolofIndex = index;
+    int wolofIndex = indexToUser;
     while (datesToDisplay[wolofIndex].wolofMonthRS == "") {
       if (wolofIndex <= 0) break;
       wolofIndex--;
@@ -473,8 +357,16 @@ class DateScreenState extends State<DateScreen> {
 
   @override
   Widget build(BuildContext context) {
+    UserPrefs userPrefsListenTrue =
+        Provider.of<UserPrefs>(context, listen: true).userPrefs;
     final screenwidth = MediaQuery.sizeOf(context).width;
     final screenheight = MediaQuery.sizeOf(context).height;
+    final safepadding = MediaQuery.paddingOf(context).top;
+    final glassAppBarHeight = 89.0;
+
+    // accomodating transparent appbar for user on jumps to months
+    // this -20 here is actually important
+    double alignment = (safepadding + glassAppBarHeight - 20) / screenheight;
 
     final double datePanelWidth = max(screenwidth * .4, 350);
     final double scripturePanelWidth = screenwidth - datePanelWidth;
@@ -504,8 +396,148 @@ class DateScreenState extends State<DateScreen> {
         ? Colors.black87
         : Colors.white;
 
-    final TextStyle appBarMonthsStyle = Theme.of(context).textTheme.titleLarge!
+    final TextStyle appBarMonthsStyle = Theme.of(context)
+        .textTheme
+        .titleLarge!
         .copyWith(fontFamily: "Harmattan", color: appBarItemColor);
+
+    void navigateToDate(DateTime date) {
+      _isLoading = true;
+      final monthsProvider = Provider.of<Months>(context, listen: false);
+      final firstCalendarDate = DateTime(
+        int.parse(monthsProvider.firstDate.year),
+        int.parse(monthsProvider.firstDate.month),
+        int.parse(monthsProvider.firstDate.westernDate),
+      );
+      final lastCalendarDate = DateTime(
+        int.parse(monthsProvider.lastDate.year),
+        int.parse(monthsProvider.lastDate.month),
+        int.parse(monthsProvider.lastDate.westernDate),
+      );
+
+      if (date.isBefore(firstCalendarDate) || date.isAfter(lastCalendarDate)) {
+        return; // Date is out of bounds, do nothing.
+      }
+
+      int indexToJumpTo = datesToDisplay.indexWhere(
+        (element) =>
+            date.year.toString() == element.year &&
+            date.month.toString() == element.month &&
+            date.day.toString() == element.westernDate,
+      );
+
+      if (indexToJumpTo >= 0) {
+        // print('indexToJumpTo: $indexToJumpTo');
+        itemScrollController.jumpTo(
+          alignment: alignment,
+          index: indexToJumpTo,
+        );
+      } else {
+        Provider.of<Months>(context, listen: false)
+            .fetchInitialDates(date)
+            .then((
+          _,
+        ) {
+          if (!mounted) return;
+          datesToDisplay.clear();
+          if (!context.mounted) return;
+          datesToDisplay = Provider.of<Months>(context, listen: false).dates;
+
+          initialScrollIndex = (datesToDisplay.indexWhere(
+            (element) =>
+                element.year == date.year.toString() &&
+                element.month == date.month.toString() &&
+                element.westernDate == date.day.toString(),
+          ));
+
+          // accomodating UI transparent appbar
+
+          if (initialScrollIndex == -1) {
+            initialScrollIndex = (datesToDisplay.length / 2).round();
+          }
+
+          setState(() {
+            itemScrollController.jumpTo(
+                alignment: alignment, index: initialScrollIndex);
+
+            _hasMoreNext = true;
+            _hasMorePrevious = true;
+          });
+        });
+      }
+      _isLoading = false;
+    }
+
+    void moveMonths(String direction) {
+      final first = getFirstVisible();
+      if (first != null) {
+        final topVisibleDate = datesToDisplay[first.index + 1];
+
+        String currentYearDisplayed = (topVisibleDate.year);
+        String currentMonthDisplayed = (topVisibleDate.month);
+
+        late String goToMonth;
+        late String goToYear;
+
+        if (direction == 'forward') {
+          if (currentMonthDisplayed != '12') {
+            goToMonth = ((int.parse(currentMonthDisplayed)) + 1).toString();
+            goToYear = currentYearDisplayed;
+          } else if (currentMonthDisplayed == '12') {
+            goToMonth = '1';
+            goToYear = ((int.parse(currentYearDisplayed)) + 1).toString();
+          }
+        }
+
+        if (direction == 'backward') {
+          String currentDateDisplayed = (topVisibleDate.westernDate);
+
+          // if you're in the middle of the month, you want to go back to the beginning of the month, not the month before
+          // if you're on the 17th May and you press back, you want to get to 1 May, not 1 April.
+          if (int.parse(currentDateDisplayed) > 1) {
+            currentMonthDisplayed =
+                (int.parse(currentMonthDisplayed) + 1).toString();
+          }
+
+          if (currentMonthDisplayed != '1') {
+            goToMonth = ((int.parse(currentMonthDisplayed)) - 1).toString();
+            goToYear = currentYearDisplayed;
+          } else if (currentMonthDisplayed == '1') {
+            goToMonth = '12';
+            goToYear = ((int.parse(currentYearDisplayed)) - 1).toString();
+          }
+        }
+
+        navigateToDate(DateTime(int.parse(goToYear), int.parse(goToMonth), 1));
+      }
+    }
+
+    Future<void> pickDateToShow() async {
+      final monthsProvider = Provider.of<Months>(context, listen: false);
+      final firstCalendarDate = monthsProvider.firstDate;
+      final lastCalendarDate = monthsProvider.lastDate;
+
+      final chosenDate = await showDatePicker(
+        context: context,
+        initialDate: initialDateTime,
+        firstDate: DateTime(
+          int.parse(firstCalendarDate.year),
+          int.parse(firstCalendarDate.month),
+          int.parse(firstCalendarDate.westernDate),
+        ),
+        lastDate: DateTime(
+          int.parse(lastCalendarDate.year),
+          int.parse(lastCalendarDate.month),
+          int.parse(lastCalendarDate.westernDate),
+        ),
+        locale: const Locale("fr", "FR"),
+      );
+
+      if (chosenDate == null) {
+        return;
+      }
+      navigateToDate(chosenDate);
+    }
 
     Widget monthNames(ValueNotifier<String> notifier, TextAlign textAlign) {
       return ValueListenableBuilder(
@@ -566,24 +598,17 @@ class DateScreenState extends State<DateScreen> {
         cursor: SystemMouseCursors.grab,
         child: NotificationListener(
           onNotification: (dynamic notification) {
-            if (notification is UserScrollNotification) {
-              final positions = itemPositionsListener.itemPositions.value;
-              if (positions.isNotEmpty) {
-                // fixes the problem where 'first' and 'last' are relative
-                final first = positions.first.index;
-
-                final last = positions.last.index;
-
-                if (min(first, last) < 5 && !_isLoading) {
+            if (notification is ScrollMetricsNotification) {
+              final first = getFirstVisible();
+              if (first != null) {
+                if (first.index < 15 && !_isLoading) {
                   _loadPrevious();
-                }
-
-                if (max(first, last) > (datesToDisplay.length - 5) &&
+                } else if (first.index > (datesToDisplay.length - 25) &&
                     !_isLoading) {
                   _loadNext();
+                } else {
+                  _updateAppBar(first.index);
                 }
-
-                _updateAppBar((min(first, last)));
               }
             }
             return true;
@@ -627,7 +652,7 @@ class DateScreenState extends State<DateScreen> {
             curve: Curves.ease,
             height: double.infinity,
             width: double.infinity,
-            decoration: userPrefs.backgroundImage!
+            decoration: userPrefsListenTrue.backgroundImage!
                 ? BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage(
@@ -643,7 +668,7 @@ class DateScreenState extends State<DateScreen> {
                   ? ImageFilter.blur(sigmaX: 1, sigmaY: 5)
                   : ImageFilter.blur(sigmaX: 15, sigmaY: 15),
               child: Container(
-                decoration: userPrefs.backgroundImage!
+                decoration: userPrefsListenTrue.backgroundImage!
                     ? BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.bottomLeft,
@@ -667,18 +692,23 @@ class DateScreenState extends State<DateScreen> {
     Widget versesSection() {
       if (datesToDisplay.isEmpty) {
         return Container();
+      } else {
+        return ValueListenableBuilder(
+            valueListenable: currentMonthFirstDate,
+            builder: (context, value, child) {
+              return ScripturePanel(
+                currentDate: currentMonthFirstDate.value,
+                monthData: allMonths,
+                contentColWidth: contentColWidth,
+                headerImageHeight: headerImageHeight,
+                scripturePanelWidth: scripturePanelWidth,
+                adaptiveMargin: adaptiveMargin,
+                size: Size(screenwidth, screenheight),
+                isPhone: isPhone,
+                kIsWeb: kIsWeb,
+              );
+            });
       }
-      return ScripturePanel(
-        currentDate: currentMonthFirstDate.value,
-        monthData: allMonths,
-        contentColWidth: contentColWidth,
-        headerImageHeight: headerImageHeight,
-        scripturePanelWidth: scripturePanelWidth,
-        adaptiveMargin: adaptiveMargin,
-        size: Size(screenwidth, screenheight),
-        isPhone: isPhone,
-        kIsWeb: kIsWeb,
-      );
     }
 
     return Stack(
@@ -697,7 +727,7 @@ class DateScreenState extends State<DateScreen> {
               ? Colors.white.withAlpha(26)
               : Colors.black.withAlpha(26),
           drawer: BackdropFilter(
-            filter: userPrefs.glassEffects!
+            filter: userPrefsListenTrue.glassEffects!
                 ? ImageFilter.blur(sigmaX: 50, sigmaY: 50)
                 : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
             child: const MainDrawer(),
@@ -705,9 +735,22 @@ class DateScreenState extends State<DateScreen> {
           appBar: glassAppBar(
             scaffoldStateKey: scaffoldStateKey,
             context: context,
-            title: formattedAppBarTitle.value,
-            height: 89.0,
+            title: ValueListenableBuilder<String>(
+                valueListenable: formattedAppBarTitle,
+                builder: (context, _, __) => Text(
+                      formattedAppBarTitle.value,
+                      style: Theme.of(context).textTheme.titleLarge,
+                    )),
+            height: glassAppBarHeight,
             actions: [
+              // if (kDebugMode)
+              //   IconButton.filled(
+              //       onPressed: () {
+              //         itemScrollController.jumpTo(
+              //           index: 39,
+              //         );
+              //       },
+              //       icon: Icon(Icons.navigation_outlined)),
               IconButton(
                 icon: const Icon(Icons.date_range),
                 onPressed: () => pickDateToShow(),
@@ -756,4 +799,27 @@ class DateScreenState extends State<DateScreen> {
       ],
     );
   }
+}
+
+class FirstVisible {
+  int index;
+  double alignment;
+
+  FirstVisible({required this.index, required this.alignment});
+
+  @override
+  String toString() {
+    return '$index: $alignment';
+  }
+}
+
+//To adapt to new Flutter 2.8 behavior that does not allow mice to drag - which is our desired behavior here
+class MyCustomScrollBehavior extends ScrollBehavior {
+  // Override behavior methods and getters like dragDevices
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+        // etc.
+      };
 }

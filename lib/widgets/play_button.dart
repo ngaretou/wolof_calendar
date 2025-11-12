@@ -100,7 +100,7 @@ class PlayButtonState extends State<PlayButton> with WidgetsBindingObserver {
     // Listen to errors during playback.
     _player.playbackEventStream.listen((event) {},
         onError: (Object e, StackTrace stackTrace) {
-      print('A stream error occurred: $e');
+      debugPrint('A stream error occurred: $e');
     });
   }
 

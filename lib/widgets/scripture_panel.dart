@@ -63,7 +63,8 @@ class _ScripturePanelState extends State<ScripturePanel> {
       context,
       listen: false,
     ).userPrefs;
-    final monthData = Provider.of<Months>(context, listen: false).months
+    final monthData = Provider.of<Months>(context, listen: false)
+        .months
         .where((month) => month.monthID == widget.currentDate.month)
         .toList();
 
@@ -121,6 +122,9 @@ class _ScripturePanelState extends State<ScripturePanel> {
               : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
           child: Stack(
             children: [
+              if (!userPrefs.glassEffects!)
+                Container(
+                    color: Theme.of(context).colorScheme.surfaceContainer),
               ScrollConfiguration(
                 behavior: MyCustomScrollBehavior(),
                 child: ListView(
@@ -271,7 +275,9 @@ This is a hack to get around FB's unneighborly behavior.
 
       final byte = (await rootBundle.load(
         'assets/audio/${monthData.monthID}.mp3',
-      )).buffer.asUint8List(); // convert in to Uint8List
+      ))
+          .buffer
+          .asUint8List(); // convert in to Uint8List
       if (kIsWeb) {
         // https://github.com/fluttercommunity/plus_plugins/issues/1643
         await XFile.fromData(
@@ -392,7 +398,7 @@ class MyCustomScrollBehavior extends MaterialScrollBehavior {
   // Override behavior methods and getters like dragDevices
   @override
   Set<PointerDeviceKind> get dragDevices => {
-    PointerDeviceKind.touch,
-    PointerDeviceKind.mouse,
-  };
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+      };
 }

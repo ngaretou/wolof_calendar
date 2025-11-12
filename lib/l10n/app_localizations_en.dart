@@ -78,8 +78,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get favsNoneYet => 'No favorites yet';
 
   @override
-  String get favsNoneYetInstructions =>
-      'Click the heart icon on your favorite names to add some.';
+  String get favsNoneYetInstructions => 'Click the heart icon on your favorite names to add some.';
 
   @override
   String get settingsOK => 'OK';
@@ -101,6 +100,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shareAppLink => 'Share app';
+
+  @override
+  String get shareLink => 'Share link';
+
+  @override
+  String get copyLink => 'Copy link';
 
   @override
   String get moreApps => 'More apps';

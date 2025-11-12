@@ -360,8 +360,7 @@ class SettingsScreenState extends State<SettingsScreen> {
               ),
               ChoiceChip(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
-                selected:
-                    userLocale.toString() == 'fr' ||
+                selected: userLocale.toString() == 'fr' ||
                         userLocale.toString() == 'fr_'
                     ? true
                     : false,
@@ -379,8 +378,7 @@ class SettingsScreenState extends State<SettingsScreen> {
               ChoiceChip(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
 
-                selected:
-                    (userLocale.toString() == 'en' ||
+                selected: (userLocale.toString() == 'en' ||
                         userLocale.toString() == 'en_')
                     ? true
                     : false,
@@ -409,7 +407,7 @@ class SettingsScreenState extends State<SettingsScreen> {
 
       appBar: glassAppBar(
         context: context,
-        title: AppLocalizations.of(context)!.settingsTitle,
+        title: Text(AppLocalizations.of(context)!.settingsTitle),
         actions: [],
       ),
 

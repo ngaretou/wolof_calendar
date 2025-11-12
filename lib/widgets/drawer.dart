@@ -3,13 +3,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:provider/provider.dart';
 import 'package:wolof_calendar/l10n/app_localizations.dart';
 
 import '../providers/user_prefs.dart';
+
+import 'qr_share.dart';
 
 import '../screens/about_screen.dart';
 import '../screens/settings_screen.dart';
@@ -92,9 +93,9 @@ class _MainDrawerState extends State<MainDrawer> {
                 Navigator.of(context).pop();
                 // Navigator.of(context).popAndPushNamed(SettingsScreen.routeName);
                 clearPage(Widget page) => PageRouteBuilder(
-                  opaque: false,
-                  pageBuilder: (BuildContext context, _, _) => page,
-                );
+                      opaque: false,
+                      pageBuilder: (BuildContext context, _, __) => page,
+                    );
                 Navigator.push(context, clearPage(const SettingsScreen()));
               },
             ),
@@ -139,32 +140,35 @@ class _MainDrawerState extends State<MainDrawer> {
               AppLocalizations.of(context)!.shareAppLink,
               Icons.share,
               () async {
-                Navigator.of(context).pop();
-                if (!kIsWeb) {
-                  SharePlus.instance.share(
-                    ShareParams(
-                      text: 'https://sng.al/cal',
-                      sharePositionOrigin: Rect.fromLTWH(
-                        0,
-                        0,
-                        size.width,
-                        size.height * .33,
-                      ),
-                    ),
-                  );
-                } else {
-                  const url =
-                      "mailto:?subject=Arminaatu Wolof&body=Xoolal appli Arminaatu Wolof fii: https://sng.al/cal";
+                List<ShareAppData> shareAppData = [
+                  ShareAppData(
+                      label: 'sng.al/cal',
+                      shareApp: ShareApp.site,
+                      // socialIcon: '\uf3ab',
+                      icon: Icons.home,
+                      link: 'https://sng.al/cal'),
+                  ShareAppData(
+                      label: 'Google Play',
+                      shareApp: ShareApp.android,
+                      socialIcon: '\uf3ab',
+                      link:
+                          'https://play.google.com/store/apps/details?id=org.mbs.cal.wol'),
+                  ShareAppData(
+                      label: 'iOS & macOS',
+                      shareApp: ShareApp.iOS,
+                      socialIcon: '\uf179',
+                      link:
+                          'https://apps.apple.com/app/arminaatu-wolof/id1532220355'),
+                  ShareAppData(
+                      label: 'web',
+                      shareApp: ShareApp.web,
+                      socialIcon: '\uf268',
+                      link: 'https://cal.sng.al/'),
+                ];
 
-                  if (await canLaunchUrl(Uri.parse(url))) {
-                    await launchUrl(
-                      Uri.parse(url),
-                      mode: LaunchMode.externalApplication,
-                    );
-                  } else {
-                    throw 'Could not launch $url';
-                  }
-                }
+                Navigator.of(context).pop();
+                showQrShare(context, shareAppData, 'Arminaatu Wolof',
+                    appIcon: Image.asset('assets/icons/icon.png'));
               },
             ),
             const Divider(thickness: 1),
@@ -280,8 +284,7 @@ class _MainDrawerState extends State<MainDrawer> {
                 // const url = "https://www.messenger.com/t/112787400906941";
 
                 LaunchMode launchMode = LaunchMode.externalApplication;
-                print(url);
-                print(launchMode.toString());
+
                 if (await canLaunchUrl(Uri.parse(url))) {
                   await launchUrl(Uri.parse(url), mode: launchMode);
                 } else {
@@ -354,8 +357,8 @@ class _MainDrawerState extends State<MainDrawer> {
                     children: [
                       TextSpan(
                         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          fontStyle: FontStyle.italic,
-                        ),
+                              fontStyle: FontStyle.italic,
+                            ),
                         text: 'Arminaatu Wolof',
                       ),
                       TextSpan(
@@ -370,13 +373,13 @@ class _MainDrawerState extends State<MainDrawer> {
                     children: [
                       TextSpan(
                         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          fontStyle: FontStyle.italic,
-                        ),
+                              fontStyle: FontStyle.italic,
+                            ),
                         text: 'Kàddug Yàlla',
                       ),
                       TextSpan(
                         style: Theme.of(context).textTheme.bodyLarge,
-                        text: ' copyright © 2024 La MBS. ',
+                        text: ' copyright © 2025 La MBS.',
                       ),
                     ],
                   ),
@@ -386,7 +389,7 @@ class _MainDrawerState extends State<MainDrawer> {
                     children: [
                       TextSpan(
                         style: Theme.of(context).textTheme.bodyLarge,
-                        text: 'Appli © 2024 Foundational LLC.',
+                        text: 'Appli © 2025 Foundational LLC.',
                       ),
                     ],
                   ),
@@ -401,9 +404,9 @@ class _MainDrawerState extends State<MainDrawer> {
               onPressed: () {
                 // Navigator.of(context).pushNamed(AboutScreen.routeName);
                 clearPage(Widget page) => PageRouteBuilder(
-                  opaque: false,
-                  pageBuilder: (BuildContext context, _, _) => page,
-                );
+                      opaque: false,
+                      pageBuilder: (BuildContext context, _, __) => page,
+                    );
                 Navigator.push(context, clearPage(const AboutScreen()));
               },
             ),

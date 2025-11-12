@@ -807,7 +807,11 @@ class DateScreenState extends State<DateScreen> {
       appBar: glassAppBar(
         scaffoldStateKey: scaffoldStateKey,
         context: context,
-        title: formattedAppBarTitle.value,
+        title: Text(
+        formattedAppBarTitle.value,
+        style: Theme.of(context).textTheme.titleLarge,
+      ),
+        
         height: 89.0,
         actions: [
           //light/dark theme

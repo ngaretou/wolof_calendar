@@ -24,6 +24,22 @@ Web version at http://cal.sng.al
 
 - New glass theme
 
+### 2.4.0
+
+- new data handling in chunks
+- new qr code sharing
+- revised theme coloring - now based on monthly image at app launch one time rather than changing with user scroll to new month. 
+- revision to scripture drawer
 
 ## TODO
 - new photo thanks
+
+
+rm -rf build/web
+flutter build web 
+cd build/web
+HASH=$( (cat main.dart.js; date +%s) | sha256sum | cut -c1-8 )
+mv main.dart.js main.dart.$HASH.js
+sed -i .bak "s/main.dart.js/main.dart.$HASH.js/g" flutter_bootstrap.js 
+rm flutter_bootstrap.js.bak 
+cd ../..

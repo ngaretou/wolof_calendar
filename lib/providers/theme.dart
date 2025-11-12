@@ -12,7 +12,11 @@ import './months.dart';
 import './user_prefs.dart';
 
 Future<ColorScheme> getMonthlyColorScheme(Brightness brightness) async {
+  // as a compromise between changing color scheme with scroll (which brought the jank)
+  // and having a fixed color scheme (boring), this changes color scheme with the month.
+  // So you get 12 different colors through the months.
   int monthID = DateTime.now().month;
+
   // int monthID = 1; // for testing
   ImageProvider myBackground = AssetImage('assets/images/$monthID.jpg');
   ColorScheme newColorScheme = ColorScheme.dark();
@@ -80,9 +84,8 @@ class ThemeModel extends ChangeNotifier {
         }
       } else {
         //we've run it before - check last run build number
-        String lastBuildNumber = json
-            .decode(prefs.getString('lastBuildNumber')!)
-            .toString();
+        String lastBuildNumber =
+            json.decode(prefs.getString('lastBuildNumber')!).toString();
 
         int lastSeenBuildNumber = int.parse(lastBuildNumber);
 
