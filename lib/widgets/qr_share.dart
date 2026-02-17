@@ -110,7 +110,7 @@ class _ShareAppPanelState extends State<ShareAppPanel> {
     //         .first;
     //   }
     // } catch (e) {
-    //   debugPrint(e.toString());
+    //   if (kDebugMode) debugPrint(e.toString());
     //   currentShare = widget.shareAppData[0];
     // }
     super.initState();
@@ -120,6 +120,7 @@ class _ShareAppPanelState extends State<ShareAppPanel> {
   Widget build(BuildContext context) {
     var localizations = AppLocalizations.of(context)!;
     Size size = MediaQuery.sizeOf(context);
+    final bool isPhone = (size.width + size.height) <= 1400;
 
     Color foregroundColor = Theme.of(context).brightness == Brightness.dark
         ? Colors.white
@@ -186,7 +187,7 @@ class _ShareAppPanelState extends State<ShareAppPanel> {
           Navigator.of(context).pop();
         });
       } catch (e) {
-        debugPrint(e.toString());
+        if (kDebugMode) debugPrint(e.toString());
       }
     }
 
@@ -195,14 +196,14 @@ class _ShareAppPanelState extends State<ShareAppPanel> {
 
     return SingleChildScrollView(
         child: SizedBox(
-      width: min(400, size.width),
+      width: isPhone ? size.width : min(400, size.width),
       child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              if (size.height > 600)
+              if (size.height > 700)
                 SizedBox(
                   height: 60,
                   width: 60,
@@ -232,18 +233,28 @@ class _ShareAppPanelState extends State<ShareAppPanel> {
                   ),
                 ],
               ),
-              if (!singleShare) const Divider(height: 40),
-              if (!singleShare)
-                Padding(
+              const Divider(height: 40),
+              GestureDetector(
+                onTap: () async {
+                  final url = currentShare.link;
+                  if (await canLaunchUrl(Uri.parse(url))) {
+                    await launchUrl(Uri.parse(url),
+                        mode: LaunchMode.externalApplication);
+                  } else {
+                    throw 'Could not launch $url';
+                  }
+                },
+                child: Padding(
                   padding: const EdgeInsets.only(bottom: 20.0),
                   child: Text(
                     currentShare.label,
                     style: Theme.of(context)
                         .textTheme
                         .titleLarge!
-                        .copyWith(fontWeight: FontWeight.bold),
+                        .copyWith(fontWeight: .bold),
                   ),
                 ),
+              ),
               if (!singleShare)
                 SegmentedButton<ShareAppData>(
                   // direction: Axis.vertical,

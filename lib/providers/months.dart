@@ -235,8 +235,8 @@ class Months with ChangeNotifier {
       initialIndex = 0;
     }
 
-    int startIndex = (initialIndex - 45).clamp(0, _allDatesData.length);
-    int endIndex = (initialIndex + 45).clamp(0, _allDatesData.length);
+    int startIndex = (initialIndex - 60).clamp(0, _allDatesData.length);
+    int endIndex = (initialIndex + 60).clamp(0, _allDatesData.length);
 
     _dates = _getDateRange(startIndex, endIndex);
     notifyListeners();

@@ -377,7 +377,6 @@
 				CODE_SIGN_ENTITLEMENTS = Runner/RunnerProfile.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 32;
 				DEVELOPMENT_TEAM = RAJ3TA54HF;
 				ENABLE_BITCODE = NO;
 				EXCLUDED_ARCHS = "";
@@ -389,7 +388,7 @@
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Arminaatu Wolof";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -398,7 +397,6 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				MARKETING_VERSION = 2.4.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.mbs.cal.wol;
 				PRODUCT_NAME = "Arminaatu Wolof";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -537,7 +535,6 @@
 				CODE_SIGN_ENTITLEMENTS = "Runner/Arminaatu Wolof.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 32;
 				DEVELOPMENT_TEAM = RAJ3TA54HF;
 				ENABLE_BITCODE = NO;
 				EXCLUDED_ARCHS = "";
@@ -549,7 +546,7 @@
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Arminaatu Wolof";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -558,7 +555,6 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				MARKETING_VERSION = 2.4.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.mbs.cal.wol;
 				PRODUCT_NAME = "Arminaatu Wolof";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -580,7 +576,6 @@
 				CODE_SIGN_ENTITLEMENTS = Runner/RunnerRelease.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 32;
 				DEVELOPMENT_TEAM = RAJ3TA54HF;
 				ENABLE_BITCODE = NO;
 				EXCLUDED_ARCHS = "";
@@ -592,7 +587,7 @@
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Arminaatu Wolof";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -601,7 +596,6 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				MARKETING_VERSION = 2.4.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.mbs.cal.wol;
 				PRODUCT_NAME = "Arminaatu Wolof";
 				PROVISIONING_PROFILE_SPECIFIER = "";

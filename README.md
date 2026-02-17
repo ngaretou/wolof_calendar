@@ -30,6 +30,11 @@ Web version at http://cal.sng.al
 - new qr code sharing
 - revised theme coloring - now based on monthly image at app launch one time rather than changing with user scroll to new month. 
 - revision to scripture drawer
+- many refinements to UI and scrolling precision
+
+### 2.4.2
+
+- fix for three button nav problem 
 
 ## TODO
 - new photo thanks

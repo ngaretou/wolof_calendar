@@ -93,9 +93,9 @@ class _MainDrawerState extends State<MainDrawer> {
                 Navigator.of(context).pop();
                 // Navigator.of(context).popAndPushNamed(SettingsScreen.routeName);
                 clearPage(Widget page) => PageRouteBuilder(
-                      opaque: false,
-                      pageBuilder: (BuildContext context, _, __) => page,
-                    );
+                  opaque: false,
+                  pageBuilder: (BuildContext context, _, _) => page,
+                );
                 Navigator.push(context, clearPage(const SettingsScreen()));
               },
             ),
@@ -142,33 +142,38 @@ class _MainDrawerState extends State<MainDrawer> {
               () async {
                 List<ShareAppData> shareAppData = [
                   ShareAppData(
-                      label: 'sng.al/cal',
-                      shareApp: ShareApp.site,
-                      // socialIcon: '\uf3ab',
-                      icon: Icons.home,
-                      link: 'https://sng.al/cal'),
-                  ShareAppData(
-                      label: 'Google Play',
-                      shareApp: ShareApp.android,
-                      socialIcon: '\uf3ab',
-                      link:
-                          'https://play.google.com/store/apps/details?id=org.mbs.cal.wol'),
-                  ShareAppData(
-                      label: 'iOS & macOS',
-                      shareApp: ShareApp.iOS,
-                      socialIcon: '\uf179',
-                      link:
-                          'https://apps.apple.com/app/arminaatu-wolof/id1532220355'),
-                  ShareAppData(
-                      label: 'web',
-                      shareApp: ShareApp.web,
-                      socialIcon: '\uf268',
-                      link: 'https://cal.sng.al/'),
+                    label: 'https://sng.al/cal',
+                    shareApp: ShareApp.site,
+                    // socialIcon: '\uf3ab',
+                    icon: Icons.home,
+                    link: 'https://sng.al/cal',
+                  ),
+                  // ShareAppData(
+                  //     label: 'Google Play',
+                  //     shareApp: ShareApp.android,
+                  //     socialIcon: '\uf3ab',
+                  //     link:
+                  //         'https://play.google.com/store/apps/details?id=org.mbs.cal.wol'),
+                  // ShareAppData(
+                  //     label: 'iOS & macOS',
+                  //     shareApp: ShareApp.iOS,
+                  //     socialIcon: '\uf179',
+                  //     link:
+                  //         'https://apps.apple.com/app/arminaatu-wolof/id1532220355'),
+                  // ShareAppData(
+                  //     label: 'web',
+                  //     shareApp: ShareApp.web,
+                  //     socialIcon: '\uf268',
+                  //     link: 'https://cal.sng.al/'),
                 ];
 
                 Navigator.of(context).pop();
-                showQrShare(context, shareAppData, 'Arminaatu Wolof',
-                    appIcon: Image.asset('assets/icons/icon.png'));
+                showQrShare(
+                  context,
+                  shareAppData,
+                  'Arminaatu Wolof',
+                  appIcon: Image.asset('assets/icons/icon.png'),
+                );
               },
             ),
             const Divider(thickness: 1),
@@ -357,8 +362,8 @@ class _MainDrawerState extends State<MainDrawer> {
                     children: [
                       TextSpan(
                         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                              fontStyle: FontStyle.italic,
-                            ),
+                          fontStyle: FontStyle.italic,
+                        ),
                         text: 'Arminaatu Wolof',
                       ),
                       TextSpan(
@@ -373,8 +378,8 @@ class _MainDrawerState extends State<MainDrawer> {
                     children: [
                       TextSpan(
                         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                              fontStyle: FontStyle.italic,
-                            ),
+                          fontStyle: FontStyle.italic,
+                        ),
                         text: 'Kàddug Yàlla',
                       ),
                       TextSpan(
@@ -404,9 +409,9 @@ class _MainDrawerState extends State<MainDrawer> {
               onPressed: () {
                 // Navigator.of(context).pushNamed(AboutScreen.routeName);
                 clearPage(Widget page) => PageRouteBuilder(
-                      opaque: false,
-                      pageBuilder: (BuildContext context, _, __) => page,
-                    );
+                  opaque: false,
+                  pageBuilder: (BuildContext context, _, _) => page,
+                );
                 Navigator.push(context, clearPage(const AboutScreen()));
               },
             ),

@@ -59,12 +59,13 @@ class _ScripturePanelState extends State<ScripturePanel> {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final bottomInset = mediaQuery.padding.bottom;
     UserPrefs userPrefs = Provider.of<UserPrefs>(
       context,
       listen: false,
     ).userPrefs;
-    final monthData = Provider.of<Months>(context, listen: false)
-        .months
+    final monthData = Provider.of<Months>(context, listen: false).months
         .where((month) => month.monthID == widget.currentDate.month)
         .toList();
 
@@ -85,7 +86,7 @@ class _ScripturePanelState extends State<ScripturePanel> {
                   )
                   .toList()[0]);
               //the [0] grabs the first in the list, which will be the only one
-              triggerSharing(context, kIsWeb, monthData);
+              triggerSharing(context, mediaQuery.size, kIsWeb, monthData);
             },
           ),
           PlayButton(
@@ -124,7 +125,8 @@ class _ScripturePanelState extends State<ScripturePanel> {
             children: [
               if (!userPrefs.glassEffects!)
                 Container(
-                    color: Theme.of(context).colorScheme.surfaceContainer),
+                  color: Theme.of(context).colorScheme.surfaceContainer,
+                ),
               ScrollConfiguration(
                 behavior: MyCustomScrollBehavior(),
                 child: ListView(
@@ -179,7 +181,7 @@ class _ScripturePanelState extends State<ScripturePanel> {
               ),
               Positioned(
                 left: 0,
-                bottom: 20,
+                bottom: bottomInset,
                 child: ValueListenableBuilder(
                   valueListenable: showButtonNotifier,
                   builder: (context, value, child) {
@@ -219,7 +221,7 @@ class _ScripturePanelState extends State<ScripturePanel> {
               ),
               Positioned(
                 left: 20,
-                bottom: 20,
+                bottom: bottomInset,
                 child: SizedBox(
                   width: widget.scripturePanelWidth - 40,
                   child: buttonsRow(),
@@ -230,8 +232,12 @@ class _ScripturePanelState extends State<ScripturePanel> {
   }
 }
 
-void triggerSharing(BuildContext context, bool kIsWeb, Month monthData) {
-  Size size = MediaQuery.of(context).size;
+void triggerSharing(
+  BuildContext context,
+  Size size,
+  bool kIsWeb,
+  Month monthData,
+) {
   /*
 now sharing audio, but with a caveat. 
 See https://github.com/fluttercommunity/plus_plugins/issues/413
@@ -275,9 +281,7 @@ This is a hack to get around FB's unneighborly behavior.
 
       final byte = (await rootBundle.load(
         'assets/audio/${monthData.monthID}.mp3',
-      ))
-          .buffer
-          .asUint8List(); // convert in to Uint8List
+      )).buffer.asUint8List(); // convert in to Uint8List
       if (kIsWeb) {
         // https://github.com/fluttercommunity/plus_plugins/issues/1643
         await XFile.fromData(
@@ -398,7 +402,7 @@ class MyCustomScrollBehavior extends MaterialScrollBehavior {
   // Override behavior methods and getters like dragDevices
   @override
   Set<PointerDeviceKind> get dragDevices => {
-        PointerDeviceKind.touch,
-        PointerDeviceKind.mouse,
-      };
+    PointerDeviceKind.touch,
+    PointerDeviceKind.mouse,
+  };
 }

@@ -82,8 +82,10 @@ class DateScreenState extends State<DateScreen> {
   void initState() {
     // print('date screen initState');
     super.initState();
-    userPrefsListenFalse =
-        Provider.of<UserPrefs>(context, listen: false).userPrefs;
+    userPrefsListenFalse = Provider.of<UserPrefs>(
+      context,
+      listen: false,
+    ).userPrefs;
     allMonths = Provider.of<Months>(context, listen: false).months;
 
     // enableFpsMonitoring(); //for testing, always turns on fps monitoring
@@ -145,11 +147,6 @@ class DateScreenState extends State<DateScreen> {
     currentMonthFirstDate.addListener(() {
       bool changeImage = userPrefsListenFalse.backgroundImage!;
 
-      // if (changeColor) {
-      //   debugPrint('triggering changing colorscheme');
-      //   // setColor will refresh back to main.dart, so will automatically update the bg image, not setState necessary
-      //   setColor(currentMonthFirstDate.value.month);
-      // }
       if (changeImage) {
         if (kDebugMode) {
           debugPrint('triggering image Backdrop build');
@@ -181,7 +178,9 @@ class DateScreenState extends State<DateScreen> {
     );
 
     return FirstVisible(
-        index: firstVisible.index, alignment: firstVisible.itemTrailingEdge);
+      index: firstVisible.index,
+      alignment: firstVisible.itemTrailingEdge,
+    );
   }
 
   Date firstDateCurrentMonth(List<Date> dates, Date date) {
@@ -200,7 +199,7 @@ class DateScreenState extends State<DateScreen> {
   }
 
   void _loadNext() async {
-    if (kDebugMode) debugPrint('_loadNext');
+    if (kDebugMode) debugPrint('_load Next');
     if (!_hasMoreNext) return;
 
     _isLoading = true;
@@ -250,7 +249,9 @@ class DateScreenState extends State<DateScreen> {
           });
 
           itemScrollController.jumpTo(
-              alignment: first.alignment, index: newFirstIndex + 1);
+            alignment: first.alignment,
+            index: newFirstIndex + 1,
+          );
         } else {
           setState(() {
             _hasMorePrevious = false;
@@ -357,8 +358,10 @@ class DateScreenState extends State<DateScreen> {
 
   @override
   Widget build(BuildContext context) {
-    UserPrefs userPrefsListenTrue =
-        Provider.of<UserPrefs>(context, listen: true).userPrefs;
+    UserPrefs userPrefsListenTrue = Provider.of<UserPrefs>(
+      context,
+      listen: true,
+    ).userPrefs;
     final screenwidth = MediaQuery.sizeOf(context).width;
     final screenheight = MediaQuery.sizeOf(context).height;
     final safepadding = MediaQuery.paddingOf(context).top;
@@ -366,7 +369,8 @@ class DateScreenState extends State<DateScreen> {
 
     // accomodating transparent appbar for user on jumps to months
     // this -20 here is actually important
-    double alignment = (safepadding + glassAppBarHeight - 20) / screenheight;
+    final double alignment =
+        (safepadding + glassAppBarHeight - 20) / screenheight;
 
     final double datePanelWidth = max(screenwidth * .4, 350);
     final double scripturePanelWidth = screenwidth - datePanelWidth;
@@ -396,10 +400,29 @@ class DateScreenState extends State<DateScreen> {
         ? Colors.black87
         : Colors.white;
 
-    final TextStyle appBarMonthsStyle = Theme.of(context)
-        .textTheme
-        .titleLarge!
-        .copyWith(fontFamily: "Harmattan", color: appBarItemColor);
+    const double monthRowHeight = 34;
+    const double monthRowFontSize = 22;
+
+    final TextStyle appBarMonthsStyle = Theme.of(context).textTheme.titleLarge!
+        .copyWith(
+          fontFamily: "Harmattan",
+          color: appBarItemColor,
+          // 2025 reduced slightly to make sure all AS vowels fit
+          // and increased the size of
+          fontSize: monthRowFontSize,
+        );
+
+    void checkIfNeedToLoadMore() {
+      final first = getFirstVisible();
+      if (first != null) {
+        if (first.index < 45 && !_isLoading) {
+          _loadPrevious(); // loads 60
+        } else if (first.index > (datesToDisplay.length - 45) && !_isLoading) {
+          _loadNext(); // loads 60
+        }
+        _updateAppBar(first.index);
+      }
+    }
 
     void navigateToDate(DateTime date) {
       _isLoading = true;
@@ -416,6 +439,9 @@ class DateScreenState extends State<DateScreen> {
       );
 
       if (date.isBefore(firstCalendarDate) || date.isAfter(lastCalendarDate)) {
+        setState(() {
+          _isLoading = false;
+        });
         return; // Date is out of bounds, do nothing.
       }
 
@@ -427,20 +453,16 @@ class DateScreenState extends State<DateScreen> {
       );
 
       if (indexToJumpTo >= 0) {
-        // print('indexToJumpTo: $indexToJumpTo');
-        itemScrollController.jumpTo(
-          alignment: alignment,
-          index: indexToJumpTo,
-        );
+        itemScrollController.jumpTo(alignment: alignment, index: indexToJumpTo);
+        _isLoading = false;
+        checkIfNeedToLoadMore();
       } else {
-        Provider.of<Months>(context, listen: false)
-            .fetchInitialDates(date)
-            .then((
-          _,
-        ) {
-          if (!mounted) return;
-          datesToDisplay.clear();
+        Provider.of<Months>(
+          context,
+          listen: false,
+        ).fetchInitialDates(date).then((_) {
           if (!context.mounted) return;
+          datesToDisplay.clear();
           datesToDisplay = Provider.of<Months>(context, listen: false).dates;
 
           initialScrollIndex = (datesToDisplay.indexWhere(
@@ -450,22 +472,22 @@ class DateScreenState extends State<DateScreen> {
                 element.westernDate == date.day.toString(),
           ));
 
-          // accomodating UI transparent appbar
-
+          // this should be impossible but if there is a problem (i.e. -1 = not found)
+          // go halfway between these new dates and that should be reasonable
           if (initialScrollIndex == -1) {
             initialScrollIndex = (datesToDisplay.length / 2).round();
           }
 
-          setState(() {
-            itemScrollController.jumpTo(
-                alignment: alignment, index: initialScrollIndex);
+          _hasMoreNext = true;
+          _hasMorePrevious = true;
 
-            _hasMoreNext = true;
-            _hasMorePrevious = true;
-          });
+          itemScrollController.jumpTo(
+            alignment: alignment,
+            index: initialScrollIndex,
+          );
+          _isLoading = false;
         });
       }
-      _isLoading = false;
     }
 
     void moveMonths(String direction) {
@@ -495,8 +517,8 @@ class DateScreenState extends State<DateScreen> {
           // if you're in the middle of the month, you want to go back to the beginning of the month, not the month before
           // if you're on the 17th May and you press back, you want to get to 1 May, not 1 April.
           if (int.parse(currentDateDisplayed) > 1) {
-            currentMonthDisplayed =
-                (int.parse(currentMonthDisplayed) + 1).toString();
+            currentMonthDisplayed = (int.parse(currentMonthDisplayed) + 1)
+                .toString();
           }
 
           if (currentMonthDisplayed != '1') {
@@ -548,7 +570,7 @@ class DateScreenState extends State<DateScreen> {
             style: appBarMonthsStyle,
             textAlign: textAlign,
             maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+            overflow: .ellipsis,
           );
         },
       );
@@ -561,31 +583,36 @@ class DateScreenState extends State<DateScreen> {
 
       if (spaceAvailable > 368) {
         monthNameWidgets = [
-          monthNames(appBarWesternMonthFR, TextAlign.left),
+          monthNames(appBarWesternMonthFR, .left),
           Text('/', style: appBarMonthsStyle),
-          monthNames(appBarWesternMonthAS, TextAlign.right),
+          monthNames(appBarWesternMonthAS, .right),
           const Expanded(child: SizedBox(width: 1)),
-          monthNames(appBarWolofMonth, TextAlign.left),
+          monthNames(appBarWolofMonth, .left),
           Text('/', style: appBarMonthsStyle),
-          monthNames(appBarWolofalMonth, TextAlign.right),
+          monthNames(appBarWolofalMonth, .right),
         ];
       } else {
         monthNameWidgets = [
-          monthNames(appBarWesternMonthFR, TextAlign.left),
-          monthNames(appBarWolofalMonth, TextAlign.right),
+          monthNames(appBarWesternMonthFR, .left),
+          monthNames(appBarWolofalMonth, .right),
         ];
       }
 
       row = Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: .start,
+        mainAxisAlignment: .spaceBetween,
         children: monthNameWidgets,
       );
 
       return Container(
+        // this doesn't affect the overall height of the app bar,
+        // just how much this row takes
+        height: monthRowHeight,
         padding: isPhone
-            ? const EdgeInsets.symmetric(horizontal: 8)
-            : EdgeInsets.only(left: (scripturePanelWidth) + 16, right: 8),
+            ? const .symmetric(horizontal: 8)
+            : .only(left: (scripturePanelWidth) + 16, right: 8),
         color: Colors.transparent,
+        // color: Colors.red,
         child: row,
       );
     }
@@ -599,17 +626,7 @@ class DateScreenState extends State<DateScreen> {
         child: NotificationListener(
           onNotification: (dynamic notification) {
             if (notification is ScrollMetricsNotification) {
-              final first = getFirstVisible();
-              if (first != null) {
-                if (first.index < 15 && !_isLoading) {
-                  _loadPrevious();
-                } else if (first.index > (datesToDisplay.length - 25) &&
-                    !_isLoading) {
-                  _loadNext();
-                } else {
-                  _updateAppBar(first.index);
-                }
-              }
+              checkIfNeedToLoadMore();
             }
             return true;
           },
@@ -694,20 +711,21 @@ class DateScreenState extends State<DateScreen> {
         return Container();
       } else {
         return ValueListenableBuilder(
-            valueListenable: currentMonthFirstDate,
-            builder: (context, value, child) {
-              return ScripturePanel(
-                currentDate: currentMonthFirstDate.value,
-                monthData: allMonths,
-                contentColWidth: contentColWidth,
-                headerImageHeight: headerImageHeight,
-                scripturePanelWidth: scripturePanelWidth,
-                adaptiveMargin: adaptiveMargin,
-                size: Size(screenwidth, screenheight),
-                isPhone: isPhone,
-                kIsWeb: kIsWeb,
-              );
-            });
+          valueListenable: currentMonthFirstDate,
+          builder: (context, value, child) {
+            return ScripturePanel(
+              currentDate: currentMonthFirstDate.value,
+              monthData: allMonths,
+              contentColWidth: contentColWidth,
+              headerImageHeight: headerImageHeight,
+              scripturePanelWidth: scripturePanelWidth,
+              adaptiveMargin: adaptiveMargin,
+              size: Size(screenwidth, screenheight),
+              isPhone: isPhone,
+              kIsWeb: kIsWeb,
+            );
+          },
+        );
       }
     }
 
@@ -736,11 +754,12 @@ class DateScreenState extends State<DateScreen> {
             scaffoldStateKey: scaffoldStateKey,
             context: context,
             title: ValueListenableBuilder<String>(
-                valueListenable: formattedAppBarTitle,
-                builder: (context, _, __) => Text(
-                      formattedAppBarTitle.value,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    )),
+              valueListenable: formattedAppBarTitle,
+              builder: (context, _, _) => Text(
+                formattedAppBarTitle.value,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+            ),
             height: glassAppBarHeight,
             actions: [
               // if (kDebugMode)
@@ -818,8 +837,8 @@ class MyCustomScrollBehavior extends ScrollBehavior {
   // Override behavior methods and getters like dragDevices
   @override
   Set<PointerDeviceKind> get dragDevices => {
-        PointerDeviceKind.touch,
-        PointerDeviceKind.mouse,
-        // etc.
-      };
+    PointerDeviceKind.touch,
+    PointerDeviceKind.mouse,
+    // etc.
+  };
 }

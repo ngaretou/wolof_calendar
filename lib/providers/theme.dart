@@ -84,8 +84,9 @@ class ThemeModel extends ChangeNotifier {
         }
       } else {
         //we've run it before - check last run build number
-        String lastBuildNumber =
-            json.decode(prefs.getString('lastBuildNumber')!).toString();
+        String lastBuildNumber = json
+            .decode(prefs.getString('lastBuildNumber') ?? '0')
+            .toString();
 
         int lastSeenBuildNumber = int.parse(lastBuildNumber);
 
