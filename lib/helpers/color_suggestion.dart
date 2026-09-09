@@ -1,5 +1,5 @@
 import 'dart:math';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// This function is a helper utility to suggest theme colors for the app.
 /// It analyzes the 12 monthly background images (`assets/images/1.jpg` to `12.jpg`).

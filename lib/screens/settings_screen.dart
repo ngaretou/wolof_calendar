@@ -1,7 +1,7 @@
 // ignore_for_file: sized_box_for_whitespace
 import 'dart:ui';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 import 'package:wolof_calendar/l10n/app_localizations.dart';
