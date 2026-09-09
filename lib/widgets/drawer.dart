@@ -25,6 +25,7 @@ class MainDrawer extends StatefulWidget {
 class _MainDrawerState extends State<MainDrawer> {
   @override
   Widget build(BuildContext context) {
+    const double iconSize = 27;
     Size size = MediaQuery.of(context).size;
     UserPrefs userPrefs = Provider.of<UserPrefs>(
       context,
@@ -34,7 +35,7 @@ class _MainDrawerState extends State<MainDrawer> {
     TextStyle whitetitleLarge = Theme.of(context).textTheme.titleLarge!;
 
     //Main template for all titles
-    Widget drawerTitle(String title, IconData icon, Function tapHandler) {
+    Widget drawerTitle(String title, Widget icon, Function tapHandler) {
       return InkWell(
         onTap: tapHandler as void Function()?,
         child: Container(
@@ -43,9 +44,7 @@ class _MainDrawerState extends State<MainDrawer> {
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: Row(
               children: [
-                icon.toString().startsWith("FontAwesomeIcons")
-                    ? FaIcon(icon, size: 27)
-                    : Icon(icon, size: 27),
+                icon,
                 const SizedBox(width: 25),
                 Text(title, style: whitetitleLarge),
               ],
@@ -88,7 +87,7 @@ class _MainDrawerState extends State<MainDrawer> {
             const Divider(thickness: 3),
             drawerTitle(
               AppLocalizations.of(context)!.settingsTitle,
-              Icons.settings,
+              const Icon(Icons.settings, size: iconSize),
               () {
                 Navigator.of(context).pop();
                 // Navigator.of(context).popAndPushNamed(SettingsScreen.routeName);
@@ -104,7 +103,7 @@ class _MainDrawerState extends State<MainDrawer> {
             drawerTitle(
               // 'Add holidays to\nGoogle Calendar TT',
               AppLocalizations.of(context)!.addHolidays,
-              Icons.calendar_today,
+              const Icon(Icons.calendar_today, size: iconSize),
               () async {
                 late String url;
 
@@ -138,7 +137,7 @@ class _MainDrawerState extends State<MainDrawer> {
             const Divider(thickness: 1),
             drawerTitle(
               AppLocalizations.of(context)!.shareAppLink,
-              Icons.share,
+              const Icon(Icons.share, size: iconSize),
               () async {
                 List<ShareAppData> shareAppData = [
                   ShareAppData(
@@ -179,7 +178,7 @@ class _MainDrawerState extends State<MainDrawer> {
             const Divider(thickness: 1),
             drawerTitle(
               AppLocalizations.of(context)!.moreApps,
-              Icons.web_asset,
+              const Icon(Icons.web_asset, size: iconSize),
               () async {
                 const url = 'https://sng.al/app';
                 if (await canLaunchUrl(Uri.parse(url))) {
@@ -217,7 +216,7 @@ class _MainDrawerState extends State<MainDrawer> {
             //     AppLocalizations.of(context).settingsContactUs, null, null),
             drawerTitle(
               AppLocalizations.of(context)!.settingsContactUsEmail,
-              Icons.email,
+              const Icon(Icons.email, size: iconSize),
               () async {
                 const url = 'mailto:equipedevmbs@gmail.com';
                 if (await canLaunchUrl(Uri.parse(url))) {
@@ -233,7 +232,7 @@ class _MainDrawerState extends State<MainDrawer> {
 
             drawerTitle(
               AppLocalizations.of(context)!.contactWhatsApp,
-              FontAwesomeIcons.whatsapp,
+              const FaIcon(FontAwesomeIcons.whatsapp, size: iconSize),
               () async {
                 const url = 'https://wa.me/221776427432';
                 if (await canLaunchUrl(Uri.parse(url))) {
@@ -274,7 +273,7 @@ class _MainDrawerState extends State<MainDrawer> {
             //if (kIsWeb)
             drawerTitle(
               AppLocalizations.of(context)!.contactFBMessenger,
-              FontAwesomeIcons.facebookMessenger,
+              const FaIcon(FontAwesomeIcons.facebookMessenger, size: iconSize),
               () async {
                 String url = '';
 
@@ -300,7 +299,7 @@ class _MainDrawerState extends State<MainDrawer> {
             const Divider(thickness: 2),
             drawerTitle(
               AppLocalizations.of(context)!.settingsAbout,
-              Icons.question_answer,
+              const Icon(Icons.question_answer, size: iconSize),
               () {
                 Navigator.of(context).pop();
                 showAbout(context);

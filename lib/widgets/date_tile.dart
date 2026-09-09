@@ -137,7 +137,8 @@ class DateTile extends StatelessWidget {
                 isPhone: isPhone,
                 kIsWeb: kIsWeb,
                 scriptureOnly: false,
-                showCardBackground: true)
+                showCardBackground: true, 
+                )
             : const SizedBox(
                 height: 0,
               ),

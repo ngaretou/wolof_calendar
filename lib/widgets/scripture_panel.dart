@@ -60,7 +60,8 @@ class _ScripturePanelState extends State<ScripturePanel> {
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
-    final bottomInset = mediaQuery.padding.bottom;
+    final bottomInset = mediaQuery.padding.bottom + 4;
+    print('bottomInset: $bottomInset');
     UserPrefs userPrefs = Provider.of<UserPrefs>(
       context,
       listen: false,
@@ -108,6 +109,7 @@ class _ScripturePanelState extends State<ScripturePanel> {
         kIsWeb: widget.kIsWeb,
         scriptureOnly: true,
         showCardBackground: false,
+        bottomInset: bottomInset,
       );
     }
 
