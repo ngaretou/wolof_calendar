@@ -61,7 +61,7 @@ class _ScripturePanelState extends State<ScripturePanel> {
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     final bottomInset = mediaQuery.padding.bottom + 4;
-    print('bottomInset: $bottomInset');
+    debugPrint('bottomInset: $bottomInset');
     UserPrefs userPrefs = Provider.of<UserPrefs>(
       context,
       listen: false,
