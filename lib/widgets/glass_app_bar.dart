@@ -2,8 +2,11 @@ import 'dart:ui';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:wolof_calendar/screens/date_screen.dart';
 
 import '../providers/user_prefs.dart';
+import '../screens/settings_screen.dart';
+import 'package:wolof_calendar/l10n/app_localizations.dart';
 import 'overflow_menu.dart';
 
 PreferredSize glassAppBar({
@@ -25,18 +28,7 @@ PreferredSize glassAppBar({
     if (isPhone) {
       Navigator.push(context, transparentRoute(OverflowMenu(isPhone: isPhone)));
     } else {
-      showDialog(
-        context: context,
-        builder: (_) => Dialog(
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(28)),
-          ),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxHeight: 500, maxWidth: 400),
-            child: AppMenuNavigator(isPhone: isPhone),
-          ),
-        ),
-      );
+      showDialog(context: context, builder: (_) => const MenuDialog());
     }
   }
 
@@ -185,35 +177,93 @@ PageRouteBuilder transparentRoute(Widget page) {
   );
 }
 
-class AppMenuNavigator extends StatelessWidget {
-  final bool isPhone;
+class MenuDialog extends StatefulWidget {
+  const MenuDialog({super.key});
 
-  const AppMenuNavigator({super.key, required this.isPhone});
+  @override
+  State<MenuDialog> createState() => _MenuDialogState();
+}
+
+class _MenuDialogState extends State<MenuDialog> {
+  final PageController _pageController = PageController();
+  int _currentPage = 0;
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  void _goTo(int page) {
+    setState(() => _currentPage = page);
+    _pageController.animateToPage(
+      page,
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.easeInOut,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Navigator(
-      onGenerateRoute: (settings) {
-        return transparentRoute(
-          Scaffold(
+    Widget appBarNavButton() {
+      return IconButton(
+        icon: Icon(_currentPage == 0 ? Icons.close : Icons.arrow_back),
+        onPressed: () {
+          if (_currentPage == 0) {
+            Navigator.of(context).pop();
+          } else {
+            _goTo(0);
+          }
+        },
+      );
+    }
+
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      clipBehavior: Clip.antiAlias,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(28)),
+      ),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxHeight: 600, maxWidth: 400),
+        child: PopScope(
+          canPop: _currentPage == 0,
+          onPopInvokedWithResult: (didPop, _) {
+            if (!didPop && _currentPage > 0) {
+              _goTo(0);
+            }
+          },
+          child: Scaffold(
             appBar: AppBar(
-              automaticallyImplyLeading: true,
-              leading: Builder(
-                builder: (context) {
-                  final rootNav = Navigator.of(context, rootNavigator: true);
-                  return rootNav.canPop()
-                      ? IconButton(
-                          onPressed: rootNav.pop,
-                          icon: Icon(Icons.close),
-                        )
-                      : SizedBox();
-                },
+              title: _currentPage == 0
+                  ? Text('Arminaatu Wolof')
+                  : Text(AppLocalizations.of(context)!.settingsTitle),
+              leading: _currentPage == 0
+                  ? SizedBox.shrink()
+                  : appBarNavButton(),
+              actions: [
+                _currentPage == 1 ? SizedBox.shrink() : appBarNavButton(),
+              ],
+            ),
+            body: ScrollConfiguration(
+              //The 2.8 Flutter behavior is to not have mice grabbing and dragging - but we do want this in the web version of the app, so the custom scroll behavior here
+              behavior: MyCustomScrollBehavior(),
+              child: MouseRegion(
+                cursor: SystemMouseCursors.grab,
+
+                child: PageView(
+                  controller: _pageController,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: [
+                    OverflowMenuContents(onOpenSettings: () => _goTo(1)),
+                    const SettingsScreen(),
+                  ],
+                ),
               ),
             ),
-            body: OverflowMenu(isPhone: isPhone),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }

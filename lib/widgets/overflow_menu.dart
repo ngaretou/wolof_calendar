@@ -14,19 +14,25 @@ import '../screens/settings_screen.dart';
 
 class OverflowMenu extends StatelessWidget {
   final bool isPhone;
+  final VoidCallback? onOpenSettings;
 
-  const OverflowMenu({super.key, required this.isPhone});
+  const OverflowMenu({super.key, required this.isPhone, this.onOpenSettings});
 
   @override
   Widget build(BuildContext context) {
     return isPhone
-        ? GlassScaffold(isPhone: isPhone, child: OverflowMenuContents())
-        : OverflowMenuContents();
+        ? GlassScaffold(
+            isPhone: isPhone,
+            child: OverflowMenuContents(onOpenSettings: onOpenSettings),
+          )
+        : OverflowMenuContents(onOpenSettings: onOpenSettings);
   }
 }
 
 class OverflowMenuContents extends StatelessWidget {
-  const OverflowMenuContents({super.key});
+  final VoidCallback? onOpenSettings;
+
+  const OverflowMenuContents({super.key, this.onOpenSettings});
 
   @override
   Widget build(BuildContext context) {
@@ -58,8 +64,12 @@ class OverflowMenuContents extends StatelessWidget {
           AppLocalizations.of(context)!.settingsTitle,
           const Icon(Icons.settings, size: iconSize),
           () {
-            Navigator.of(context).pop();
-            Navigator.push(context, transparentRoute(const SettingsScreen()));
+            if (onOpenSettings != null) {
+              onOpenSettings!();
+            } else {
+              Navigator.of(context).pop();
+              Navigator.push(context, transparentRoute(const SettingsScreen()));
+            }
           },
         ),
 
@@ -261,6 +271,7 @@ class OverflowMenuContents extends StatelessWidget {
           AppLocalizations.of(context)!.settingsAbout,
           const Icon(Icons.question_answer, size: iconSize),
           () {
+            Navigator.of(context).pop();
             showAbout(context);
           },
         ),
