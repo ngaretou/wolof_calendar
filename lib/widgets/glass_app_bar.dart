@@ -227,12 +227,15 @@ class _MenuDialogState extends State<MenuDialog> {
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxHeight: 600, maxWidth: 400),
         child: PopScope(
-          canPop: _currentPage == 0,
-          onPopInvokedWithResult: (didPop, _) {
-            if (!didPop && _currentPage > 0) {
-              _goTo(0);
-            }
-          },
+          // if you want instead of popping by clicking outside the dialog to go back to original page:
+          // canPop: _currentPage == 0,
+          // onPopInvokedWithResult: (didPop, _) {
+          //   if (!didPop && _currentPage > 0) {
+          //     _goTo(0);
+          //   }
+          // },
+          canPop: true,
+
           child: Scaffold(
             appBar: AppBar(
               title: _currentPage == 0

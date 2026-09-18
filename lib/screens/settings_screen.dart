@@ -78,20 +78,6 @@ class SettingsScreenState extends State<SettingsScreen> {
       );
     }
 
-    //Main section layout types
-    Widget settingRow(title, setting) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          title,
-          const VerticalDivider(width: 10, color: Colors.white),
-          Expanded(child: setting),
-          // setting,
-        ],
-      );
-    }
-
     Widget settingColumn(title, setting) {
       return Column(
         //This aligns titles to the left

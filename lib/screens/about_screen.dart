@@ -3,7 +3,7 @@ import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart
 import 'package:wolof_calendar/l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class AboutScreen extends StatelessWidget { 
+class AboutScreen extends StatelessWidget {
   static const routeName = 'about-screen';
   const AboutScreen({super.key});
 
@@ -40,7 +40,7 @@ class AboutScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text(AppLocalizations.of(context)!.settingsAbout)),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
         child: ListView(
           children: [
             Row(
@@ -64,6 +64,7 @@ class AboutScreen extends StatelessWidget {
                 ),
               ],
             ),
+            SizedBox(height: 20),
             htmlSection("assets/html/about.html"),
             const Divider(),
             Text(

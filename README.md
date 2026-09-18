@@ -9,6 +9,10 @@ Web version at http://cal.sng.al
 
 ## What's new?
 
+### 2.4.1
+- revised the overflow menu, formerly the Drawer, to be full screen on mobile and a pageview dialog on large screens
+- for 2027 - scripture still to confirm, and photos to add. 
+
 ### 2.3.3 (2025 version)
 
 - Added a 'go to today' button
