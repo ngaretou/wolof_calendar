@@ -79,7 +79,7 @@ class MonthHeaderState extends State<MonthHeader> {
     ui.TextDirection ltrText = ui.TextDirection.ltr;
     //End text styles
 
-    UserPrefs userPrefs = Provider.of<UserPrefs>(
+    UserPrefs prefsProvider = Provider.of<UserPrefs>(
       context,
       listen: false,
     ).userPrefs;
@@ -141,7 +141,7 @@ class MonthHeaderState extends State<MonthHeader> {
     //scripture related info
     List<Widget> scriptureWidgets = [
       //Begin verses: Wolofal first, then Roman
-      if (userPrefs.wolofalVerseEnabled!)
+      if (prefsProvider.wolofalVerseEnabled!)
         ListView.builder(
           padding: const EdgeInsets.all(0),
           // controller: wolofalScrollController,
@@ -160,11 +160,11 @@ class MonthHeaderState extends State<MonthHeader> {
           physics: const NeverScrollableScrollPhysics(),
         ),
 
-      if (userPrefs.wolofalVerseEnabled! && userPrefs.wolofVerseEnabled!)
+      if (prefsProvider.wolofalVerseEnabled! && prefsProvider.wolofVerseEnabled!)
         const Divider(height: 60, thickness: 2),
 
       //RS verses
-      if (userPrefs.wolofVerseEnabled!)
+      if (prefsProvider.wolofVerseEnabled!)
         ListView.builder(
           padding: const EdgeInsets.all(0),
           // controller: wolofScrollController,

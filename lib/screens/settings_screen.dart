@@ -1,5 +1,3 @@
-// ignore_for_file: sized_box_for_whitespace
-import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
@@ -28,6 +26,11 @@ class SettingsScreenState extends State<SettingsScreen> {
   //Main Settings screen construction:
   @override
   Widget build(BuildContext context) {
+    final screenwidth = MediaQuery.sizeOf(context).width;
+    final screenheight = MediaQuery.sizeOf(context).height;
+    final bool isPhone =
+        ((screenwidth + screenheight) <= 1400) || screenwidth < 750;
+
     final userThemeName = Provider.of<ThemeModel>(
       context,
       listen: false,
@@ -35,17 +38,18 @@ class SettingsScreenState extends State<SettingsScreen> {
     final themeProvider = Provider.of<ThemeModel>(context, listen: false);
     final localeProvider = Provider.of<LocaleProvider>(context, listen: false);
     final Locale? userLocale = localeProvider.userLocale;
-    final UserPrefs prefsProvider = Provider.of<UserPrefs>(
+    final prefsProvider = Provider.of<UserPrefs>(context, listen: false);
+    final UserPrefs userPrefs = Provider.of<UserPrefs>(
       context,
       listen: true,
-    );
+    ).userPrefs;
 
-    final wolof = prefsProvider.userPrefs.wolofVerseEnabled;
-    final wolofal = prefsProvider.userPrefs.wolofalVerseEnabled;
-    final glassEffects = prefsProvider.userPrefs.glassEffects;
-    final backgroundImage = prefsProvider.userPrefs.backgroundImage;
+    final wolof = userPrefs.wolofVerseEnabled;
+    final wolofal = userPrefs.wolofalVerseEnabled;
+    final glassEffects = userPrefs.glassEffects;
+    final backgroundImage = userPrefs.backgroundImage;
     final changeThemeColorWithBackground =
-        prefsProvider.userPrefs.changeThemeColorWithBackground;
+        userPrefs.changeThemeColorWithBackground;
 
     final darkMode = userThemeName == 'darkTheme';
 
@@ -54,7 +58,7 @@ class SettingsScreenState extends State<SettingsScreen> {
     Widget settingTitle(String title, IconData icon, Function? tapHandler) {
       return InkWell(
         onTap: tapHandler as void Function()?,
-        child: Container(
+        child: SizedBox(
           width: 300,
           child: Padding(
             padding: const EdgeInsets.all(20),
@@ -248,15 +252,14 @@ class SettingsScreenState extends State<SettingsScreen> {
                   prefsProvider.savePref('glassEffects', !switchValue);
                 } else if (kind == 'backgroundImage') {
                   prefsProvider.savePref('backgroundImage', !switchValue);
-                  if (prefsProvider.userPrefs.changeThemeColorWithBackground ==
-                      true) {
+                  if (userPrefs.changeThemeColorWithBackground == true) {
                     prefsProvider.savePref(
                       'changeThemeColorWithBackground',
                       false,
                     );
                   }
                 } else if (kind == 'changeThemeColorWithBackground') {
-                  if (prefsProvider.userPrefs.backgroundImage == true) {
+                  if (userPrefs.backgroundImage == true) {
                     prefsProvider.savePref(
                       'changeThemeColorWithBackground',
                       !switchValue,
@@ -360,7 +363,8 @@ class SettingsScreenState extends State<SettingsScreen> {
               ),
               ChoiceChip(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
-                selected: userLocale.toString() == 'fr' ||
+                selected:
+                    userLocale.toString() == 'fr' ||
                         userLocale.toString() == 'fr_'
                     ? true
                     : false,
@@ -378,7 +382,8 @@ class SettingsScreenState extends State<SettingsScreen> {
               ChoiceChip(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
 
-                selected: (userLocale.toString() == 'en' ||
+                selected:
+                    (userLocale.toString() == 'en' ||
                         userLocale.toString() == 'en_')
                     ? true
                     : false,
@@ -398,93 +403,44 @@ class SettingsScreenState extends State<SettingsScreen> {
       );
     }
 
-    ///////////////////////////////
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      backgroundColor: prefsProvider.userPrefs.glassEffects!
-          ? Colors.transparent
-          : Theme.of(context).canvasColor,
-
-      appBar: glassAppBar(
-        context: context,
-        title: Text(AppLocalizations.of(context)!.settingsTitle),
-        actions: [],
-      ),
-
-      //If the width of the screen is greater or equal to 730 (whether or not is Phone is true)
-      //show the wide view
-      body: Container(
-        color: Theme.of(context).brightness == Brightness.light
-            ? Colors.white12
-            : Colors.black12,
-        child: BackdropFilter(
-          filter: prefsProvider.userPrefs.glassEffects!
-              ? ImageFilter.blur(sigmaX: 75, sigmaY: 75)
-              : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
-          child: Container(
-            height: double.infinity,
-            width: double.infinity,
-            color: prefsProvider.userPrefs.glassEffects!
-                ? Colors.transparent
-                : Theme.of(context).canvasColor,
-            child: MediaQuery.of(context).size.width >= 730
-                ? Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 50),
-                    child: ListView(
-                      children: [
-                        themeTitle(),
-
-                        settingPicker('brightness'),
-                        settingPicker('glassEffects'),
-                        settingPicker('backgroundImage'),
-                        // settingPicker('changeThemeColorWithBackground'),
-                        const Divider(),
-                        // settingRow(backgroundTitle(), backgroundSettings()),
-                        // Divider(),
-                        // settingRow(directionTitle(), directionSettings()),
-                        // Divider(),
-                        scriptPickerTitle(),
-                        settingPicker('arabic'),
-                        settingPicker('roman'),
-                        const Divider(),
-                        settingRow(languageTitle(), languageSetting()),
-                      ],
-                    ),
-                  )
-                : ListView(
-                    children: [
-                      // Container(
-                      //   height: 50,
-                      //   color: Theme.of(context).colorScheme.primary,
-                      // ),
-                      themeTitle(),
-                      if (kDebugMode)
-                        Center(
-                          child: ElevatedButton(
-                            onPressed: () {
-                              suggestColors(context);
-                            },
-                            child: Text('Theme suggestion to console'),
-                          ),
-                        ),
-                      settingPicker('brightness'),
-                      settingPicker('glassEffects'),
-                      settingPicker('backgroundImage'),
-                      // settingPicker('changeThemeColorWithBackground'),
-                      const Divider(),
-                      // settingColumn(backgroundTitle(), backgroundSettings()),
-                      // settingColumn(directionTitle(), directionSettings()),
-                      scriptPickerTitle(),
-                      settingPicker('arabic'),
-                      settingPicker('roman'),
-                      const Divider(),
-                      settingColumn(languageTitle(), languageSetting()),
-                    ],
-                  ),
+    Widget settingsContents = ListView(
+      children: [
+        // Container(
+        //   height: 50,
+        //   color: Theme.of(context).colorScheme.primary,
+        // ),
+        themeTitle(),
+        if (kDebugMode)
+          Center(
+            child: ElevatedButton(
+              onPressed: () {
+                suggestColors(context);
+              },
+              child: Text('Theme suggestion to console'),
+            ),
           ),
-        ),
-      ),
-      // ),
+        settingPicker('brightness'),
+        settingPicker('glassEffects'),
+        settingPicker('backgroundImage'),
+        // settingPicker('changeThemeColorWithBackground'),
+        const Divider(),
+        // settingColumn(backgroundTitle(), backgroundSettings()),
+        // settingColumn(directionTitle(), directionSettings()),
+        scriptPickerTitle(),
+        settingPicker('arabic'),
+        settingPicker('roman'),
+        const Divider(),
+        settingColumn(languageTitle(), languageSetting()),
+      ],
     );
+
+    ///////////////////////////////
+    return isPhone
+        ? GlassScaffold(
+            isPhone: isPhone,
+            title: AppLocalizations.of(context)!.settingsTitle,
+            child: settingsContents,
+          )
+        : settingsContents;
   }
 }

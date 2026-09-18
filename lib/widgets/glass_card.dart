@@ -25,29 +25,29 @@ class GlassCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserPrefs userPrefs =
+    UserPrefs prefsProvider =
         Provider.of<UserPrefs>(context, listen: true).userPrefs;
 
     late Color colorToShow;
 
     bool? showGradientSet = showGradient;
     //but...
-    if (!userPrefs.glassEffects!) {
+    if (!prefsProvider.glassEffects!) {
       showGradientSet = false;
     }
 
     tintColor == null
         ? colorToShow = Theme.of(context)
             .cardColor
-            .withAlpha(userPrefs.glassEffects! ? 153 : 255)
+            .withAlpha(prefsProvider.glassEffects! ? 153 : 255)
         : colorToShow =
-            tintColor!.withAlpha(userPrefs.glassEffects! ? 128 : 255);
+            tintColor!.withAlpha(prefsProvider.glassEffects! ? 128 : 255);
 
     return ClipRRect(
       clipBehavior: Clip.hardEdge,
       borderRadius: BorderRadius.circular(borderRadius),
       child: BackdropFilter(
-        filter: userPrefs.glassEffects!
+        filter: prefsProvider.glassEffects!
             ? ImageFilter.blur(sigmaX: blur, sigmaY: blur)
             : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
         child: Container(
@@ -66,11 +66,11 @@ class GlassCard extends StatelessWidget {
                   showGradientSet
                       ? Theme.of(context)
                           .cardColor
-                          .withAlpha(userPrefs.glassEffects! ? 26 : 255)
+                          .withAlpha(prefsProvider.glassEffects! ? 26 : 255)
                       : colorToShow,
                   showGradientSet
                       ? Colors.grey
-                          .withAlpha(userPrefs.glassEffects! ? 77 : 255)
+                          .withAlpha(prefsProvider.glassEffects! ? 77 : 255)
                       : colorToShow,
                 ],
                 stops: const [

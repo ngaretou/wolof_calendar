@@ -12,7 +12,6 @@ import '../providers/user_prefs.dart';
 import '../providers/months.dart';
 import '../providers/fps.dart';
 
-import '../widgets/drawer.dart';
 import '../widgets/date_tile.dart';
 import '../widgets/glass_app_bar.dart';
 import '../widgets/scripture_panel.dart';
@@ -29,10 +28,6 @@ class DateScreen extends StatefulWidget {
 }
 
 class DateScreenState extends State<DateScreen> {
-  bool _isDrawerOpen = false;
-  //Because using custom appbar have to use this to connect the drawer to it
-  GlobalKey<ScaffoldState> scaffoldStateKey = GlobalKey();
-
   //For the ScrollablePositionedList
   ItemPositionsListener itemPositionsListener = ItemPositionsListener.create();
   ItemScrollController itemScrollController = ItemScrollController();
@@ -732,27 +727,10 @@ class DateScreenState extends State<DateScreen> {
     return Stack(
       children: [
         Scaffold(
-          onDrawerChanged: (isOpened) {
-            if (isPhone) {
-              setState(() {
-                _isDrawerOpen = isOpened;
-              });
-            }
-          },
-          key: scaffoldStateKey,
           extendBodyBehindAppBar: true,
-          drawerScrimColor: Theme.of(context).brightness == Brightness.light
-              ? Colors.white.withAlpha(26)
-              : Colors.black.withAlpha(26),
-          drawer: BackdropFilter(
-            filter: userPrefsListenTrue.glassEffects!
-                ? ImageFilter.blur(sigmaX: 50, sigmaY: 50)
-                : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
-            child: const MainDrawer(),
-          ),
           appBar: glassAppBar(
-            scaffoldStateKey: scaffoldStateKey,
             context: context,
+            isPhone: isPhone,
             title: ValueListenableBuilder<String>(
               valueListenable: formattedAppBarTitle,
               builder: (context, _, _) => Text(
@@ -762,14 +740,6 @@ class DateScreenState extends State<DateScreen> {
             ),
             height: glassAppBarHeight,
             actions: [
-              // if (kDebugMode)
-              //   IconButton.filled(
-              //       onPressed: () {
-              //         itemScrollController.jumpTo(
-              //           index: 39,
-              //         );
-              //       },
-              //       icon: Icon(Icons.navigation_outlined)),
               IconButton(
                 icon: const Icon(Icons.date_range),
                 onPressed: () => pickDateToShow(),
@@ -814,7 +784,7 @@ class DateScreenState extends State<DateScreen> {
                   ),
                 ),
         ),
-        if (isPhone && !_isDrawerOpen) versesSection(),
+        if (isPhone) versesSection(),
       ],
     );
   }
