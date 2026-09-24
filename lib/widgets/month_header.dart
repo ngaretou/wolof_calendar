@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../providers/months.dart';
 import '../providers/user_prefs.dart';
+
 // import 'glass_card.dart';
 
 //month_header is everything from the picture down to the month and year text in the list of days
@@ -65,9 +66,12 @@ class MonthHeaderState extends State<MonthHeader> {
       fontSize: 30,
       color: Theme.of(context).textTheme.titleLarge!.color,
     );
-    TextStyle asStyle = Theme.of(
-      context,
-    ).textTheme.titleLarge!.copyWith(fontFamily: "Harmattan", fontSize: 40);
+    TextStyle asStyle = Theme.of(context).textTheme.titleLarge!.copyWith(
+      fontFamily: "Harmattan",
+      fontSize: 40,
+      // leading - titleLarge's height is 1.27 (22 on 28), see top of [TextTheme] file in documentation.
+      height: 1.4,
+    );
     TextStyle rsStyle = Theme.of(
       context,
     ).textTheme.titleLarge!.copyWith(fontFamily: "Charis", fontSize: 30);
@@ -160,7 +164,8 @@ class MonthHeaderState extends State<MonthHeader> {
           physics: const NeverScrollableScrollPhysics(),
         ),
 
-      if (prefsProvider.wolofalVerseEnabled! && prefsProvider.wolofVerseEnabled!)
+      if (prefsProvider.wolofalVerseEnabled! &&
+          prefsProvider.wolofVerseEnabled!)
         const Divider(height: 60, thickness: 2),
 
       //RS verses

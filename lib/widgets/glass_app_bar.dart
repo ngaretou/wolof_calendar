@@ -222,7 +222,7 @@ class _MenuDialogState extends State<MenuDialog> {
       backgroundColor: Colors.transparent,
       clipBehavior: Clip.antiAlias,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(28)),
+        borderRadius: BorderRadius.all(Radius.circular(16)),
       ),
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxHeight: 600, maxWidth: 400),

@@ -45,8 +45,11 @@ class DateScreenState extends State<DateScreen> {
   late List<Month> allMonths;
   late UserPrefs userPrefsListenFalse;
 
-  //This is used just for the initial navigation on open
+  //This is used for the initial navigation on open
   int initialScrollIndex = 0;
+
+  // to keep the scrollposition alive when resizing the screen
+  final GlobalKey _datesSectionKey = GlobalKey();
 
   //Holders for the app bar title info that gets refreshed as the user navigates
   //Doing this with valuenotifiers saves lots of rebuilds
@@ -353,6 +356,7 @@ class DateScreenState extends State<DateScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // print('date screen build');
     UserPrefs userPrefsListenTrue = Provider.of<UserPrefs>(
       context,
       listen: true,
@@ -613,10 +617,15 @@ class DateScreenState extends State<DateScreen> {
     }
 
     Widget datesSection() {
+      // print('datesSection rebuilding');
       if (datesToDisplay.isEmpty) {
         return const Center(child: CircularProgressIndicator());
       }
+
       return MouseRegion(
+        // this widget rebuilds on resize, so we need to keep the scrollposition alive
+        // by using a key
+        key: _datesSectionKey,
         cursor: SystemMouseCursors.grab,
         child: NotificationListener(
           onNotification: (dynamic notification) {
